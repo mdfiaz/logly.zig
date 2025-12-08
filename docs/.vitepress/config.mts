@@ -4,6 +4,10 @@ export default defineConfig({
   title: 'Logly.Zig',
   description: 'High-Performance Logging Library for Zig',
   base: '/logly.zig/',
+  ignoreDeadLinks: [
+    // Allow links to source files outside docs directory
+    /.*\.zig$/
+  ],
   
   themeConfig: {
     logo: '/logo.svg',
