@@ -126,7 +126,7 @@ export default defineConfig({
           { text: 'Async Advanced', link: '/examples/async-advanced' },
           { text: 'Compression Demo', link: '/examples/compression-demo' },
           { text: 'Dynamic Path', link: '/examples/dynamic-path' },
-          { text: 'Sink Write Modes', link: '/examples/sink-write-modes' },
+          { text: 'Sink Write Modes', link: '/examples/write-modes' },
           { text: 'Production Config', link: '/examples/production-config' },
           { text: 'Diagnostics', link: '/examples/diagnostics' },
           { text: 'Customizations', link: '/examples/customizations' }
