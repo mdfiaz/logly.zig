@@ -75,8 +75,27 @@ const SystemLog = struct {
         const LOG_INFO = 6;
 
         extern "c" fn openlog(ident: ?[*:0]const u8, option: c_int, facility: c_int) void;
-        extern "c" fn syslog(priority: c_int, format: [*:0]const u8, ...) void;
+        extern "c" fn syslog(priority: c_int, message: [*:0]const u8) void;
         extern "c" fn closelog() void;
+    } else struct {};
+
+    const PosixImpl = if (platform == .posix) struct {
+        fn logPosix(self: *SystemLog, level: Level, message: []const u8) !void {
+            // Prepare zero-terminated message
+            const msg_z: [:0]const u8 = try self.allocator.dupeZ(u8, message);
+            defer self.allocator.free(msg_z);
+
+            // Map level to syslog priority
+            const priority: c_int = switch (level) {
+                .err, .critical, .fail => posix.LOG_ERR,
+                .warning => posix.LOG_WARNING,
+                else => posix.LOG_INFO,
+            };
+
+            // Call syslog with a fixed format string and the message as vararg
+            const c_msg: [*:0]const u8 = msg_z;
+            posix.syslog(priority, "%s", c_msg);
+        }
     } else struct {};
 
     handle: ?*anyopaque = null,
@@ -123,34 +142,34 @@ const SystemLog = struct {
     }
 
     pub fn log(self: *SystemLog, level: Level, message: []const u8) !void {
-        switch (platform) {
-            .windows => {
-                if (self.handle) |h| {
-                    const msg_z = try self.allocator.dupeZ(u8, message);
-                    defer self.allocator.free(msg_z);
-                    const strings = [_]windows.LPCSTR{msg_z};
-                    const wType = switch (level) {
-                        .err, .critical, .fail => windows.EVENTLOG_ERROR_TYPE,
-                        .warning => windows.EVENTLOG_WARNING_TYPE,
-                        else => windows.EVENTLOG_INFORMATION_TYPE,
-                    };
-                    _ = windows.ReportEventA(@ptrCast(h), wType, 0, 0, null, 1, 0, &strings, null);
-                }
-            },
-            .posix => {
-                const msg_z = try self.allocator.dupeZ(u8, message);
-                defer self.allocator.free(msg_z);
-                const priority: c_int = switch (level) {
-                    .err, .critical, .fail => posix.LOG_ERR,
-                    .warning => posix.LOG_WARNING,
-                    else => posix.LOG_INFO,
-                };
-                posix.syslog(priority, "%s", msg_z);
-            },
-            .other => {
-                // Fallback for baremetal or unsupported OS
-            },
+        if (comptime platform == .windows) {
+            return self.logWindows(level, message);
+        } else if (comptime platform == .posix) {
+            return PosixImpl.logPosix(self, level, message);
+        } else {
+            return self.logOther(level, message);
         }
+    }
+
+    fn logWindows(self: *SystemLog, level: Level, message: []const u8) !void {
+        if (self.handle) |h| {
+            const msg_z = try self.allocator.dupeZ(u8, message);
+            defer self.allocator.free(msg_z);
+            const strings = [_]windows.LPCSTR{msg_z};
+            const wType = switch (level) {
+                .err, .critical, .fail => windows.EVENTLOG_ERROR_TYPE,
+                .warning => windows.EVENTLOG_WARNING_TYPE,
+                else => windows.EVENTLOG_INFORMATION_TYPE,
+            };
+            _ = windows.ReportEventA(@ptrCast(h), wType, 0, 0, null, 1, 0, &strings, null);
+        }
+    }
+
+    fn logOther(self: *SystemLog, level: Level, message: []const u8) void {
+        _ = self;
+        _ = level;
+        _ = message;
+        // Fallback for baremetal or unsupported OS
     }
 };
 
