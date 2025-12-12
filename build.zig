@@ -67,9 +67,7 @@ pub fn build(b: *std.Build) void {
             }),
         });
         exe.root_module.addImport("logly", logly_module);
-        if (std.mem.eql(u8, example.name, "network_logging")) {
-            exe.linkLibC();
-        }
+        exe.linkLibC();
 
         const install_exe = b.addInstallArtifact(exe, .{});
         const example_step = b.step("example-" ++ example.name, "Build " ++ example.name ++ " example");
@@ -96,9 +94,7 @@ pub fn build(b: *std.Build) void {
             }),
         });
         exe.root_module.addImport("logly", logly_module);
-        if (std.mem.eql(u8, example.name, "network_logging")) {
-            exe.linkLibC();
-        }
+        exe.linkLibC();
 
         const install_exe = b.addInstallArtifact(exe, .{});
         const run_exe = b.addRunArtifact(exe);
@@ -138,6 +134,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
     bench_exe.root_module.addImport("logly", logly_module);
+    bench_exe.linkLibC();
 
     const install_bench = b.addInstallArtifact(bench_exe, .{});
     const run_bench = b.addRunArtifact(bench_exe);
