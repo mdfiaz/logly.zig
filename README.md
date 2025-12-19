@@ -154,7 +154,7 @@ or
 For Nightly builds, you can use the Git URL directly:
 
 ```bash
-zig build --save git+https://github.com/muhammad-fiaz/logly.zig.git
+zig fetch --save git+https://github.com/muhammad-fiaz/logly.zig.git
 
 ```
 
