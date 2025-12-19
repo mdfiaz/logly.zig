@@ -48,10 +48,10 @@ const NULL_PATH = if (builtin.os.tag == .windows) "NUL" else "/dev/null";
 /// Print benchmark results in a formatted table by category (Console only)
 fn printResults(results: []const BenchmarkResult) void {
     std.debug.print("\n", .{});
-    std.debug.print("=" ** 130, .{});
+    std.debug.print("-" ** 100, .{});
     std.debug.print("\n", .{});
-    std.debug.print("                                      LOGLY.ZIG BENCHMARK RESULTS\n", .{});
-    std.debug.print("=" ** 130, .{});
+    std.debug.print("                                 LOGLY.ZIG BENCHMARK RESULTS\n", .{});
+    std.debug.print("-" ** 100, .{});
     std.debug.print("\n", .{});
 
     for (BenchmarkResult.categories) |cat| {
@@ -65,10 +65,10 @@ fn printResults(results: []const BenchmarkResult) void {
         if (!has_category) continue;
 
         std.debug.print("\n[{s}]\n", .{cat});
-        std.debug.print("-" ** 130, .{});
+        std.debug.print("-" ** 100, .{});
         std.debug.print("\n", .{});
-        std.debug.print("{s:<50} {s:>25} {s:>30} {s:>20}\n", .{ "Benchmark", "Ops/sec (higher is better)", "Avg Latency (ns) (lower is better)", "Notes" });
-        std.debug.print("-" ** 130, .{});
+        std.debug.print("{s:<40} {s:>25} {s:>25} {s:>10}\n", .{ "Benchmark", "Ops/sec", "Avg Latency (ns)", "Notes" });
+        std.debug.print("-" ** 100, .{});
         std.debug.print("\n", .{});
 
         for (results) |r| {
@@ -1210,7 +1210,7 @@ pub fn main() !void {
     defer md_file.close();
 
     const md_header =
-        \\# 📊 LOGLY.ZIG BENCHMARK RESULTS
+        \\#### 📊 LOGLY.ZIG BENCHMARK RESULTS
         \\
         \\**Environment Details:**
         \\- **Platform:** {s}
@@ -1250,6 +1250,7 @@ pub fn main() !void {
             \\
             \\| Benchmark | Ops/sec (higher is better) | Avg Latency (ns) (lower is better) | Notes |
             \\| :--- | :--- | :--- | :--- |
+            \\
         , .{cat}) catch continue;
         defer allocator.free(cat_md);
         try md_file.writeAll(cat_md);
@@ -1271,7 +1272,7 @@ pub fn main() !void {
 
     // Write summary to Markdown
     if (count > 0) {
-        try md_file.writeAll("\n## 📈 BENCHMARK SUMMARY\n\n");
+        try md_file.writeAll("\n### 📈 Benchmark Summary\n\n");
         var summary_buf: [1024]u8 = undefined;
         const summary = std.fmt.bufPrint(&summary_buf,
             \\- **Total benchmarks run:** {d}
@@ -1284,4 +1285,5 @@ pub fn main() !void {
         try md_file.writeAll(summary);
     }
 
+    try md_file.writeAll("\n---\n**✅ Benchmarks completed successfully!**\n");
 }
