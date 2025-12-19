@@ -21,6 +21,27 @@ jobs:
       - name: Run Tests
         run: zig build test
 
+  bench:
+    name: Run Benchmarks
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+      - name: Run Benchmarks
+        id: run_bench
+        run: |
+          set -o pipefail
+          # Run benchmarks and capture output (failures won't stop the workflow)
+          zig build bench > bench-results.txt 2>&1 || true
+          # Limit output size by taking first 200 lines
+          sed -n '1,200p' bench-results.txt > bench-results-truncated.txt || true
+          echo "bench_output<<EOF" >> $GITHUB_OUTPUT
+          sed -n '1,200p' bench-results-truncated.txt >> $GITHUB_OUTPUT || true
+          echo "EOF" >> $GITHUB_OUTPUT
+
   build-library:
     name: Build Library (${{ matrix.target }})
     needs: test
@@ -36,6 +57,7 @@ jobs:
           - x86_64-macos
           - aarch64-macos
           - x86_64-freestanding
+          - x86-freestanding
           - aarch64-freestanding
           - riscv64-freestanding
           - arm-freestanding
@@ -69,7 +91,7 @@ jobs:
 
   update-release:
     name: Update Release Description
-    needs: test
+    needs: [test, bench]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -127,7 +149,15 @@ jobs:
             .hash = "<your_hash_here>"
             ```
 
-            ## 📥 Downloads (Prebuilt Library)
+            ## � Benchmarks
+
+            The following benchmark results were captured by running `zig build bench` during the release workflow (truncated to the first ~200 lines):
+
+            ```text
+            ${{ needs.bench.outputs.bench_output }}
+            ```
+
+            ## �📥 Downloads (Prebuilt Library)
 
             | Platform | Architecture | File |
             |----------|--------------|------|

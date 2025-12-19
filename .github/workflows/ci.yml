@@ -85,8 +85,8 @@ jobs:
         with:
           path: docs/.vitepress/dist
 
-  examples:
-    name: Run Examples Matrix (Linux & macOS)
+  examples-run:
+    name: Run Examples Matrix (hostable targets)
     needs: build
     runs-on: ${{ matrix.os }}
     strategy:
@@ -102,6 +102,10 @@ jobs:
             target: x86_64-macos
           - os: macos-latest
             target: aarch64-macos
+          - os: windows-latest
+            target: x86_64-windows
+          - os: windows-latest
+            target: x86-windows
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -114,7 +118,43 @@ jobs:
           version: 0.15.2
 
       - name: Run all examples on ${{ matrix.target }}
-        run: zig build run-all-examples -Dtarget=${{ matrix.target }} || echo "Some examples may fail due to CI environment limitations, continuing..."
+        run: |
+          echo "Running examples for ${{ matrix.target }}"
+          zig build run-all-examples -Dtarget=${{ matrix.target }} || echo "Some examples may fail due to CI environment limitations, continuing..."
+        continue-on-error: true
+
+  examples-build-only:
+    name: Build Examples / Library Matrix (build-only for many targets)
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-linux
+          - x86-linux
+          - aarch64-linux
+          - x86_64-macos
+          - aarch64-macos
+          - x86_64-windows
+          - x86-windows
+          - x86_64-freestanding
+          - aarch64-freestanding
+          - riscv64-freestanding
+          - arm-freestanding
+          - arm-linux-gnueabihf
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+
+      - name: Build for ${{ matrix.target }} (build-only)
+        run: zig build -Dtarget=${{ matrix.target }} -Doptimize=Debug || echo "Build may fail for cross-compilation targets, continuing..."
         continue-on-error: true
 
   deploy:
