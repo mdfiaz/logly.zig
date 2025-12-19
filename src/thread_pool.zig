@@ -482,8 +482,8 @@ pub const ThreadPool = struct {
                 }
 
                 const exec_time = std.time.nanoTimestamp() - start_time;
-                _ = pool.stats.total_wait_time_ns.fetchAdd(@intCast(wait_time), .monotonic);
-                _ = pool.stats.total_exec_time_ns.fetchAdd(@intCast(exec_time), .monotonic);
+                _ = pool.stats.total_wait_time_ns.fetchAdd(@truncate(@as(u64, @intCast(wait_time))), .monotonic);
+                _ = pool.stats.total_exec_time_ns.fetchAdd(@truncate(@as(u64, @intCast(exec_time))), .monotonic);
                 _ = pool.stats.tasks_completed.fetchAdd(1, .monotonic);
                 _ = worker.tasks_processed.fetchAdd(1, .monotonic);
             }
@@ -703,8 +703,8 @@ test "work queue" {
 test "thread pool stats" {
     var stats = ThreadPool.ThreadPoolStats{};
 
-    _ = stats.tasks_completed.fetchAdd(100, .monotonic);
-    _ = stats.total_exec_time_ns.fetchAdd(1_000_000_000, .monotonic); // 1 second
+    _ = stats.tasks_completed.fetchAdd(10, .monotonic);
+    _ = stats.total_exec_time_ns.fetchAdd(100_000_000, .monotonic); // 0.1 second (fits in u32)
 
     try std.testing.expect(stats.throughput() > 99 and stats.throughput() < 101);
 }

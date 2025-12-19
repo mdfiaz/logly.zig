@@ -180,10 +180,10 @@ pub const Metrics = struct {
     ///     bytes: The size of the formatted record in bytes.
     pub fn recordLog(self: *Metrics, level: Level, bytes: u64) void {
         _ = self.total_records.fetchAdd(1, .monotonic);
-        _ = self.total_bytes.fetchAdd(bytes, .monotonic);
+        _ = self.total_bytes.fetchAdd(@truncate(bytes), .monotonic);
         const level_index = levelToIndex(level);
         _ = self.level_counts[level_index].fetchAdd(1, .monotonic);
-        self.last_record_time.store(std.time.milliTimestamp(), .monotonic);
+        self.last_record_time.store(@truncate(std.time.milliTimestamp()), .monotonic);
     }
 
     /// Records a dropped log record.
@@ -220,7 +220,7 @@ pub const Metrics = struct {
     pub fn recordSinkWrite(self: *Metrics, sink_index: usize, bytes: u64) void {
         if (sink_index < self.sink_metrics.items.len) {
             _ = self.sink_metrics.items[sink_index].records_written.fetchAdd(@as(Constants.AtomicUnsigned, 1), .monotonic);
-            _ = self.sink_metrics.items[sink_index].bytes_written.fetchAdd(@as(Constants.AtomicUnsigned, bytes), .monotonic);
+            _ = self.sink_metrics.items[sink_index].bytes_written.fetchAdd(@truncate(bytes), .monotonic);
         }
     }
 

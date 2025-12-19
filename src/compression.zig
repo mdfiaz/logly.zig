@@ -239,7 +239,7 @@ pub const Compression = struct {
         const start_time = std.time.nanoTimestamp();
         defer {
             const elapsed = @as(u64, @intCast(std.time.nanoTimestamp() - start_time));
-            _ = self.stats.total_compression_time_ns.fetchAdd(elapsed, .monotonic);
+            _ = self.stats.total_compression_time_ns.fetchAdd(@truncate(elapsed), .monotonic);
         }
 
         self.mutex.lock();
@@ -420,7 +420,7 @@ pub const Compression = struct {
         const start_time = std.time.nanoTimestamp();
         defer {
             const elapsed = @as(u64, @intCast(std.time.nanoTimestamp() - start_time));
-            _ = self.stats.total_decompression_time_ns.fetchAdd(elapsed, .monotonic);
+            _ = self.stats.total_decompression_time_ns.fetchAdd(@truncate(elapsed), .monotonic);
         }
 
         self.mutex.lock();
@@ -636,7 +636,7 @@ pub const Compression = struct {
         }
 
         _ = self.stats.files_compressed.fetchAdd(1, .monotonic);
-        self.stats.last_compression_time.store(@intCast(std.time.milliTimestamp()), .monotonic);
+        self.stats.last_compression_time.store(@truncate(std.time.milliTimestamp()), .monotonic);
 
         const result_path = try self.allocator.dupe(u8, out_path);
 

@@ -527,10 +527,10 @@ pub const AsyncLogger = struct {
 
                 const write_end = std.time.nanoTimestamp();
                 const write_time = write_end - write_start;
-                _ = self.stats.total_latency_ns.fetchAdd(@intCast(write_time), .monotonic);
+                _ = self.stats.total_latency_ns.fetchAdd(@truncate(@as(u64, @intCast(write_time))), .monotonic);
 
                 const now_ms = std.time.milliTimestamp();
-                self.stats.last_flush_timestamp.store(now_ms, .monotonic);
+                self.stats.last_flush_timestamp.store(@truncate(now_ms), .monotonic);
                 last_flush = now_ms;
 
                 if (self.flush_callback) |cb| {
@@ -710,7 +710,7 @@ pub const AsyncFileWriter = struct {
         }
 
         self.buffer.clearRetainingCapacity();
-        self.last_flush.store(std.time.milliTimestamp(), .monotonic);
+        self.last_flush.store(@truncate(std.time.milliTimestamp()), .monotonic);
     }
 
     pub fn flushSync(self: *AsyncFileWriter) void {

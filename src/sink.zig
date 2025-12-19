@@ -47,7 +47,7 @@ const SystemLog = struct {
     // Windows specific definitions
     const windows = if (platform == .windows) struct {
         // Define WINAPI calling convention based on architecture
-        const WINAPI: std.builtin.CallingConvention = if (builtin.cpu.arch == .x86) .stdcall else .c;
+        const WINAPI: std.builtin.CallingConvention = std.builtin.CallingConvention.winapi;
 
         const HANDLE = std.os.windows.HANDLE;
         const LPCSTR = [*:0]const u8;
