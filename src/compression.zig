@@ -238,7 +238,7 @@ pub const Compression = struct {
     pub fn compress(self: *Compression, data: []const u8) ![]u8 {
         const start_time = std.time.nanoTimestamp();
         defer {
-            const elapsed = @as(u64, @intCast(std.time.nanoTimestamp() - start_time));
+            const elapsed = @as(u64, @intCast(@max(0, std.time.nanoTimestamp() - start_time)));
             _ = self.stats.total_compression_time_ns.fetchAdd(@truncate(elapsed), .monotonic);
         }
 
@@ -419,7 +419,7 @@ pub const Compression = struct {
     pub fn decompress(self: *Compression, data: []const u8) ![]u8 {
         const start_time = std.time.nanoTimestamp();
         defer {
-            const elapsed = @as(u64, @intCast(std.time.nanoTimestamp() - start_time));
+            const elapsed = @as(u64, @intCast(@max(0, std.time.nanoTimestamp() - start_time)));
             _ = self.stats.total_decompression_time_ns.fetchAdd(@truncate(elapsed), .monotonic);
         }
 

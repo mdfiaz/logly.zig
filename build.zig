@@ -16,8 +16,7 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/logly.zig"),
     });
 
-    // Build examples
-    const examples = [_]struct { name: []const u8, path: []const u8 }{
+    const examples = [_]struct { name: []const u8, path: []const u8, skip_run_all: bool = false }{
         .{ .name = "basic", .path = "examples/basic.zig" },
         .{ .name = "file_logging", .path = "examples/file_logging.zig" },
         .{ .name = "rotation", .path = "examples/rotation.zig" },
@@ -51,8 +50,8 @@ pub fn build(b: *std.Build) void {
         .{ .name = "dynamic_path", .path = "examples/dynamic_path.zig" },
         .{ .name = "customizations", .path = "examples/customizations.zig" },
         .{ .name = "sink_write_modes", .path = "examples/sink_write_modes.zig" },
-        .{ .name = "network_logging", .path = "examples/network_logging.zig" },
-        .{ .name = "update_check", .path = "examples/update_check.zig" },
+        .{ .name = "network_logging", .path = "examples/network_logging.zig", .skip_run_all = true },
+        .{ .name = "version_checker", .path = "examples/update_check.zig", .skip_run_all = true },
         .{ .name = "advanced_features", .path = "examples/advanced_features.zig" },
         .{ .name = "custom_theme", .path = "examples/custom_theme.zig" },
         .{ .name = "config_presets", .path = "examples/config_presets.zig" },
@@ -70,6 +69,11 @@ pub fn build(b: *std.Build) void {
         exe.root_module.addImport("logly", logly_module);
         exe.linkLibC();
 
+        // Link ws2_32 on Windows for networking examples
+        if (target.result.os.tag == .windows) {
+            exe.linkSystemLibrary("ws2_32");
+        }
+
         const install_exe = b.addInstallArtifact(exe, .{});
         const example_step = b.step("example-" ++ example.name, "Build " ++ example.name ++ " example");
         example_step.dependOn(&install_exe.step);
@@ -86,6 +90,7 @@ pub fn build(b: *std.Build) void {
     var previous_run_step: ?*std.Build.Step = null;
 
     inline for (examples) |example| {
+        if (example.skip_run_all) continue;
         const exe = b.addExecutable(.{
             .name = "run-all-" ++ example.name,
             .root_module = b.createModule(.{
@@ -96,6 +101,11 @@ pub fn build(b: *std.Build) void {
         });
         exe.root_module.addImport("logly", logly_module);
         exe.linkLibC();
+
+        // Link ws2_32 on Windows for networking examples
+        if (target.result.os.tag == .windows) {
+            exe.linkSystemLibrary("ws2_32");
+        }
 
         const install_exe = b.addInstallArtifact(exe, .{});
         const run_exe = b.addRunArtifact(exe);
@@ -122,6 +132,10 @@ pub fn build(b: *std.Build) void {
     });
     tests.linkLibC();
 
+    if (target.result.os.tag == .windows) {
+        tests.linkSystemLibrary("ws2_32");
+    }
+
     const run_tests = b.addRunArtifact(tests);
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_tests.step);
@@ -137,6 +151,10 @@ pub fn build(b: *std.Build) void {
     });
     bench_exe.root_module.addImport("logly", logly_module);
     bench_exe.linkLibC();
+
+    if (target.result.os.tag == .windows) {
+        bench_exe.linkSystemLibrary("ws2_32");
+    }
 
     const install_bench = b.addInstallArtifact(bench_exe, .{});
     const run_bench = b.addRunArtifact(bench_exe);

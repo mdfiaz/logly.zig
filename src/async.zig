@@ -513,7 +513,7 @@ pub const AsyncLogger = struct {
                         const threshold_ns = @as(i128, @intCast(self.config.max_latency_ms)) * std.time.ns_per_ms;
                         if (latency > threshold_ns) {
                             if (self.on_latency_threshold_exceeded) |cb| {
-                                cb(@intCast(@divTrunc(latency, std.time.ns_per_us)), @intCast(self.config.max_latency_ms * 1000));
+                                cb(@truncate(@as(u64, @intCast(@max(0, @divTrunc(latency, std.time.ns_per_us))))), @truncate(@as(u64, @intCast(self.config.max_latency_ms * 1000))));
                             }
                         }
                     }
@@ -527,18 +527,18 @@ pub const AsyncLogger = struct {
 
                 const write_end = std.time.nanoTimestamp();
                 const write_time = write_end - write_start;
-                _ = self.stats.total_latency_ns.fetchAdd(@truncate(@as(u64, @intCast(write_time))), .monotonic);
+                _ = self.stats.total_latency_ns.fetchAdd(@truncate(@as(u64, @intCast(@max(0, write_time)))), .monotonic);
 
                 const now_ms = std.time.milliTimestamp();
                 self.stats.last_flush_timestamp.store(@truncate(now_ms), .monotonic);
                 last_flush = now_ms;
 
                 if (self.flush_callback) |cb| {
-                    cb(count, bytes_written, @intCast(@divTrunc(write_time, std.time.ns_per_ms)));
+                    cb(count, bytes_written, @truncate(@as(u64, @intCast(@max(0, @divTrunc(write_time, std.time.ns_per_ms))))));
                 }
 
                 if (self.on_batch_processed) |cb| {
-                    cb(count, @intCast(@divTrunc(write_time, std.time.ns_per_us)));
+                    cb(count, @truncate(@as(u64, @intCast(@max(0, @divTrunc(write_time, std.time.ns_per_us))))));
                 }
             }
         }

@@ -22,7 +22,7 @@ jobs:
       - name: Setup Zig
         uses: mlugg/setup-zig@v2
         with:
-          version: 0.15.0
+          version: 0.15.2
 
       - name: Run Zig tests
         run: zig build test --summary all
@@ -74,11 +74,22 @@ jobs:
         with:
           version: 0.15.2
 
+      - name: Install QEMU and Multilib (Linux)
+        if: runner.os == 'Linux' && (matrix.target == 'aarch64-linux' || matrix.target == 'x86-linux')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static gcc-multilib
+          if [ "${{ matrix.target }}" = "aarch64-linux" ]; then
+            sudo apt-get install -y gcc-aarch64-linux-gnu
+          fi
+
+      - name: Run Zig tests on ${{ matrix.target }}
+        run: zig build test -Dtarget=${{ matrix.target }} --summary all
+
       - name: Run all examples on ${{ matrix.target }}
         run: |
           echo "Running examples for ${{ matrix.target }}"
-          zig build run-all-examples -Dtarget=${{ matrix.target }} || echo "Some examples may fail due to CI environment limitations, continuing..."
-        continue-on-error: true
+          zig build run-all-examples -Dtarget=${{ matrix.target }}
 
   examples-build-only:
     name: Build Examples / Library Matrix (build-only for many targets)
@@ -97,6 +108,11 @@ jobs:
           - x86_64-freestanding
           - aarch64-freestanding
           - riscv64-freestanding
+          - riscv64-linux
+          - riscv32-linux
+          - powerpc64le-linux
+          - mips64-linux
+          - s390x-linux
           - arm-freestanding
           - arm-linux-gnueabihf
     steps:
@@ -111,7 +127,6 @@ jobs:
           version: 0.15.2
 
       - name: Build for ${{ matrix.target }} (build-only)
-        run: zig build -Dtarget=${{ matrix.target }} -Doptimize=Debug || echo "Build may fail for cross-compilation targets, continuing..."
-        continue-on-error: true
+        run: zig build -Dtarget=${{ matrix.target }} -Doptimize=Debug
 
 

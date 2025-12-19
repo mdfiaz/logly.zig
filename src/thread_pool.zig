@@ -482,8 +482,8 @@ pub const ThreadPool = struct {
                 }
 
                 const exec_time = std.time.nanoTimestamp() - start_time;
-                _ = pool.stats.total_wait_time_ns.fetchAdd(@truncate(@as(u64, @intCast(wait_time))), .monotonic);
-                _ = pool.stats.total_exec_time_ns.fetchAdd(@truncate(@as(u64, @intCast(exec_time))), .monotonic);
+                _ = pool.stats.total_wait_time_ns.fetchAdd(@truncate(@as(u64, @intCast(@max(0, wait_time)))), .monotonic);
+                _ = pool.stats.total_exec_time_ns.fetchAdd(@truncate(@as(u64, @intCast(@max(0, exec_time)))), .monotonic);
                 _ = pool.stats.tasks_completed.fetchAdd(1, .monotonic);
                 _ = worker.tasks_processed.fetchAdd(1, .monotonic);
             }
