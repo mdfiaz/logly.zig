@@ -149,5 +149,5 @@ pub fn main() !void {
 ## See Also
 
 - [Update Checker Guide](../guide/update-checker.md) - Usage patterns
-- [Version API](version.md) - Version information
+- [Version API](#version) - Version information
 - [Configuration Guide](../guide/configuration.md) - Full configuration options
