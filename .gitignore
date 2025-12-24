@@ -24,6 +24,7 @@ dist/
 docs/node_modules
 !docs/.vitepress/config.mts
 docs/.vitepress/cache
+docs/.vitepress/dist
 NUL
 *.txt
 *.log

@@ -1,0 +1,40 @@
+# Docs-specific .gitignore for Logly
+
+# Node / package manager artifacts
+node_modules/
+npm-debug.log*
+yarn-error.log
+pnpm-debug.log*
+
+# VitePress build/cache/output
+.vitepress/dist/
+.vitepress/cache/
+.vitepress/node_modules/
+
+# Local build outputs and preview artifacts
+dist/
+build/
+public/.cache/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Local environment files & secrets
+.env
+.env.local
+
+# Logs and temp files
+*.log
+logs/
+.cache/
+
+# Generated docs artifacts (if you don't want them tracked)
+*.html
+*.map
+
+# Note: `package-lock.json` is present in this repo intentionally; do not add it here unless you intend to stop tracking it.

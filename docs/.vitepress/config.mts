@@ -1,10 +1,62 @@
 import { defineConfig } from "vitepress";
+import llmstxt from "vitepress-plugin-llms";
 
 export default defineConfig({
+  lang: "en-US",
   title: "Logly.Zig",
-  description: "High-Performance Logging Library for Zig",
+  description:
+    "High Performance and Lightweight Logging Library for Zig - Production-ready structured logging with a clean, simple API. Features async I/O, file rotation, JSON output, ANSI colors, context binding, and enterprise features like redaction, metrics, and distributed tracing.",
   base: "/logly.zig/",
-  head: [["link", { rel: "icon", href: "/logo.ico" }]],
+  vite: {
+    plugins: [llmstxt()],
+  },
+  head: [
+    ["link", { rel: "icon", href: "/logly.zig/favicon.ico" }],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        href: "/logly.zig/favicon-16x16.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/logly.zig/favicon-32x32.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        href: "/logly.zig/apple-touch-icon.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "192x192",
+        href: "/logly.zig/android-chrome-192x192.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "512x512",
+        href: "/logly.zig/android-chrome-512x512.png",
+      },
+    ],
+  ],
   ignoreDeadLinks: [
     // Allow links to source files outside docs directory
     /.*\.zig$/,

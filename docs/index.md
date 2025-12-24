@@ -1,5 +1,80 @@
 ---
 layout: home
+title: "Logly.Zig - High-Performance Logging Library for Zig"
+description: "High-Performance Logging Library for Zig - Production-ready structured logging with a clean, simple API. Features async I/O, file rotation, JSON output, and more."
+keywords: "zig, logging, library, high-performance, structured logging, async, json, file rotation, cross-platform"
+head:
+  - - link
+    - rel: canonical
+      href: https://muhammad-fiaz.github.io/logly.zig/
+  - - link
+    - rel: manifest
+      href: site.webmanifest
+  - - meta
+    - name: robots
+      content: index,follow
+  - - meta
+    - name: author
+      content: Muhammad Fiaz
+  - - meta
+    - name: X-Robots-Tag
+      content: index,follow
+  - - meta
+    - name: description
+      content: "High-Performance Logging Library for Zig - Production-ready structured logging with a clean, simple API. Features async I/O, file rotation, JSON output, and more."
+  - - meta
+    - name: keywords
+      content: "zig, logging, library, high-performance, structured logging, async, json, file rotation, cross-platform"
+  - - meta
+    - property: og:title
+      content: "Logly.Zig - High-Performance Logging Library for Zig"
+  - - meta
+    - property: og:description
+      content: "Production-ready structured logging with a clean, simple API. Features async I/O, file rotation, JSON output, and more."
+  - - meta
+    - property: og:image
+      content: https://muhammad-fiaz.github.io/logly.zig/logo.png
+  - - meta
+    - property: og:url
+      content: https://muhammad-fiaz.github.io/logly.zig/
+  - - meta
+    - property: og:type
+      content: website
+  - - meta
+    - name: twitter:card
+      content: summary_large_image
+  - - meta
+    - name: twitter:title
+      content: "Logly.Zig - High-Performance Logging Library for Zig"
+  - - meta
+    - name: twitter:description
+      content: "Production-ready structured logging with a clean, simple API. Features async I/O, file rotation, JSON output, and more."
+  - - meta
+    - name: twitter:image
+      content: https://muhammad-fiaz.github.io/logly.zig/logo.png
+  - - script
+    - type: application/ld+json
+    - children: |
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "Logly.Zig",
+          "description": "High-Performance Logging Library for Zig - Production-ready structured logging with a clean, simple API.",
+          "url": "https://muhammad-fiaz.github.io/logly.zig/",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "Linux, Windows, macOS",
+          "programmingLanguage": "Zig",
+          "author": {
+            "@type": "Person",
+            "name": "Muhammad Fiaz"
+          },
+          "license": "https://opensource.org/licenses/MIT",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        }
 
 hero:
   name: Logly.Zig
@@ -73,6 +148,14 @@ features:
     title: Scoped Logging
     details: Create child loggers with bound context that persists across calls
 
+  - icon: 🗂️
+    title: Rule-based Message Templates
+    details: Define rules-based templates for displaying an message when certain log level triggered
+  
+  - icon: 🧩
+    title: Callback Hooks
+    details: Pre- and post-log hooks for custom processing and integrations
+  
   - icon: 🔄
     title: Update Checker
     details: Automatically check for new versions of Logly
@@ -116,6 +199,26 @@ features:
   - icon: 🔧
     title: Method Aliases
     details: Convenience aliases for common APIs (add/remove, warn/crit, etc.)
+  
+  - icon: 📚
+    title: Comprehensive Docs
+    details: Extensive guides, examples, and API references
+  
+  - icon: 🌍
+    title: Cross-Platform
+    details: Works seamlessly on Linux, Windows, macOS, and more
+  
+  - icon: 🆓
+    title: Open Source
+    details: Fully open source under the MIT License
+  
+  - icon: 🧑‍💻
+    title: Active Development
+    details: Regular updates and new features based on community feedback
+  
+  - icon: 🤝
+    title: Community Support
+    details: Join our Discord and GitHub discussions for help and collaboration
 ---
 
 ## Quick Example
