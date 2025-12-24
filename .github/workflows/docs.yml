@@ -47,13 +47,16 @@ jobs:
         run: bun run docs:build
 
       - name: Setup IndexNow key (optional)
-        if: ${{ secrets.INDEXNOW_KEY != '' }}
         working-directory: ./docs
         run: |
           # Generate IndexNow key file dynamically so it can be served from the site root
-          mkdir -p .vitepress/dist
-          printf '%s' "${{ secrets.INDEXNOW_KEY }}" > .vitepress/dist/${{ secrets.INDEXNOW_KEY }}.txt
-          echo "Generated IndexNow key file: .vitepress/dist/${{ secrets.INDEXNOW_KEY }}.txt"
+          if [ -n "${{ secrets.INDEXNOW_KEY }}" ]; then
+            mkdir -p .vitepress/dist
+            printf '%s' "${{ secrets.INDEXNOW_KEY }}" > .vitepress/dist/${{ secrets.INDEXNOW_KEY }}.txt
+            echo "Generated IndexNow key file: .vitepress/dist/${{ secrets.INDEXNOW_KEY }}.txt"
+          else
+            echo "INDEXNOW_KEY not set; skipping IndexNow key file generation"
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -119,9 +122,19 @@ jobs:
             exit 1
           fi
 
+      - name: Prepare IndexNow flag
+        id: indexnow-flag
+        run: |
+          if [ -n "${{ secrets.INDEXNOW_KEY }}" ]; then
+            echo "indexnow=1" >> $GITHUB_OUTPUT
+          else
+            echo "indexnow=0" >> $GITHUB_OUTPUT
+          fi
+
       - name: Submit sitemap to IndexNow
-        if: ${{ secrets.INDEXNOW_KEY != '' }}
+        if: ${{ steps.indexnow-flag.outputs.indexnow == '1' }}
         uses: bojieyang/indexnow-action@v2
         with:
           sitemap-location: ${{ steps.deployment.outputs.page_url }}/sitemap.xml
           key: ${{ secrets.INDEXNOW_KEY }}
+          failure-strategy: ignore
