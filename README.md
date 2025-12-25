@@ -84,6 +84,7 @@ A production-grade, high-performance structured logging library for Zig, designe
 | 🔗 **Persistent Context** | Scoped loggers with persistent fields via `logger.with()` |
 | 🔍 **Advanced Filtering** | Fluent API for complex filter rules |
 | 🎛️ **Configuration Modes** | Log-only, display-only, and custom display/storage modes |
+| 📋 **Rule-based Templates** | Diagnostic message templates with cause, fix, and documentation links |
 
 </details>
 
