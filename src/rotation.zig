@@ -286,9 +286,9 @@ pub const Rotation = struct {
         self.last_rotation = @divFloor(std.time.milliTimestamp(), 1000);
         _ = self.stats.total_rotations.fetchAdd(1, .monotonic);
 
-        const elapsed = @as(u64, @intCast(std.time.milliTimestamp() - start_time));
+        const elapsed = @as(Constants.AtomicUnsigned, @intCast(std.time.milliTimestamp() - start_time));
         self.stats.last_rotation_time_ms.store(elapsed, .monotonic);
-        if (self.on_rotation_complete) |cb| cb(self.base_path, rotated_path, elapsed);
+        if (self.on_rotation_complete) |cb| cb(self.base_path, rotated_path, @as(u64, @intCast(elapsed)));
 
         // 5. Compress if enabled
         var final_path = try self.allocator.dupe(u8, rotated_path);
