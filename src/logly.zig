@@ -118,6 +118,12 @@ pub const ThreadPool = @import("thread_pool.zig").ThreadPool;
 pub const ThreadPoolPresets = @import("thread_pool.zig").ThreadPoolPresets;
 pub const Network = @import("network.zig");
 
+// Utility components
+pub const Utils = @import("utils.zig");
+
+// Re-export ParallelConfig from Config
+pub const ParallelConfig = Config.ParallelConfig;
+
 // Configuration presets
 pub const ConfigPresets = struct {
     pub fn production() Config {

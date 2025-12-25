@@ -170,6 +170,9 @@ pub const Config = struct {
     /// Enable metrics collection.
     enable_metrics: bool = false,
 
+    /// Metrics configuration.
+    metrics: MetricsConfig = .{},
+
     /// Buffer configuration for async operations.
     buffer_config: BufferConfig = .{},
 
@@ -187,6 +190,9 @@ pub const Config = struct {
 
     /// Compression configuration.
     compression: CompressionConfig = .{},
+
+    /// Rotation configuration.
+    rotation: RotationConfig = .{},
 
     /// Use arena allocator for internal temporary allocations.
     /// Improves performance by batching allocations and reducing malloc overhead.
@@ -395,12 +401,97 @@ pub const Config = struct {
         per_level: bool = false,
     };
 
-    /// Redaction configuration.
+    /// Redaction configuration for sensitive data masking.
     pub const RedactionConfig = struct {
+        /// Enable redaction system.
         enabled: bool = false,
+        /// Fields to redact (by name).
         fields: ?[]const []const u8 = null,
+        /// Patterns to redact (string patterns).
         patterns: ?[]const []const u8 = null,
+        /// Default replacement text.
         replacement: []const u8 = "[REDACTED]",
+        /// Default redaction type for fields.
+        default_type: RedactionType = .full,
+        /// Enable regex pattern matching.
+        enable_regex: bool = false,
+        /// Hash algorithm for hash redaction type.
+        hash_algorithm: HashAlgorithm = .sha256,
+        /// Characters to reveal at start for partial redaction.
+        partial_start_chars: u8 = 4,
+        /// Characters to reveal at end for partial redaction.
+        partial_end_chars: u8 = 4,
+        /// Mask character for redacted content.
+        mask_char: u8 = '*',
+        /// Enable case-insensitive field matching.
+        case_insensitive: bool = true,
+        /// Log when redaction is applied (for audit).
+        audit_redactions: bool = false,
+        /// Compliance preset to use (null for custom).
+        compliance_preset: ?CompliancePreset = null,
+
+        pub const RedactionType = enum {
+            full,
+            partial_start,
+            partial_end,
+            hash,
+            mask_middle,
+            truncate,
+        };
+
+        pub const HashAlgorithm = enum {
+            sha256,
+            sha512,
+            md5,
+        };
+
+        pub const CompliancePreset = enum {
+            pci_dss,
+            hipaa,
+            gdpr,
+            sox,
+            custom,
+        };
+
+        pub fn default() RedactionConfig {
+            return .{};
+        }
+
+        pub fn pciDss() RedactionConfig {
+            return .{
+                .enabled = true,
+                .compliance_preset = .pci_dss,
+                .default_type = .mask_middle,
+                .audit_redactions = true,
+            };
+        }
+
+        pub fn hipaa() RedactionConfig {
+            return .{
+                .enabled = true,
+                .compliance_preset = .hipaa,
+                .default_type = .hash,
+                .hash_algorithm = .sha256,
+                .audit_redactions = true,
+            };
+        }
+
+        pub fn gdpr() RedactionConfig {
+            return .{
+                .enabled = true,
+                .compliance_preset = .gdpr,
+                .default_type = .partial_end,
+            };
+        }
+
+        pub fn strict() RedactionConfig {
+            return .{
+                .enabled = true,
+                .default_type = .full,
+                .case_insensitive = true,
+                .audit_redactions = true,
+            };
+        }
     };
 
     /// Error handling behavior.
@@ -453,6 +544,58 @@ pub const Config = struct {
         thread_affinity: bool = false,
     };
 
+    /// Parallel sink writing configuration.
+    pub const ParallelConfig = struct {
+        /// Maximum concurrent writes allowed at once.
+        max_concurrent: usize = 8,
+        /// Timeout for each write operation (ms).
+        write_timeout_ms: u64 = 1000,
+        /// Retry failed writes automatically.
+        retry_on_failure: bool = true,
+        /// Maximum number of retry attempts.
+        max_retries: u3 = 3,
+        /// Fail-fast mode: abort on any sink error.
+        fail_fast: bool = false,
+        /// Buffer writes before parallel dispatch.
+        buffered: bool = true,
+        /// Buffer size for buffered writes.
+        buffer_size: usize = 64,
+
+        pub fn default() ParallelConfig {
+            return .{};
+        }
+
+        pub fn highThroughput() ParallelConfig {
+            return .{
+                .max_concurrent = 16,
+                .buffered = true,
+                .buffer_size = 128,
+                .retry_on_failure = false,
+                .fail_fast = false,
+            };
+        }
+
+        pub fn lowLatency() ParallelConfig {
+            return .{
+                .max_concurrent = 4,
+                .buffered = false,
+                .write_timeout_ms = 500,
+                .retry_on_failure = false,
+                .fail_fast = true,
+            };
+        }
+
+        pub fn reliable() ParallelConfig {
+            return .{
+                .max_concurrent = 8,
+                .retry_on_failure = true,
+                .max_retries = 5,
+                .write_timeout_ms = 2000,
+                .fail_fast = false,
+            };
+        }
+    };
+
     /// Scheduler configuration.
     pub const SchedulerConfig = struct {
         /// Enable the scheduler.
@@ -465,6 +608,80 @@ pub const Config = struct {
         compress_before_cleanup: bool = false,
         /// Default file pattern for cleanup.
         file_pattern: []const u8 = "*.log",
+    };
+
+    /// Metrics collection configuration.
+    pub const MetricsConfig = struct {
+        /// Enable metrics collection.
+        enabled: bool = false,
+        /// Track per-level counts.
+        track_levels: bool = true,
+        /// Track per-sink metrics.
+        track_sinks: bool = true,
+        /// Calculate throughput (records/sec, bytes/sec).
+        track_throughput: bool = true,
+        /// Track latency statistics.
+        track_latency: bool = false,
+        /// Snapshot interval in milliseconds (0 = disabled).
+        snapshot_interval_ms: u64 = 0,
+        /// Alert threshold for error rate (0.0-1.0, 0 = disabled).
+        error_rate_threshold: f32 = 0.0,
+        /// Alert threshold for drop rate (0.0-1.0, 0 = disabled).
+        drop_rate_threshold: f32 = 0.0,
+        /// Maximum records/sec before alerting (0 = disabled).
+        max_records_per_second: u64 = 0,
+        /// Export format for metrics.
+        export_format: ExportFormat = .text,
+        /// Enable histogram for latency distribution.
+        enable_histogram: bool = false,
+        /// Number of histogram buckets.
+        histogram_buckets: u8 = 10,
+        /// Retain metrics history (in snapshots).
+        history_size: u16 = 0,
+
+        pub const ExportFormat = enum {
+            text,
+            json,
+            prometheus,
+            statsd,
+        };
+
+        pub fn default() MetricsConfig {
+            return .{};
+        }
+
+        pub fn production() MetricsConfig {
+            return .{
+                .enabled = true,
+                .track_levels = true,
+                .track_sinks = true,
+                .track_throughput = true,
+                .error_rate_threshold = 0.01,
+                .drop_rate_threshold = 0.001,
+            };
+        }
+
+        pub fn minimal() MetricsConfig {
+            return .{
+                .enabled = true,
+                .track_levels = false,
+                .track_sinks = false,
+                .track_throughput = false,
+            };
+        }
+
+        pub fn detailed() MetricsConfig {
+            return .{
+                .enabled = true,
+                .track_levels = true,
+                .track_sinks = true,
+                .track_throughput = true,
+                .track_latency = true,
+                .enable_histogram = true,
+                .histogram_buckets = 20,
+                .history_size = 60,
+            };
+        }
     };
 
     /// Compression configuration.
@@ -547,6 +764,64 @@ pub const Config = struct {
         };
     };
 
+    /// Rotation and retention configuration.
+    pub const RotationConfig = struct {
+        /// Enable default rotation for file sinks that don't specify it.
+        enabled: bool = false,
+
+        /// Default rotation interval (e.g., "daily", "hourly").
+        /// Only used if sink doesn't specify rotation.
+        interval: ?[]const u8 = null,
+
+        /// Default size limit for rotation (in bytes).
+        /// Only used if sink doesn't specify size limit.
+        size_limit: ?u64 = null,
+
+        /// Default size limit as string (e.g., "10MB").
+        /// Only used if sink doesn't specify size limit.
+        size_limit_str: ?[]const u8 = null,
+
+        /// Maximum number of rotated files to retain.
+        /// Older files will be deleted during rotation.
+        retention_count: ?usize = null,
+
+        /// Maximum age of rotated files in seconds.
+        /// Files older than this will be deleted during rotation.
+        max_age_seconds: ?i64 = null,
+
+        /// Strategy for naming rotated files.
+        /// Strategy for naming rotated files.
+        naming_strategy: NamingStrategy = .timestamp,
+
+        /// Custom format string for rotated files.
+        /// Used when naming_strategy is .custom.
+        /// Placeholders: {base}, {ext}, {timestamp}, {date}, {iso}, {index}
+        naming_format: ?[]const u8 = null,
+
+        /// Optional directory to move rotated files to.
+        /// If null, files remain in the same directory as the log.
+        archive_dir: ?[]const u8 = null,
+
+        /// Whether to remove empty directories after cleanup.
+        clean_empty_dirs: bool = false,
+
+        /// Whether to perform cleanup asynchronously.
+        async_cleanup: bool = false,
+
+        pub const NamingStrategy = enum {
+            /// Append timestamp: logly.log -> logly.log.1678888888
+            timestamp,
+            /// Append date: logly.log -> logly.log.2023-01-01
+            date,
+            /// Append ISO datetime: logly.log -> logly.log.2023-01-01T12-00-00
+            iso_datetime,
+            /// Rolling index: logly.log -> logly.log.1 (renames existing)
+            index,
+            /// Custom format string (requires naming_format to be set)
+            custom,
+        };
+    };
+
     /// Rules system configuration for compiler-style guided diagnostics.
     pub const RulesConfig = struct {
         /// Master switch for rules system.
@@ -567,6 +842,12 @@ pub const Config = struct {
         /// Show rule IDs in output (useful for debugging).
         show_rule_id: bool = false,
 
+        /// Include rule ID prefix like "R0001:" in output.
+        include_rule_id_prefix: bool = false,
+
+        /// Custom rule ID format string.
+        rule_id_format: []const u8 = "R{d}",
+
         /// Indent string for rule messages.
         indent: []const u8 = "    ",
 
@@ -579,36 +860,72 @@ pub const Config = struct {
         /// Maximum number of rules allowed.
         max_rules: usize = 1000,
 
+        /// Maximum messages per rule to display.
+        max_messages_per_rule: usize = 10,
+
         /// Display rule messages on console (respects global_console_display).
         console_output: bool = true,
 
         /// Write rule messages to file sinks (respects global_file_storage).
         file_output: bool = true,
 
+        /// Enable verbose mode with full context.
+        verbose: bool = false,
+
+        /// Sort messages by severity.
+        sort_by_severity: bool = false,
+
         /// Preset configurations
+        /// Minimal configuration with rules enabled.
         pub fn minimal() RulesConfig {
             return .{ .enabled = true, .use_unicode = true, .enable_colors = true };
         }
 
+        /// Production configuration: no colors, no verbose, minimal output.
         pub fn production() RulesConfig {
-            return .{ .enabled = true, .use_unicode = false, .enable_colors = false, .show_rule_id = false };
+            return .{
+                .enabled = true,
+                .use_unicode = false,
+                .enable_colors = false,
+                .show_rule_id = false,
+                .verbose = false,
+            };
         }
 
+        /// Development configuration: full debugging with colors and Unicode.
         pub fn development() RulesConfig {
-            return .{ .enabled = true, .use_unicode = true, .enable_colors = true, .show_rule_id = true };
+            return .{
+                .enabled = true,
+                .use_unicode = true,
+                .enable_colors = true,
+                .show_rule_id = true,
+                .verbose = true,
+            };
         }
 
+        /// ASCII-only configuration for terminals without Unicode support.
         pub fn ascii() RulesConfig {
             return .{ .enabled = true, .use_unicode = false, .enable_colors = true };
         }
 
+        /// Disabled configuration: zero overhead.
         pub fn disabled() RulesConfig {
             return .{ .enabled = false };
         }
 
-        /// Silent mode - rules evaluate but don't output
+        /// Silent mode: rules evaluate but don't output.
         pub fn silent() RulesConfig {
             return .{ .enabled = true, .console_output = false, .file_output = false };
+        }
+
+        /// Console only: no file output.
+        pub fn consoleOnly() RulesConfig {
+            return .{ .enabled = true, .console_output = true, .file_output = false };
+        }
+
+        /// File only: no console output.
+        pub fn fileOnly() RulesConfig {
+            return .{ .enabled = true, .console_output = false, .file_output = true };
         }
     };
 
@@ -673,6 +990,11 @@ pub const Config = struct {
                 .level = .default,
                 .on_rotation = true,
             },
+            .rotation = .{
+                .enabled = true,
+                .retention_count = 30,
+                .max_age_seconds = 30 * 24 * 3600,
+            },
             .scheduler = .{
                 .enabled = true,
                 .cleanup_max_age_days = 30,
@@ -729,6 +1051,10 @@ pub const Config = struct {
                 .buffer_size = 32768,
                 .batch_size = 256,
                 .flush_interval_ms = 50,
+            },
+            .rotation = .{
+                .enabled = true,
+                .naming_strategy = .timestamp,
             },
         };
     }
@@ -854,3 +1180,163 @@ pub const Config = struct {
         return result;
     }
 };
+
+test "config default values" {
+    const config = Config.default();
+    try std.testing.expectEqual(Level.info, config.level);
+    try std.testing.expect(config.global_color_display);
+    try std.testing.expect(config.global_console_display);
+    try std.testing.expect(config.global_file_storage);
+    try std.testing.expect(config.color);
+    try std.testing.expect(!config.json);
+    try std.testing.expect(config.auto_sink);
+}
+
+test "config presets" {
+    // Production preset
+    const prod_config = Config.production();
+    try std.testing.expectEqual(Level.info, prod_config.level);
+    try std.testing.expect(!prod_config.color);
+    try std.testing.expect(prod_config.json);
+
+    // Development preset
+    const dev_config = Config.development();
+    try std.testing.expectEqual(Level.debug, dev_config.level);
+    try std.testing.expect(dev_config.color);
+
+    // High throughput preset
+    const ht_config = Config.highThroughput();
+    try std.testing.expectEqual(Level.warning, ht_config.level);
+    try std.testing.expect(ht_config.thread_pool.enabled);
+    try std.testing.expect(ht_config.async_config.enabled);
+
+    // Secure preset
+    const secure_config = Config.secure();
+    try std.testing.expect(secure_config.redaction.enabled);
+    try std.testing.expect(secure_config.structured);
+
+    // Log only preset
+    const log_only = Config.logOnly();
+    try std.testing.expect(!log_only.global_console_display);
+    try std.testing.expect(log_only.global_file_storage);
+
+    // Display only preset
+    const display_only = Config.displayOnly();
+    try std.testing.expect(display_only.global_console_display);
+    try std.testing.expect(!display_only.global_file_storage);
+}
+
+test "config with display storage" {
+    // Console only
+    const console_only = Config.withDisplayStorage(true, false, true);
+    try std.testing.expect(console_only.global_console_display);
+    try std.testing.expect(!console_only.global_file_storage);
+    try std.testing.expect(console_only.auto_sink);
+
+    // File only
+    const file_only = Config.withDisplayStorage(false, true, false);
+    try std.testing.expect(!file_only.global_console_display);
+    try std.testing.expect(file_only.global_file_storage);
+    try std.testing.expect(!file_only.auto_sink);
+
+    // Both enabled
+    const both = Config.withDisplayStorage(true, true, true);
+    try std.testing.expect(both.global_console_display);
+    try std.testing.expect(both.global_file_storage);
+}
+
+test "rules config default values" {
+    const rules_config = Config.RulesConfig{};
+    try std.testing.expect(!rules_config.enabled);
+    try std.testing.expect(rules_config.client_rules_enabled);
+    try std.testing.expect(rules_config.builtin_rules_enabled);
+    try std.testing.expect(rules_config.use_unicode);
+    try std.testing.expect(rules_config.enable_colors);
+    try std.testing.expect(!rules_config.show_rule_id);
+    try std.testing.expect(!rules_config.include_rule_id_prefix);
+    try std.testing.expect(rules_config.include_in_json);
+    try std.testing.expectEqual(@as(usize, 1000), rules_config.max_rules);
+    try std.testing.expectEqual(@as(usize, 10), rules_config.max_messages_per_rule);
+    try std.testing.expect(rules_config.console_output);
+    try std.testing.expect(rules_config.file_output);
+    try std.testing.expect(!rules_config.verbose);
+    try std.testing.expect(!rules_config.sort_by_severity);
+}
+
+test "rules config presets" {
+    // Development preset
+    const dev = Config.RulesConfig.development();
+    try std.testing.expect(dev.enabled);
+    try std.testing.expect(dev.use_unicode);
+    try std.testing.expect(dev.enable_colors);
+    try std.testing.expect(dev.show_rule_id);
+    try std.testing.expect(dev.verbose);
+
+    // Production preset
+    const prod = Config.RulesConfig.production();
+    try std.testing.expect(prod.enabled);
+    try std.testing.expect(!prod.use_unicode);
+    try std.testing.expect(!prod.enable_colors);
+    try std.testing.expect(!prod.show_rule_id);
+    try std.testing.expect(!prod.verbose);
+
+    // ASCII preset
+    const ascii = Config.RulesConfig.ascii();
+    try std.testing.expect(ascii.enabled);
+    try std.testing.expect(!ascii.use_unicode);
+    try std.testing.expect(ascii.enable_colors);
+
+    // Disabled preset
+    const disabled = Config.RulesConfig.disabled();
+    try std.testing.expect(!disabled.enabled);
+
+    // Silent preset
+    const silent = Config.RulesConfig.silent();
+    try std.testing.expect(silent.enabled);
+    try std.testing.expect(!silent.console_output);
+    try std.testing.expect(!silent.file_output);
+
+    // Console only preset
+    const console_only = Config.RulesConfig.consoleOnly();
+    try std.testing.expect(console_only.enabled);
+    try std.testing.expect(console_only.console_output);
+    try std.testing.expect(!console_only.file_output);
+
+    // File only preset
+    const file_only = Config.RulesConfig.fileOnly();
+    try std.testing.expect(file_only.enabled);
+    try std.testing.expect(!file_only.console_output);
+    try std.testing.expect(file_only.file_output);
+}
+
+test "config with rules" {
+    var config = Config.default();
+    config.rules = Config.RulesConfig.development();
+
+    try std.testing.expect(config.rules.enabled);
+    try std.testing.expect(config.rules.verbose);
+    try std.testing.expect(config.rules.show_rule_id);
+}
+
+test "config global switches affect rules" {
+    // Test that rules config fields exist for global switch integration
+    var config = Config.default();
+    config.global_console_display = false;
+    config.global_file_storage = false;
+    config.global_color_display = false;
+
+    // Verify rules config has corresponding fields
+    try std.testing.expect(config.rules.console_output);
+    try std.testing.expect(config.rules.file_output);
+    try std.testing.expect(config.rules.enable_colors);
+
+    // The actual AND logic happens in the formatter/sink at runtime
+    // Here we just verify the fields exist and can be set
+    config.rules.console_output = false;
+    config.rules.file_output = false;
+    config.rules.enable_colors = false;
+
+    try std.testing.expect(!config.rules.console_output);
+    try std.testing.expect(!config.rules.file_output);
+    try std.testing.expect(!config.rules.enable_colors);
+}

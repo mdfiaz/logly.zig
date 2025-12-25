@@ -1,6 +1,15 @@
+---
+title: Thread Pool Guide
+description: Learn how to use Logly.zig's high-performance thread pool for parallel log processing. Covers worker configuration, task submission, batch processing, priority queues, work stealing, and cache-aware scheduling.
+head:
+  - - meta
+    - name: keywords
+      content: zig thread pool, parallel logging, async logging, worker threads, task queue, work stealing, batch processing, high throughput logging
+---
+
 # Thread Pool Guide
 
-This guide covers parallel log processing in Logly using thread pools, including configuration, task submission, work stealing, and best practices.
+This guide covers parallel log processing in Logly using thread pools, including configuration, task submission, batch processing, priority queues, work stealing, and best practices.
 
 ## Overview
 
@@ -153,32 +162,98 @@ pub const TaskPriority = enum(u8) {
 ### Submit with Priority
 
 ```zig
-try pool.submitWithPriority(
-    myFunction,
-    @ptrCast(&data),
-    .critical,
-);
+// Standard priority submission
+_ = pool.submitCallback(myFunction, @ptrCast(&data));
+
+// High priority (processed before normal)
+_ = pool.submitHighPriority(myFunction, @ptrCast(&data));
+
+// Critical priority (processed first)
+_ = pool.submitCritical(myFunction, @ptrCast(&data));
 ```
+
+### Batch Submission
+
+Submit multiple tasks at once for higher throughput (single lock acquisition):
+
+```zig
+// Create array of tasks
+var tasks: [10]logly.ThreadPool.Task = undefined;
+for (&tasks) |*task| {
+    task.* = .{ .callback = .{ .func = myFunction, .context = context } };
+}
+
+// Batch submit - returns number of successfully submitted tasks
+const submitted = pool.submitBatch(&tasks, .normal);
+std.debug.print("Submitted {} tasks\n", .{submitted});
+```
+
+### Non-Blocking Submission
+
+Use `trySubmit` for low-latency scenarios where blocking is unacceptable:
+
+```zig
+// Returns immediately if lock is contended
+if (pool.trySubmit(task, .high)) {
+    // Task submitted successfully
+} else {
+    // Queue is contended or full, handle fallback
+    handleFallback(task);
+}
+```
+
+### Worker Affinity
+
+Submit to a specific worker's local queue for better cache locality:
+
+```zig
+// Submit to worker 0's local queue
+_ = pool.submitToWorker(0, task, .normal);
+
+// Submit to worker 1's local queue  
+_ = pool.submitToWorker(1, task, .normal);
+```
+
+This is useful when tasks need to access the same data, as keeping them on the same worker improves CPU cache hit rates.
 
 ## Parallel Sink Writing
 
-Write to multiple sinks concurrently:
+Write to multiple sinks concurrently with the enhanced `ParallelSinkWriter`:
 
 ```zig
-var writer = try logly.ParallelSinkWriter.init(allocator, .{
+// Create with default config
+var writer = try logly.ParallelSinkWriter.init(allocator, pool);
+defer writer.deinit();
+
+// Or with custom ParallelConfig
+var writer = try logly.ParallelSinkWriter.initWithConfig(allocator, pool, .{
     .max_concurrent = 4,
     .retry_on_failure = true,
-    .fail_fast = false,
+    .max_retries = 3,
+    .buffered = true,
+    .buffer_size = 64,
 });
 defer writer.deinit();
 
 // Add sinks
-try writer.addSink(&file_sink);
-try writer.addSink(&console_sink);
-try writer.addSink(&network_sink);
+try writer.addSink(.{
+    .write_fn = &fileWriteFn,
+    .flush_fn = &fileFlushFn,
+    .name = "file",
+});
+try writer.addSink(.{
+    .write_fn = &consoleWriteFn,
+    .name = "console",
+});
 
 // Write to all sinks in parallel
-try writer.write(&record);
+writer.writeParallel("Log message data");
+
+// Or use alias
+writer.write("Log message data");
+
+// Flush all buffered writes
+writer.flushAll();
 ```
 
 ### Configuration Options
@@ -193,6 +268,65 @@ pub const ParallelConfig = struct {
     buffered: bool = true,           // Buffer before dispatch
     buffer_size: usize = 64,         // Buffer size
 };
+```
+
+### ParallelConfig Presets
+
+```zig
+// High throughput - max concurrent, large buffers
+const config = logly.ParallelConfig.highThroughput();
+
+// Low latency - small buffers, no retry, fail-fast
+const config = logly.ParallelConfig.lowLatency();
+
+// Reliable - more retries, longer timeouts
+const config = logly.ParallelConfig.reliable();
+```
+
+### Sink Management
+
+```zig
+// Remove a sink by name
+writer.removeSink("console");
+
+// Disable a sink temporarily
+writer.setSinkEnabled("file", false);
+
+// Re-enable
+writer.setSinkEnabled("file", true);
+
+// Check if any sinks are enabled
+if (writer.hasEnabledSinks()) {
+    writer.write(data);
+}
+
+// Get sink count
+const count = writer.sinkCount();
+```
+
+### Parallel Write Statistics
+
+```zig
+const stats = writer.getStats();
+
+std.debug.print("Writes submitted: {d}\n", .{
+    stats.writes_submitted.load(.monotonic),
+});
+std.debug.print("Writes completed: {d}\n", .{
+    stats.writes_completed.load(.monotonic),
+});
+std.debug.print("Writes failed: {d}\n", .{
+    stats.writes_failed.load(.monotonic),
+});
+std.debug.print("Retries: {d}\n", .{
+    stats.retries.load(.monotonic),
+});
+std.debug.print("Bytes written: {d}\n", .{
+    stats.bytes_written.load(.monotonic),
+});
+std.debug.print("Success rate: {d:.2}%\n", .{
+    stats.successRate() * 100,
+});
 ```
 
 ## Statistics

@@ -15,7 +15,6 @@
 <a href="https://github.com/muhammad-fiaz/logly.zig/releases/latest"><img src="https://img.shields.io/github/v/release/muhammad-fiaz/logly.zig?label=Latest%20Release&style=flat-square" alt="Latest Release"></a>
 <a href="https://pay.muhammadfiaz.com"><img src="https://img.shields.io/badge/Sponsor-pay.muhammadfiaz.com-ff69b4?style=flat&logo=heart" alt="Sponsor"></a>
 <a href="https://github.com/sponsors/muhammad-fiaz"><img src="https://img.shields.io/badge/Sponsor-💖-pink?style=social&logo=github" alt="GitHub Sponsors"></a>
-<a href="https://github.com/muhammad-fiaz/logly.zig/releases"><img src="https://img.shields.io/github/downloads/muhammad-fiaz/logly.zig/total?label=Downloads&logo=github" alt="Downloads"></a>
 <a href="https://hits.sh/muhammad-fiaz/logly.zig/"><img src="https://hits.sh/muhammad-fiaz/logly.zig.svg?label=Visitors&extraCount=0&color=green" alt="Repo Visitors"></a>
 
 <p><em>A fast, high-performance structured logging library for Zig.</em></p>
@@ -40,7 +39,7 @@ A production-grade, high-performance structured logging library for Zig, designe
 
 | Feature | Description |
 |---------|-------------|
-| ✨ **Simple & Clean API** | Python-like logging interface (`logger.info()`, `logger.err()`, etc.) |
+| ✨ **Simple & Clean API** | User-friendly logging interface (`logger.info()`, `logger.err()`, etc.) |
 | 🎯 **10 Log Levels** | TRACE, DEBUG, INFO, NOTICE, SUCCESS, WARNING, ERROR, FAIL, CRITICAL, FATAL |
 | 🚀 **Custom Levels** | Define your own log levels with custom priorities and colors |
 | 📁 **Multiple Sinks** | Console, file, and custom outputs simultaneously |
@@ -146,6 +145,7 @@ Logly.Zig supports a wide range of platforms and architectures:
 - 🔧 **100+ Method Aliases**: Convenience shortcuts across all modules (Logger, Sink, Filter, Sampler, Metrics, etc.)
 - ⚡ **Production Presets**: Ready-to-use configurations for sampling, redaction (GDPR, API secrets), rotation, and scheduling
 - 📊 **Enhanced Metrics**: Error/drop rates, threshold checks, level-specific counts, uptime tracking
+- 🚀 **Enhanced Existing Features**: All features have been improved with added customization options
 - 🔗 **Rules Callbacks**: Full lifecycle hooks for rule evaluation and message attachment
 - 🛠️ **Sink Improvements**: `enable()`, `disable()`, `isEnabled()`, `clearBuffer()` methods
 
