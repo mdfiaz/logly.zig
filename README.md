@@ -153,7 +153,7 @@ Logly.Zig supports a wide range of platforms and architectures:
 **Documentation:**
 - Comprehensive installation guide with multiple methods
 - Updated API reference with complete alias tables
-- All docs updated to v0.0.9
+- All docs updated to v0.1.0
 
 > 📖 See the [full changelog](https://github.com/muhammad-fiaz/logly.zig/releases/tag/0.1.0) for details.
 
