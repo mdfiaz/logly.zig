@@ -9,6 +9,7 @@
 <a href="https://github.com/muhammad-fiaz/logly.zig"><img src="https://img.shields.io/github/last-commit/muhammad-fiaz/logly.zig" alt="GitHub last commit"></a>
 <a href="https://github.com/muhammad-fiaz/logly.zig"><img src="https://img.shields.io/github/license/muhammad-fiaz/logly.zig" alt="License"></a>
 <a href="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/ci.yml"><img src="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/docs.yml"><img src="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/docs.yml/badge.svg" alt="Deploy Docs"></a>
 <img src="https://img.shields.io/badge/platforms-linux%20%7C%20windows%20%7C%20macos-blue" alt="Supported Platforms">
 <a href="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/github-code-scanning/codeql/badge.svg" alt="CodeQL"></a>
 <a href="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/release.yml"><img src="https://github.com/muhammad-fiaz/logly.zig/actions/workflows/release.yml/badge.svg" alt="Release"></a>
