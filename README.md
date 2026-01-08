@@ -109,7 +109,8 @@ Before installing Logly, ensure you have the following:
 | **Operating System** | Windows 10+, Linux, macOS | Cross-platform support |
 | **Terminal** | Any modern terminal | For colored output support |
 
-> **Tip:** Verify your Zig installation by running `zig version` in your terminal.
+> [!TIP]
+> Verify your Zig installation by running `zig version` in your terminal.
 
 ---
 
@@ -216,7 +217,8 @@ Add to your `build.zig.zon`:
 ```
 
 
-> **Note:** Run `zig fetch --save <url>` to automatically get the correct hash, or run `zig build` and copy the expected hash from the error message.
+> [!NOTE]
+> Run `zig fetch --save <url>` to automatically get the correct hash, or run `zig build` and copy the expected hash from the error message.
 
 Then in your `build.zig`:
 
@@ -863,7 +865,8 @@ Logly.Zig is designed for high-performance logging with minimal overhead. Below 
 | **Minimum Throughput** | 15,963 ops/sec (JSON pretty) |
 | **Average Latency** | ~939 ns |
 
-> **Note:** Benchmark results may vary based on operating system, environment, Zig version, hardware specifications, and software configurations.
+> [!NOTE]
+> Benchmark results may vary based on operating system, environment, Zig version, hardware specifications, and software configurations.
 
 
 ### Reproducing the Benchmark Results
@@ -882,7 +885,7 @@ zig build -p zig-out
 .\zig-out\bin\benchmark.exe # Windows PowerShell
 ```
 
-> [!Notes]
+> [!NOTE]
 > The benchmark code uses a null output path (NUL on Windows, /dev/null on POSIX) during tests so console/file I/O does not bottleneck results; you can inspect [bench/benchmark.zig](bench/benchmark.zig) for details and tune `BENCHMARK_ITERATIONS`/`WARMUP_ITERATIONS` to extend runs.
 > The printed results include the benchmark name, operations per second, average latency (ns), and a short notes column indicating the operation. Results will vary by OS, Zig version, hardware, and environment.
 > for each latest release benchmark can be found in each [releases page](https://github.com/muhammad-fiaz/logly.zig/releases).
