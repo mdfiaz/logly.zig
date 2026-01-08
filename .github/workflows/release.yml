@@ -125,6 +125,10 @@ jobs:
           body: |
             ${{ github.event.release.body }}
 
+            ## 📃 Documentation
+
+            Full Documentations can be found at https://muhammad-fiaz.github.io/logly.zig/
+
             ## 📦 Installation
 
             ### Option A — Automatic (Recommended)
