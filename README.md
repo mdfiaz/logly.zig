@@ -58,6 +58,10 @@ A production-grade, high-performance structured logging library for Zig, designe
 | 🔗 **Context Binding** | Attach persistent key-value pairs to logs |
 | ⚡ **Async I/O** | Non-blocking writes with configurable buffering |
 | 🔒 **Thread-Safe** | Safe concurrent logging from multiple threads |
+| 🪩 **Distributed Logging** | Native distributed tracing with auto-propagation |
+| 🆔 **Trace Context** | W3C-compatible Trace ID, Span ID, and Parent ID support |
+| 🏷️ **Service Identity** | Auto-injection of Service Name, Version, Environment, and Region |
+| 🥡 **Baggage Support** | Propagation of custom baggage items across service boundaries |
 | 🎭 **Custom Levels** | Define your own log levels with custom priorities and colors |
 | 📦 **Module Levels** | Set different log levels for specific modules |
 | 🖨️ **Formatted Logging** | Printf-style formatting support (`infof`, `debugf`, etc.) |
@@ -138,24 +142,14 @@ Logly.Zig supports a wide range of platforms and architectures:
 
 ## Recent Changes
 
-### Version 0.1.0 🚀
+### Version 0.1.1 🚀
 
 **New Features:**
-- 🆕 **Log Levels**: `notice()` / `note()` and `fatal()` / `panic()` with formatted variants
-- 📃 **Rule-Based Messages**: Display predefined messages templates based on rules trigger
-- 🔧 **100+ Method Aliases**: Convenience shortcuts across all modules (Logger, Sink, Filter, Sampler, Metrics, etc.)
-- ⚡ **Production Presets**: Ready-to-use configurations for sampling, redaction (GDPR, API secrets), rotation, and scheduling
-- 📊 **Enhanced Metrics**: Error/drop rates, threshold checks, level-specific counts, uptime tracking
-- 🚀 **Enhanced Existing Features**: All features have been improved with added customization options
-- 🔗 **Rules Callbacks**: Full lifecycle hooks for rule evaluation and message attachment
-- 🛠️ **Sink Improvements**: `enable()`, `disable()`, `isEnabled()`, `clearBuffer()` methods
-
-**Documentation:**
-- Comprehensive installation guide with multiple methods
-- Updated API reference with complete alias tables
-- All docs updated to v0.1.0
-
-> 📖 See the [full changelog](https://github.com/muhammad-fiaz/logly.zig/releases/tag/0.1.0) for details.
+- 🔗 **Distributed Tracing**: Native support for Trace IDs, Span IDs, and Parent IDs.
+- 🌐 **Service Context**: Configure service name, environment, and region for distributed logs.
+- ⚡ **Performance**: Optimized string builders and allocation patterns.
+- 🧵 **Thread Pool Enhancements**: Improved work stealing and task scheduling.
+- 📃 **Rules System Template**: Improved rules formatting and display options.
 
 ---
 
@@ -167,7 +161,7 @@ Logly.Zig supports a wide range of platforms and architectures:
 The easiest way to add Logly to your project:
 
 ```bash
-zig fetch --save https://github.com/muhammad-fiaz/logly.zig/archive/refs/tags/0.1.0.tar.gz
+zig fetch --save https://github.com/muhammad-fiaz/logly.zig/archive/refs/tags/0.1.1.tar.gz
 ```
 This automatically adds the dependency with the correct hash to your `build.zig.zon`.
 
@@ -215,7 +209,7 @@ Add to your `build.zig.zon`:
 ```zig
 .dependencies = .{
     .logly = .{
-        .url = "https://github.com/muhammad-fiaz/logly.zig/archive/refs/tags/0.1.0.tar.gz",
+        .url = "https://github.com/muhammad-fiaz/logly.zig/archive/refs/tags/0.1.1.tar.gz",
         .hash = "...", // you needed to add hash here :)
     },
 },
