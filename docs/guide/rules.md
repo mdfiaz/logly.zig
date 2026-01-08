@@ -76,19 +76,24 @@ try logger.err("Database connection timeout", @src());
 
 Rules support multiple message categories, each with distinct styling:
 
-| Category | Symbol | Purpose |
-|----------|--------|---------|
-| `error_analysis` (cause) | ⦿ | Root cause analysis |
-| `solution_suggestion` (fix) | ✦ | How to fix the issue |
-| `best_practice` (suggest) | → | Improvement suggestions |
-| `action_required` (action) | ▸ | Required immediate actions |
-| `documentation_link` (docs) | 📖 | Links to documentation |
-| `bug_report` (report) | 🔗 | Issue tracker links |
-| `general_information` (note) | ℹ | Additional context |
-| `warning_explanation` (caution) | ⚠ | Warning details |
-| `performance_tip` (perf) | ⚡ | Performance advice |
-| `security_notice` (security) | 🛡 | Security notifications |
-| `custom` | • | User-defined style |
+| Category | Symbol (Default) | Purpose |
+|----------|------------------|---------|
+| `error_analysis` (cause) | `>> [ERROR]` | Root cause analysis |
+| `solution_suggestion` (fix) | `>> [FIX]` | How to fix the issue |
+| `performance_hint` (perf) | `>> [PERF]` | Performance advice |
+| `security_alert` (security) | `>> [SEC]` | Security notifications |
+| `deprecation_warning` (dep) | `>> [DEP]` | Deprecation notices |
+| `best_practice` (suggest) | `>> [HINT]` | Improvement suggestions |
+| `accessibility` (a11y) | `>> [A11Y]` | Accessibility tips |
+| `documentation` (docs) | `>> [DOC]` | Links to documentation |
+| `action_required` (action) | `>> [ACTION]` | Required immediate actions |
+| `bug_report` (report) | `>> [BUG]` | Issue tracker links |
+| `general_information` (info) | `>> [INFO]` | Additional context |
+| `warning_explanation` (warn) | `>> [WARN]` | Warning details |
+| `custom` | `>>` | User-defined style |
+
+> [!NOTE]
+> The symbols shown above is the default configuration. You can customize these in `Config.RuleSymbols`.
 
 ### Creating Messages
 

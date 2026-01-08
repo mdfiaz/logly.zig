@@ -369,6 +369,10 @@ Customizable symbols for rule message categories. Defaults are ASCII-compatible.
 - `best_practice`: Default `">> [HINT]"`
 - `accessibility`: Default `">> [A11Y]"`
 - `documentation`: Default `">> [DOC]"`
+- `action_required`: Default `">> [ACTION]"`
+- `bug_report`: Default `">> [BUG]"`
+- `general_information`: Default `">> [INFO]"`
+- `warning_explanation`: Default `">> [WARN]"`
 - `default`: Default `">>"`
 
 #### `thread_pool: ThreadPoolConfig`
