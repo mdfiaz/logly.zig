@@ -22,6 +22,7 @@ The easiest way to install Logly-Zig is using the `zig fetch` command:
 
 ```bash
     zig fetch --save https://github.com/muhammad-fiaz/logly.zig/archive/refs/tags/0.1.1.tar.gz
+```
 
 **Or for Nightly/PreRelease:**
 
