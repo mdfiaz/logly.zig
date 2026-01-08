@@ -899,7 +899,7 @@ pub const Config = struct {
         builtin_rules_enabled: bool = true,
 
         /// Use Unicode symbols in output (set to false for ASCII-only terminals).
-        use_unicode: bool = false,
+        use_unicode: bool = true,
 
         /// Enable ANSI colors in rule message output.
         enable_colors: bool = true,

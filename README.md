@@ -415,6 +415,24 @@ _ = try logger.addSink(.{
 });
 ```
 
+### Service Identity
+
+Configure global service metadata for distributed environments:
+
+```zig
+var config = logly.Config.default();
+config.distributed = .{
+    .enabled = true,
+    .service_name = "payment-service",
+    .service_version = "1.2.0",
+    .environment = "production",
+    .region = "us-west-2",
+    .instance_id = "pod-123",
+};
+logger.configure(config);
+// Logs will now include service identity fields automatically
+```
+
 ### Distributed Tracing
 
 ```zig
@@ -864,9 +882,10 @@ zig build -p zig-out
 .\zig-out\bin\benchmark.exe # Windows PowerShell
 ```
 
-Notes:
-- The benchmark code uses a null output path (NUL on Windows, /dev/null on POSIX) during tests so console/file I/O does not bottleneck results; you can inspect [bench/benchmark.zig](bench/benchmark.zig) for details and tune `BENCHMARK_ITERATIONS`/`WARMUP_ITERATIONS` to extend runs.
-- The printed results include the benchmark name, operations per second, average latency (ns), and a short notes column indicating the operation. Results will vary by OS, Zig version, hardware, and environment.
+> [!Notes]
+> The benchmark code uses a null output path (NUL on Windows, /dev/null on POSIX) during tests so console/file I/O does not bottleneck results; you can inspect [bench/benchmark.zig](bench/benchmark.zig) for details and tune `BENCHMARK_ITERATIONS`/`WARMUP_ITERATIONS` to extend runs.
+> The printed results include the benchmark name, operations per second, average latency (ns), and a short notes column indicating the operation. Results will vary by OS, Zig version, hardware, and environment.
+> for each latest release benchmark can be found in each [releases page](https://github.com/muhammad-fiaz/logly.zig/releases).
 
 
 ### Performance Notes
