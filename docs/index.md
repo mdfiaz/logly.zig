@@ -98,11 +98,11 @@ features:
     title: Thread-Safe
     details: Safe concurrent logging with mutex protection
 
-  - icon: �
+  - icon: 🐍
     title: Distributed Tracing
     details: Trace ID, Span ID, and service context propagation for microservices
   
-  - icon: �📁
+  - icon: 📁
     title: Multiple Sinks
     details: Log to console, files, or custom destinations simultaneously
 
