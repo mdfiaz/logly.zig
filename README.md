@@ -19,7 +19,7 @@
 
 <p><em>A fast, high-performance structured logging library for Zig.</em></p>
 
-<b>📚 <a href="https://muhammad-fiaz.github.io/logly.zig/">Documentation</a> |
+<b><a href="https://muhammad-fiaz.github.io/logly.zig/">Documentation</a> |
 <a href="https://muhammad-fiaz.github.io/logly.zig/api/logger">API Reference</a> |
 <a href="https://muhammad-fiaz.github.io/logly.zig/guide/quick-start">Quick Start</a> |
 <a href="CONTRIBUTING.md">Contributing</a></b>
@@ -29,73 +29,75 @@
 
 A production-grade, high-performance structured logging library for Zig, designed with a clean, intuitive, and developer-friendly API.
 
+> [!NOTE]
+> This Project aims to be production ready, while it is relatively new project you can find some interesting features which may simplify your zig project logging.
 
 **⭐️ If you love `logly.zig`, make sure to give it a star! ⭐️**
 
 ---
 
 <details>
-<summary><strong>✨ Features of Logly</strong> (click to expand)</summary>
+<summary><strong>Features of Logly</strong> (click to expand)</summary>
 
-| Feature | Description |
-|---------|-------------|
-| ✨ **Simple & Clean API** | User-friendly logging interface (`logger.info()`, `logger.err()`, etc.) |
-| 🎯 **10 Log Levels** | TRACE, DEBUG, INFO, NOTICE, SUCCESS, WARNING, ERROR, FAIL, CRITICAL, FATAL |
-| 🚀 **Custom Levels** | Define your own log levels with custom priorities and colors |
-| 📁 **Multiple Sinks** | Console, file, and custom outputs simultaneously |
-| 🔄 **File Rotation** | Time-based (hourly to yearly) and size-based rotation |
-| 🎨 **Whole-Line Colors** | ANSI colors wrap entire log lines for better visual scanning |
-| 📊 **JSON Logging** | Structured JSON output with valid array format for file storage |
-| 📝 **Custom Formats** | Customizable log message and timestamp formats |
-| 🌐 **Network Logging** | Send logs over TCP/UDP with JSON support and automatic reconnection |
-| 🐛 **Stack Traces** | Automatic stack trace capture for errors and critical logs |
-| 📦 **Compression** | Built-in support for GZIP, ZLIB, and DEFLATE compression |
-| 📈 **Metrics** | Track logger performance, throughput, and error rates |
-| 🩺 **System Diagnostics** | Emit OS/CPU/memory (and drives) on startup or on-demand |
-| 🔍 **Scoped Logging** | Create child loggers with bound context that persists across calls |
-| 🛡️ **Redaction** | Automatically mask sensitive data like passwords and API keys |
-| 🔄 **Update Checker** | Automatically check for new versions of Logly |
-| 🔗 **Context Binding** | Attach persistent key-value pairs to logs |
-| ⚡ **Async I/O** | Non-blocking writes with configurable buffering |
-| 🔒 **Thread-Safe** | Safe concurrent logging from multiple threads |
-| 🪩 **Distributed Logging** | Native distributed tracing with auto-propagation |
-| 🆔 **Trace Context** | W3C-compatible Trace ID, Span ID, and Parent ID support |
-| 🏷️ **Service Identity** | Auto-injection of Service Name, Version, Environment, and Region |
-| 🥡 **Baggage Support** | Propagation of custom baggage items across service boundaries |
-| 🎭 **Custom Levels** | Define your own log levels with custom priorities and colors |
-| 📦 **Module Levels** | Set different log levels for specific modules |
-| 🖨️ **Formatted Logging** | Printf-style formatting support (`infof`, `debugf`, etc.) |
-| 📞 **Callbacks** | Monitor and react to log events programmatically |
-| 🖥️ **Cross-Platform Colors** | Works on Linux, macOS, Windows 10+, and popular terminals |
-| 🔍 **Filtering** | Rule-based log filtering by level, module, or content |
-| 🪪 **Per-Sink Filtering** | Configure filters on each sink in addition to global logger filters |
-| 🏗️ **Arena Allocation** | Optional arena allocator for reduced allocation overhead in high-throughput scenarios |
-| 📍 **Source Location** | Optional clickable `file:line` output via `@src()` when `show_filename`/`show_lineno` are enabled |
-| 🔧 **Method Aliases** | Convenience aliases for common APIs e.g., `add()` / `remove()` for sink management, `warn()` / `crit()` for logging |
-| 📉 **Sampling** | Control log throughput with probability and rate-limiting |
-| 🔐 **Redaction** | Automatic masking of sensitive data (PII, credentials) |
-| 📈 **Metrics** | Built-in observability with log counters and statistics |
-| 🔗 **Distributed Tracing** | Trace ID, span ID, and correlation ID support |
-| ⚙️ **Configuration Presets** | Production, development, high-throughput, and secure presets |
-| 🗜️ **Compression** | Automatic and manual log compression (deflate, gzip, lz4, zstd) |
-| 🔄 **Async Logger** | Ring buffer-based async logging with background workers |
-| 🧵 **Thread Pool** | Parallel log processing with work stealing |
-| ⏰ **Scheduler** | Automatic log cleanup, compression, and maintenance |
-| 🖥️ **System Diagnostics** | Automatic OS, CPU, memory, and drive information collection |
-| 🌐 **Network Logging** | Send logs via TCP/UDP with JSON support and compression |
-| 🎨 **Custom Themes** | Define custom color themes for log levels |
-| 🔐 **Advanced Redaction** | Custom patterns and callbacks for sensitive data |
-| 🔗 **Persistent Context** | Scoped loggers with persistent fields via `logger.with()` |
-| 🔍 **Advanced Filtering** | Fluent API for complex filter rules |
-| 🎛️ **Configuration Modes** | Log-only, display-only, and custom display/storage modes |
-| 📋 **Rule-based Templates** | Diagnostic message templates with cause, fix, and documentation links |
+| Feature | Description | Documentation |
+|---------|-------------|---------------|
+| **Simple & Clean API** | User-friendly logging interface (`logger.info()`, `logger.err()`, etc.) | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/getting-started) |
+| **10 Log Levels** | TRACE, DEBUG, INFO, NOTICE, SUCCESS, WARNING, ERROR, FAIL, CRITICAL, FATAL | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/log-levels) |
+| **Custom Levels** | Define your own log levels with custom priorities and colors | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/custom-levels) |
+| **Multiple Sinks** | Console, file, and custom outputs simultaneously | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/sinks) |
+| **File Rotation** | Time-based (hourly to yearly) and size-based rotation | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/rotation) |
+| **Whole-Line Colors** | ANSI colors wrap entire log lines for better visual scanning | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/colors) |
+| **JSON Logging** | Structured JSON output with valid array format for file storage | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/json) |
+| **Custom Formats** | Customizable log message and timestamp formats | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/formatting) |
+| **Network Logging** | Send logs over TCP/UDP with JSON support and automatic reconnection | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/network-logging) |
+| **Stack Traces** | Automatic stack trace capture for errors and critical logs | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/stack-traces) |
+| **Compression** | Built-in support for GZIP, ZLIB, and DEFLATE compression | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/compression) |
+| **Metrics** | Track logger performance, throughput, and error rates | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/metrics) |
+| **System Diagnostics** | Emit OS/CPU/memory (and drives) on startup or on-demand | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/diagnostics) |
+| **Scoped Logging** | Create child loggers with bound context that persists across calls | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/context) |
+| **Redaction** | Automatically mask sensitive data like passwords and API keys | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/redaction) |
+| **Update Checker** | Automatically check for new versions of Logly | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/update-checker) |
+| **Context Binding** | Attach persistent key-value pairs to logs | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/context) |
+| **Async I/O** | Non-blocking writes with configurable buffering | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/async) |
+| **Thread-Safe** | Safe concurrent logging from multiple threads | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/introduction) |
+| **Distributed Logging** | Native distributed tracing with auto-propagation | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/distributed) |
+| **Trace Context** | W3C-compatible Trace ID, Span ID, and Parent ID support | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/tracing) |
+| **Service Identity** | Auto-injection of Service Name, Version, Environment, and Region | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/distributed) |
+| **Baggage Support** | Propagation of custom baggage items across service boundaries | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/tracing) |
+| **Custom Levels** | Define your own log levels with custom priorities and colors | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/custom-levels) |
+| **Module Levels** | Set different log levels for specific modules | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/filtering) |
+| **Formatted Logging** | Printf-style formatting support (`infof`, `debugf`, etc.) | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/formatting) |
+| **Callbacks** | Monitor and react to log events programmatically | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/callbacks) |
+| **Cross-Platform Colors** | Works on Linux, macOS, Windows 10+, and popular terminals | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/colors) |
+| **Filtering** | Rule-based log filtering by level, module, or content | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/filtering) |
+| **Per-Sink Filtering** | Configure filters on each sink in addition to global logger filters | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/sinks) |
+| **Arena Allocation** | Optional arena allocator for reduced allocation overhead in high-throughput scenarios | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/arena-allocation) |
+| **Source Location** | Optional clickable `file:line` output via `@src()` when `show_filename`/`show_lineno` are enabled | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/source-location) |
+| **Method Aliases** | Convenience aliases for common APIs e.g., `add()` / `remove()` for sink management, `warn()` / `crit()` for logging | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/introduction) |
+| **Sampling** | Control log throughput with probability and rate-limiting | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/sampling) |
+| **Redaction** | Automatic masking of sensitive data (PII, credentials) | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/redaction) |
+| **Metrics** | Built-in observability with log counters and statistics | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/metrics) |
+| **Distributed Tracing** | Trace ID, span ID, and correlation ID support | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/tracing) |
+| **Configuration Presets** | Production, development, high-throughput, and secure presets | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/configuration) |
+| **Compression** | Automatic and manual log compression (deflate, gzip, lz4, zstd) | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/compression) |
+| **Async Logger** | Ring buffer-based async logging with background workers | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/async) |
+| **Thread Pool** | Parallel log processing with work stealing | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/thread-pool) |
+| **Scheduler** | Automatic log cleanup, compression, and maintenance | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/scheduler) |
+| **System Diagnostics** | Automatic OS, CPU, memory, and drive information collection | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/diagnostics) |
+| **Network Logging** | Send logs via TCP/UDP with JSON support and compression | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/network-logging) |
+| **Custom Themes** | Define custom color themes for log levels | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/colors) |
+| **Advanced Redaction** | Custom patterns and callbacks for sensitive data | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/redaction) |
+| **Persistent Context** | Scoped loggers with persistent fields via `logger.with()` | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/context) |
+| **Advanced Filtering** | Fluent API for complex filter rules | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/filtering) |
+| **Configuration Modes** | Log-only, display-only, and custom display/storage modes | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/configuration) |
+| **Rule-based Templates** | Diagnostic message templates with cause, fix, and documentation links | [Docs](https://muhammad-fiaz.github.io/logly.zig/guide/rules) |
 
 </details>
 
 ----
 
 <details>
-<summary><strong>📌 Prerequisites & Supported Platforms</strong> (click to expand)</summary>
+<summary><strong>Prerequisites & Supported Platforms</strong> (click to expand)</summary>
 
 <br>
 
@@ -120,10 +122,10 @@ Logly.Zig supports a wide range of platforms and architectures:
 
 | Platform | Architectures | Status |
 |----------|---------------|--------|
-| **Windows** | x86_64, x86 | ✅ Full support |
-| **Linux** | x86_64, x86, aarch64 | ✅ Full support |
-| **macOS** | x86_64, aarch64 (Apple Silicon) | ✅ Full support |
-| **Bare Metal / Freestanding** | x86_64, aarch64, arm, riscv64 | ✅ Full support |
+| **Windows** | x86_64, x86 | Full support |
+| **Linux** | x86_64, x86, aarch64 | Full support |
+| **macOS** | x86_64, aarch64 (Apple Silicon) | Full support |
+| **Bare Metal / Freestanding** | x86_64, aarch64, arm, riscv64 | Full support |
 
 ---
 
@@ -131,11 +133,11 @@ Logly.Zig supports a wide range of platforms and architectures:
 
 | Terminal | Platform | Support |
 |----------|----------|---------|
-| **Windows Terminal** | Windows 10+ | ✅ Native ANSI |
-| **cmd.exe** | Windows 10+ | ⚠️ Requires `enableAnsiColors()` |
-| **iTerm2, Terminal.app** | macOS | ✅ Native |
-| **GNOME Terminal, Konsole** | Linux | ✅ Native |
-| **VS Code Terminal** | All | ✅ Native |
+| **Windows Terminal** | Windows 10+ | Native ANSI |
+| **cmd.exe** | Windows 10+ | Requires `enableAnsiColors()` |
+| **iTerm2, Terminal.app** | macOS | Native |
+| **GNOME Terminal, Konsole** | Linux | Native |
+| **VS Code Terminal** | All | Native |
 
 </details>
 
@@ -143,14 +145,14 @@ Logly.Zig supports a wide range of platforms and architectures:
 
 ## Recent Changes
 
-### Version 0.1.1 🚀
+### Version 0.1.1
 
 **New Features:**
-- 🔗 **Distributed Tracing**: Native support for Trace IDs, Span IDs, and Parent IDs.
-- 🌐 **Service Context**: Configure service name, environment, and region for distributed logs.
-- ⚡ **Performance**: Optimized string builders and allocation patterns.
-- 🧵 **Thread Pool Enhancements**: Improved work stealing and task scheduling.
-- 📃 **Rules System Template**: Improved rules formatting and display options.
+- **Distributed Tracing**: Native support for Trace IDs, Span IDs, and Parent IDs.
+- **Service Context**: Configure service name, environment, and region for distributed logs.
+- **Performance**: Optimized string builders and allocation patterns.
+- **Thread Pool Enhancements**: Improved work stealing and task scheduling.
+- **Rules System Template**: Improved rules formatting and display options.
 
 ---
 
@@ -181,7 +183,7 @@ This automatically adds the dependency with the correct hash to your `build.zig.
 
 Get started quickly with a pre-configured project template:
 
-📦 **[Download Project Starter Example](https://download-directory.github.io/?url=https://github.com/muhammad-fiaz/logly.zig/tree/main/project-starter-example
+**[Download Project Starter Example](https://download-directory.github.io/?url=https://github.com/muhammad-fiaz/logly.zig/tree/main/project-starter-example
 )**
 
 Or clone directly:
@@ -196,11 +198,11 @@ zig build run
 ```
 
 The starter template includes:
-- ✅ Pre-configured `build.zig` and `build.zig.zon`
-- ✅ Example code demonstrating all major features
-- ✅ Multiple sink configurations (console, file, rotation)
-- ✅ Context binding and custom log levels
-- ✅ JSON logging examples
+- Pre-configured `build.zig` and `build.zig.zon`
+- Example code demonstrating all major features
+- Multiple sink configurations (console, file, rotation)
+- Context binding and custom log levels
+- JSON logging examples
 
 
 ### Method 3: Manual Configuration
@@ -240,7 +242,7 @@ cd logly.zig
 zig build
 ```
 
-### 📦 Prebuilt Library
+### Prebuilt Library
 
 While we recommend using the Zig Package Manager, we also provide prebuilt static libraries for each release on the [Releases](https://github.com/muhammad-fiaz/logly.zig/releases) page. These can be useful for integration with other build systems or languages.
 
@@ -903,12 +905,13 @@ zig build -p zig-out
 
 ### Performance Notes
 
-- **JSON logging** is fastest due to simpler string concatenation
-- **Color overhead** is minimal (~2-3% performance impact)
-- **Formatted logging** (`infof`, `debugf`, etc.) adds ~10% overhead vs simple strings
-- **Full metadata** (file, line, function) adds ~15% overhead
-- All benchmarks use `ReleaseFast` optimization
-- Results measured on Windows with output to NUL device
+> [!NOTE]
+> - **JSON logging** is fastest due to simpler string concatenation
+> - **Color overhead** is minimal (~2-3% performance impact)
+> - **Formatted logging** (`infof`, `debugf`, etc.) adds ~10% overhead vs simple strings
+> - **Full metadata** (file, line, function) adds ~15% overhead
+> - All benchmarks use `ReleaseFast` optimization
+> - Results measured on Windows with output to NUL device
 
 ## Building
 
