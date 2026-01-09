@@ -39,7 +39,7 @@ pub fn main() !void {
     // 3. Advanced Redaction
     // Logger has setRedactor.
     var redactor = logly.Redactor.init(allocator);
-    // defer redactor.deinit(); 
+    // defer redactor.deinit();
     // Logger does not take ownership of the thread pool.
 
     try redactor.addPattern("secret", .contains, "secret", "[HIDDEN]");
