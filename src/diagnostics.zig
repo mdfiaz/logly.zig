@@ -288,8 +288,8 @@ fn collectLinuxDrives(allocator: std.mem.Allocator, list: *std.ArrayList(DriveIn
             defer allocator.free(mount_point_c);
 
             if (statvfs_fn(mount_point_c, &stat) == 0) {
-                const total = @as(u64, stat.f_blocks) * @as(u64, stat.f_frsize);
-                const free = @as(u64, stat.f_bavail) * @as(u64, stat.f_frsize); // bavail is for non-privileged
+                const total = std.math.mul(u64, @as(u64, stat.f_blocks), @as(u64, stat.f_frsize)) catch std.math.maxInt(u64);
+                const free = std.math.mul(u64, @as(u64, stat.f_bavail), @as(u64, stat.f_frsize)) catch std.math.maxInt(u64); // bavail is for non-privileged
 
                 const name = try allocator.dupe(u8, mount_point);
                 try list.append(allocator, .{ .name = name, .total_bytes = total, .free_bytes = free });
@@ -333,8 +333,8 @@ fn collectMacDrives(allocator: std.mem.Allocator, list: *std.ArrayList(DriveInfo
     var i: usize = 0;
     while (i < num_mounts) : (i += 1) {
         const mnt = mounts[i];
-        const total = mnt.f_blocks * mnt.f_bsize;
-        const free = mnt.f_bavail * mnt.f_bsize;
+        const total = std.math.mul(u64, mnt.f_blocks, @as(u64, mnt.f_bsize)) catch std.math.maxInt(u64);
+        const free = std.math.mul(u64, mnt.f_bavail, @as(u64, mnt.f_bsize)) catch std.math.maxInt(u64);
 
         if (total == 0) continue;
 
