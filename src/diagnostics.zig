@@ -286,9 +286,10 @@ fn collectLinuxDrives(allocator: std.mem.Allocator, list: *std.ArrayList(DriveIn
                 __f_spare: [32]c_int, // Extra padding to be safe against libc struct size variations
             };
 
-            // Bind explicitly to statvfs64 to ensure we use the version with 64-bit counters.
-            // On 32-bit systems, standard "statvfs" uses 32-bit counters which would mismatch our struct.
-            const statvfs_fn = @extern(*const fn ([*:0]const u8, *StatVfs) callconv(.c) c_int, .{ .name = "statvfs64" });
+            // Bind to statvfs.
+            // On Musl (used by Zig for static Linux binaries), statvfs is 64-bit capable (LFS).
+            // We kept the large struct padding to ensure safety against strict size/alignment differences.
+            const statvfs_fn = @extern(*const fn ([*:0]const u8, *StatVfs) callconv(.c) c_int, .{ .name = "statvfs" });
 
             var stat: StatVfs = undefined;
             const mount_point_c = try allocator.dupeZ(u8, mount_point);
