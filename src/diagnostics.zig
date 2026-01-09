@@ -156,13 +156,11 @@ pub fn collect(allocator: std.mem.Allocator, include_drives: bool) !Diagnostics 
     if (builtin.os.tag != .windows) {
         // POSIX systems (Linux, macOS, BSD) usually support getrusage
         if (@hasDecl(std.posix, "getrusage") and @hasDecl(std.posix, "rusage")) {
-            var ru: std.posix.rusage = undefined;
             // RUSAGE.SELF might be integer or enum depending on version/OS
-            // Using standard value 0 (RUSAGE_SELF) if not strictly typed,
-            // but std.posix.RUSAGE.SELF should exist.
-            if (std.posix.getrusage(std.posix.RUSAGE.SELF, &ru) catch null) |_| {
-                rusage_stat = ru;
-            }
+            // std.posix.getrusage returns the struct directly in some Zig versions
+            // Use std.c.RUSAGE.SELF or fallback to 0 (RUSAGE_SELF)
+            const who: i32 = if (@hasDecl(std.c, "RUSAGE")) @intFromEnum(std.c.RUSAGE.SELF) else 0;
+            rusage_stat = std.posix.getrusage(who);
         }
     }
 
@@ -267,9 +265,29 @@ fn collectLinuxDrives(allocator: std.mem.Allocator, list: *std.ArrayList(DriveIn
 
         // Filter for physical processing
         if (std.mem.startsWith(u8, device, "/dev/") and !std.mem.eql(u8, fs_type, "tmpfs")) {
-            // Get stats
-            var stat: std.c.statvfs = undefined;
-            if (std.posix.statvfs(mount_point, &stat) catch null) |_| {
+            // Get stats using manual extern definition to avoid std lib version issues
+            const StatVfs = extern struct {
+                f_bsize: c_ulong,
+                f_frsize: c_ulong,
+                f_blocks: u64,
+                f_bfree: u64,
+                f_bavail: u64,
+                f_files: u64,
+                f_ffree: u64,
+                f_favail: u64,
+                f_fsid: c_ulong,
+                f_flag: c_ulong,
+                f_namemax: c_ulong,
+                __f_spare: [6]c_int,
+            };
+
+            const statvfs_fn = @extern(*const fn ([*:0]const u8, *StatVfs) callconv(.c) c_int, .{ .name = "statvfs" });
+
+            var stat: StatVfs = undefined;
+            const mount_point_c = try allocator.dupeZ(u8, mount_point);
+            defer allocator.free(mount_point_c);
+
+            if (statvfs_fn(mount_point_c, &stat) == 0) {
                 const total = @as(u64, stat.f_blocks) * @as(u64, stat.f_frsize);
                 const free = @as(u64, stat.f_bavail) * @as(u64, stat.f_frsize); // bavail is for non-privileged
 
