@@ -164,7 +164,6 @@ Before installing Logly, ensure you have the following:
 | **Operating System** | Windows 10+, Linux, macOS | Cross-platform support |
 | **Terminal** | Any modern terminal | For colored output support |
 
-> [!NOTE]
 > Verify your Zig installation by running `zig version` in your terminal.
 
 ---
