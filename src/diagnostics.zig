@@ -268,7 +268,7 @@ fn collectLinuxDrives(allocator: std.mem.Allocator, list: *std.ArrayList(DriveIn
         // Filter for physical processing
         if (std.mem.startsWith(u8, device, "/dev/") and !std.mem.eql(u8, fs_type, "tmpfs")) {
             // Get stats
-            var stat: std.posix.StatVfs = undefined;
+            var stat: std.c.statvfs = undefined;
             if (std.posix.statvfs(mount_point, &stat) catch null) |_| {
                 const total = @as(u64, stat.f_blocks) * @as(u64, stat.f_frsize);
                 const free = @as(u64, stat.f_bavail) * @as(u64, stat.f_frsize); // bavail is for non-privileged
