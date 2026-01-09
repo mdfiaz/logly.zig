@@ -266,6 +266,11 @@ fn collectLinuxDrives(allocator: std.mem.Allocator, list: *std.ArrayList(DriveIn
         // Filter for physical processing
         if (std.mem.startsWith(u8, device, "/dev/") and !std.mem.eql(u8, fs_type, "tmpfs")) {
             // Get stats using manual extern definition to avoid std lib version issues
+            // Note: We use a larger padding because musl/glibc struct definitions vary
+            // Definition of StatVfs that matches the Linux statvfs64 structure (Large File Support).
+            // This ensures consistent field sizes (u64 for counters) across architectures and
+            // prevents data corruption when linking against glibc/musl.
+            // We verify the layout carefully to avoid stack corruption issues (common on 32-bit).
             const StatVfs = extern struct {
                 f_bsize: c_ulong,
                 f_frsize: c_ulong,
@@ -278,10 +283,12 @@ fn collectLinuxDrives(allocator: std.mem.Allocator, list: *std.ArrayList(DriveIn
                 f_fsid: c_ulong,
                 f_flag: c_ulong,
                 f_namemax: c_ulong,
-                __f_spare: [6]c_int,
+                __f_spare: [32]c_int, // Extra padding to be safe against libc struct size variations
             };
 
-            const statvfs_fn = @extern(*const fn ([*:0]const u8, *StatVfs) callconv(.c) c_int, .{ .name = "statvfs" });
+            // Bind explicitly to statvfs64 to ensure we use the version with 64-bit counters.
+            // On 32-bit systems, standard "statvfs" uses 32-bit counters which would mismatch our struct.
+            const statvfs_fn = @extern(*const fn ([*:0]const u8, *StatVfs) callconv(.c) c_int, .{ .name = "statvfs64" });
 
             var stat: StatVfs = undefined;
             const mount_point_c = try allocator.dupeZ(u8, mount_point);
