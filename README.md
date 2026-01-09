@@ -37,6 +37,59 @@ A production-grade, high-performance structured logging library for Zig, designe
 ---
 
 <details>
+<summary><strong>Table of Contents</strong> (click to expand)</summary>
+
+- [Prerequisites](#prerequisites)
+- [Supported Platforms](#supported-platforms)
+  - [Color Support](#color-support)
+- [Recent Changes](#recent-changes)
+  - [Version 0.1.1](#version-011)
+- [Installation](#installation)
+  - [Method 1: Zig Fetch (Recommended)](#method-1-zig-fetch-recommended)
+  - [Method 2: Project Starter Template (Quick Start)](#method-2-project-starter-template-quick-start)
+  - [Method 3: Manual Configuration](#method-3-manual-configuration)
+  - [Method 4: Building from Source](#method-4-building-from-source)
+  - [Prebuilt Library](#prebuilt-library)
+- [Quick Start](#quick-start)
+- [Usage Examples](#usage-examples)
+  - [File Logging](#file-logging)
+  - [File Rotation](#file-rotation)
+  - [JSON Logging](#json-logging)
+  - [Context Binding](#context-binding)
+  - [Callbacks](#callbacks)
+  - [Custom Log Levels](#custom-log-levels)
+  - [Multiple Sinks](#multiple-sinks)
+  - [Service Identity](#service-identity)
+  - [Distributed Tracing](#distributed-tracing)
+  - [Filtering](#filtering)
+  - [Sampling](#sampling)
+  - [Redaction](#redaction)
+  - [Metrics](#metrics)
+  - [Log-Only and Display-Only Modes](#log-only-and-display-only-modes)
+  - [Production Configuration](#production-configuration)
+- [Configuration](#configuration)
+  - [Module Configuration](#module-configuration)
+- [Log Levels](#log-levels)
+  - [Sink Management Aliases](#sink-management-aliases)
+- [Rotation Intervals](#rotation-intervals)
+- [Performance \& Benchmarks](#performance--benchmarks)
+  - [Benchmark Results](#benchmark-results)
+  - [Summary](#summary)
+  - [Reproducing the Benchmark Results](#reproducing-the-benchmark-results)
+    - [Performance Notes](#performance-notes)
+- [Building](#building)
+- [Documentation](#documentation)
+  - [Online Documentation](#online-documentation)
+  - [Generating Local Documentation](#generating-local-documentation)
+- [Contributing](#contributing)
+- [License](#license)
+- [Links](#links)
+
+</details>
+
+----
+
+<details>
 <summary><strong>Features of Logly</strong> (click to expand)</summary>
 
 | Feature | Description | Documentation |
@@ -111,7 +164,7 @@ Before installing Logly, ensure you have the following:
 | **Operating System** | Windows 10+, Linux, macOS | Cross-platform support |
 | **Terminal** | Any modern terminal | For colored output support |
 
-> [!TIP]
+> [!NOTE]
 > Verify your Zig installation by running `zig version` in your terminal.
 
 ---
@@ -197,12 +250,13 @@ cd project-starter-example
 zig build run
 ```
 
-The starter template includes:
-- Pre-configured `build.zig` and `build.zig.zon`
-- Example code demonstrating all major features
-- Multiple sink configurations (console, file, rotation)
-- Context binding and custom log levels
-- JSON logging examples
+> [!NOTE]
+> **The starter template includes:**
+> - Pre-configured `build.zig` and `build.zig.zon`
+> - Example code demonstrating all major features
+> - Multiple sink configurations (console, file, rotation)
+> - Context binding and custom log levels
+> - JSON logging examples
 
 
 ### Method 3: Manual Configuration
@@ -244,12 +298,13 @@ zig build
 
 ### Prebuilt Library
 
-While we recommend using the Zig Package Manager, we also provide prebuilt static libraries for each release on the [Releases](https://github.com/muhammad-fiaz/logly.zig/releases) page. These can be useful for integration with other build systems or languages.
-
-- **Windows**: `logly-x86_64-windows.lib`, `logly-x86-windows.lib`
-- **Linux**: `liblogly-x86_64-linux.a`, `liblogly-x86-linux.a`, `liblogly-aarch64-linux.a`
-- **macOS**: `liblogly-x86_64-macos.a`, `liblogly-aarch64-macos.a`
-- **Bare Metal**: `liblogly-x86_64-freestanding.a`, `liblogly-aarch64-freestanding.a`, `liblogly-riscv64-freestanding.a`, `liblogly-arm-freestanding.a`
+> [!NOTE]
+> While we recommend using the Zig Package Manager, we also provide prebuilt static libraries for each release on the [Releases](https://github.com/muhammad-fiaz/logly.zig/releases) page. These can be useful for integration with other build systems or languages.
+>
+> - **Windows**: `logly-x86_64-windows.lib`, `logly-x86-windows.lib`
+> - **Linux**: `liblogly-x86_64-linux.a`, `liblogly-x86-linux.a`, `liblogly-aarch64-linux.a`
+> - **macOS**: `liblogly-x86_64-macos.a`, `liblogly-aarch64-macos.a`
+> - **Bare Metal**: `liblogly-x86_64-freestanding.a`, `liblogly-aarch64-freestanding.a`, `liblogly-riscv64-freestanding.a`, `liblogly-arm-freestanding.a`
 
 To use them, link against the static library in your build process.
 
@@ -903,7 +958,7 @@ zig build -p zig-out
 > for each latest release benchmark can be found in each [releases page](https://github.com/muhammad-fiaz/logly.zig/releases).
 
 
-### Performance Notes
+#### Performance Notes
 
 > [!NOTE]
 > - **JSON logging** is fastest due to simpler string concatenation

@@ -33,6 +33,8 @@ export default defineConfig({
   },
 
   head: [
+    ["meta", { name: "viewport", content: "width=device-width, initial-scale=1.0" }],
+    ["meta", { name: "google-adsense-account", content: ADSENSE_CLIENT_ID }],
     // Primary Meta Tags
     ["meta", { name: "title", content: SITE_NAME }],
     ["meta", { name: "description", content: SITE_DESCRIPTION }],
