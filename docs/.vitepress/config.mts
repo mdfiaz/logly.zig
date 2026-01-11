@@ -66,7 +66,7 @@ export default defineConfig({
     ["meta", { name: "twitter:creator", content: "@muhammadfiaz_" }],
 
     // Canonical URL
-    ["link", { rel: "canonical", href: SITE_URL }],
+
 
 
 
