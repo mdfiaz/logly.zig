@@ -44,7 +44,7 @@ pub fn main() !void {
     defer logger.deinit();
 
     // @src() captures the source location at the call site
-    try logger.info(@src(), "This will show file:line info", .{});
+    try logger.info("This will show file:line info", @src());
 }
 ```
 
@@ -60,18 +60,21 @@ The `@src()` builtin is a Zig compile-time function that captures source locatio
 ### With `@src()` (Recommended)
 
 ```zig
-// @src() captures file, line, function info at compile time
-try logger.info(@src(), "Message with source location", .{});
-try logger.warn(@src(), "Warning at {s}:{d}", .{@src().file, @src().line});
-try logger.err(@src(), "Error occurred", .{});
+// Each level colors the ENTIRE line (timestamp, level, message)
+// @src() is optional - enables file:line display when show_filename/show_lineno are true
+// Pass null instead of @src() to disable source location
+try logger.info("Application started", @src());      // White line
+try logger.success("Operation completed!", @src());  // Green line
+try logger.warn("Low memory", @src());               // Yellow line (alias for warning)
+try logger.err("Connection failed", @src());         // Red line
 ```
 
 ### Without `@src()` (Optional)
 
 ```zig
 // Pass null if you don't need source location
-try logger.info(null, "Message without source location", .{});
-try logger.debug(null, "Another message", .{});
+try logger.info("Message without source location", null);
+try logger.debug("Another message", null);
 ```
 
 When `@src()` is `null`, the filename and line number fields will be empty, even if `show_filename` and `show_lineno` are enabled.
@@ -106,7 +109,7 @@ pub fn main() !void {
     const logger = try logly.Logger.initWithConfig(gpa.allocator(), config);
     defer logger.deinit();
 
-    try logger.info(@src(), "Custom formatted log", .{});
+    try logger.info("Custom formatted log", @src());
 }
 ```
 
@@ -221,7 +224,7 @@ pub fn main() !void {
     file_config.format = "[{time}] {level} {file}:{line} {message}";
     _ = try logger.add(file_config);
 
-    try logger.info(@src(), "Different format per sink", .{});
+    try logger.info("Different format per sink", @src());
 }
 ```
 
@@ -248,14 +251,14 @@ pub fn main() !void {
     defer logger.deinit();
 
     // All logs will show source location
-    try logger.debug(@src(), "Debug information", .{});
-    try logger.info(@src(), "Application starting", .{});
-    try logger.warn(@src(), "Resource usage high: {d}%", .{85});
-    try logger.err(@src(), "Connection failed", .{});
-    try logger.success(@src(), "Operation completed", .{});
+    try logger.debug("Debug information", @src());
+    try logger.info("Application starting", @src());
+    try logger.warnf("Resource usage high: {d}%", .{85}, @src());
+    try logger.err("Connection failed", @src());
+    try logger.success("Operation completed", @src());
 
     // Without @src() - no location info
-    try logger.info(null, "Message without source location", .{});
+    try logger.info("Message without source location", null);
 }
 ```
 
@@ -282,12 +285,12 @@ Remember that `@src()` is completely optional:
 
 ```zig
 // All of these are valid:
-try logger.info(@src(), "With source location", .{});
-try logger.info(null, "Without source location", .{});
+try logger.info("With source location", @src());
+try logger.info("Without source location", null);
 
 // Use @src() when debugging, null for minimal logs
 const src_info = if (debug_mode) @src() else null;
-try logger.info(src_info, "Conditional source location", .{});
+try logger.info("Conditional source location", src_info);
 ```
 
 ## See Also
