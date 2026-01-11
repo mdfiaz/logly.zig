@@ -213,7 +213,7 @@ gtag('config', '${GA_ID}');`,
           "priceCurrency": "USD"
         },
         "downloadUrl": "https://github.com/muhammad-fiaz/logly.zig",
-        "softwareVersion": "0.1.0", // Updated to match likely version
+        "softwareVersion": "0.1.3", 
         "license": "https://opensource.org/licenses/MIT"
       });
     } else {
