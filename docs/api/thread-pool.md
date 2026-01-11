@@ -149,21 +149,6 @@ pub const TaskPriority = enum(u8) {
 };
 ```
 
-pub const Task = union(enum) {
-    /// Function pointer task
-    function: FunctionTask,
-    /// Callback with context
-    callback: CallbackTask,
-
-    pub const FunctionTask = struct {
-        func: *const fn (?std.mem.Allocator) void,
-    };
-
-    pub const CallbackTask = struct {
-        func: *const fn (*anyopaque, ?std.mem.Allocator) void,
-        context: *anyopaque,
-    };
-};
 
 ### ThreadPoolStats
 
