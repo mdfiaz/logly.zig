@@ -15,7 +15,7 @@ Thank you for your interest in contributing to Logly! We welcome contributions f
 6.  **Add Tests**: If you are adding a new feature, please add tests to cover it.
 7.  **Run Examples**: Verify that examples still work.
     ```bash
-    zig build example-formatted_logging
+    zig build example-all-examples
     ```
 8.  **Commit your changes**: Use clear and descriptive commit messages.
 9.  **Push to your fork** and submit a Pull Request.

@@ -87,18 +87,24 @@ pub const ExportMode = enum {
 
 /// Exporter statistics for monitoring export performance
 pub const ExporterStats = struct {
-    spans_exported: std.atomic.Value(u64) = std.atomic.Value(u64).init(0),
-    metrics_exported: std.atomic.Value(u64) = std.atomic.Value(u64).init(0),
-    export_errors: std.atomic.Value(u64) = std.atomic.Value(u64).init(0),
-    bytes_sent: std.atomic.Value(u64) = std.atomic.Value(u64).init(0),
-    last_export_time_ns: std.atomic.Value(i64) = std.atomic.Value(i64).init(0),
-    batch_exports: std.atomic.Value(u64) = std.atomic.Value(u64).init(0),
-    network_exports: std.atomic.Value(u64) = std.atomic.Value(u64).init(0),
+    spans_exported: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
+    metrics_exported: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
+    export_errors: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
+    bytes_sent: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
+    last_export_time_ns: std.atomic.Value(Constants.AtomicSigned) = std.atomic.Value(Constants.AtomicSigned).init(0),
+    batch_exports: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
+    network_exports: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
 
     pub fn recordExport(self: *ExporterStats, spans: u64, bytes: u64) void {
-        _ = self.spans_exported.fetchAdd(spans, .monotonic);
-        _ = self.bytes_sent.fetchAdd(bytes, .monotonic);
-        self.last_export_time_ns.store(utils.safeToUnsigned(i64, std.time.nanoTimestamp()), .monotonic);
+        _ = self.spans_exported.fetchAdd(@truncate(spans), .monotonic);
+        _ = self.bytes_sent.fetchAdd(@truncate(bytes), .monotonic);
+
+        if (Constants.AtomicSigned == i32) {
+            // Use seconds for 32-bit systems to avoid overflow (valid until 2038)
+            self.last_export_time_ns.store(@truncate(std.time.timestamp()), .monotonic);
+        } else {
+            self.last_export_time_ns.store(@truncate(std.time.nanoTimestamp()), .monotonic);
+        }
     }
 
     pub fn recordBatchExport(self: *ExporterStats) void {
@@ -114,7 +120,7 @@ pub const ExporterStats = struct {
     }
 
     pub fn recordMetricExport(self: *ExporterStats, count: u64) void {
-        _ = self.metrics_exported.fetchAdd(count, .monotonic);
+        _ = self.metrics_exported.fetchAdd(@truncate(count), .monotonic);
     }
 
     pub fn getSpansExported(self: *const ExporterStats) u64 {
@@ -142,7 +148,11 @@ pub const ExporterStats = struct {
     }
 
     pub fn getLastExportTimeNs(self: *const ExporterStats) i64 {
-        return self.last_export_time_ns.load(.monotonic);
+        const val = self.last_export_time_ns.load(.monotonic);
+        if (Constants.AtomicSigned == i32) {
+            return @as(i64, val) * std.time.ns_per_s;
+        }
+        return val;
     }
 
     /// Check if any spans have been exported.

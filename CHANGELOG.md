@@ -81,8 +81,6 @@ This section documents breaking changes and renamed APIs for migration:
 **Cross-Platform Compatibility**:
 - All atomic counters across `Sampler`, `Filter`, `Logger`, and `Scheduler` modules now use `Constants.AtomicUnsigned` for proper 32-bit and 64-bit architecture support.
 
-### Changed
-
 - **TelemetryConfig Factory Functions**: Added preset configurations for all providers (`jaeger()`, `zipkin()`, `datadog()`, `googleCloud()`, `googleAnalytics()`, `googleTagManager()`, `awsXray()`, `azure()`, `otelCollector()`, `file()`, `custom()`, `highThroughput()`, `development()`).
 
 ### Fixed

@@ -1250,7 +1250,7 @@ Common errors:
 
 ## See Also
 
-- [Span Attributes Guide](./span-attributes.md)
+- [Telemetry Guide](../guide/telemetry.md)
 - [Metrics API](./metrics.md)
-- [Provider Configuration](./providers.md)
-- [Examples](../examples/telemetry.zig)
+- [Distributed Tracing Guide](../guide/tracing.md)
+- [Telemetry Examples](../examples/telemetry.md)
