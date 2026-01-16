@@ -1,21 +1,3 @@
-//! OpenTelemetry Integration Example
-//!
-//! Demonstrates comprehensive OpenTelemetry support including:
-//! - Span creation and lifecycle management
-//! - Trace context propagation (W3C traceparent)
-//! - Metrics recording and export
-//! - Multiple exporter backends (Jaeger, Zipkin, file, etc.)
-//! - Google Analytics and Google Tag Manager integration
-//! - Sampling strategies
-//! - Resource detection
-//! - Custom callbacks
-//! - Baggage propagation (W3C Baggage standard)
-//! - Batch export with configurable size/timeout
-//! - Custom provider implementation
-//!
-//! Compile: `zig build example-telemetry`
-//! Run: `zig build run-telemetry`
-
 const std = @import("std");
 const logly = @import("logly");
 
