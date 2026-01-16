@@ -61,6 +61,11 @@ A production-grade, high-performance structured logging library for Zig, designe
   - [Multiple Sinks](#multiple-sinks)
   - [Service Identity](#service-identity)
   - [Distributed Tracing](#distributed-tracing)
+  - [OpenTelemetry Integration](#opentelemetry-integration)
+    - [Basic Telemetry Setup](#basic-telemetry-setup)
+    - [W3C Trace Context Propagation](#w3c-trace-context-propagation)
+    - [Baggage Context](#baggage-context)
+    - [Supported Providers](#supported-providers)
   - [Filtering](#filtering)
   - [Sampling](#sampling)
   - [Redaction](#redaction)
@@ -563,6 +568,14 @@ pub fn main() !void {
     // Create a span
     var span = try telemetry.startSpan("http_request", .{ .kind = .server });
     defer span.deinit();
+
+    // Ensure span is ended and exported
+    defer span.end();
+    defer {
+        telemetry.endSpan(&span) catch |err| {
+            std.debug.print("Failed to export span: {}\n", .{err});
+        };
+    }
 
     try span.setAttribute("http.method", .{ .string = "POST" });
     try span.setAttribute("http.status_code", .{ .integer = 200 });
