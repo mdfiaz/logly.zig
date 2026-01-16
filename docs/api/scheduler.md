@@ -580,7 +580,7 @@ pub fn main() !void {
     // Check stats periodically
     const stats = scheduler.getStats();
     std.debug.print("Tasks executed: {d}\n", .{
-        stats.tasks_executed,
+        stats.getExecuted(),
     });
 }
 ```

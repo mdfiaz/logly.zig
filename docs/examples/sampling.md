@@ -170,9 +170,10 @@ defer adaptive.deinit();
 ```zig
 // Get current sampling statistics
 const stats = sampler.getStats();
-std.debug.print("Total records: {d}\n", .{stats.total_records});
-std.debug.print("Current rate: {d:.2}\n", .{stats.current_rate});
-std.debug.print("Window count: {d}\n", .{stats.window_count});
+std.debug.print("Total records: {d}\n", .{stats.getTotal()});
+std.debug.print("Accepted: {d}\n", .{stats.getAccepted()});
+std.debug.print("Rejected: {d}\n", .{stats.getRejected()});
+std.debug.print("Accept rate: {d:.2}%\n", .{stats.getAcceptRate() * 100});
 
 // Reset sampler state
 sampler.reset();

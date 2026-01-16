@@ -317,10 +317,10 @@ pub const Scheduler = struct {
         bytes_freed: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
         /// Total bytes saved by compression.
         bytes_saved: std.atomic.Value(Constants.AtomicUnsigned) = std.atomic.Value(Constants.AtomicUnsigned).init(0),
-        /// Last run time in milliseconds.
-        last_run_time: std.atomic.Value(i64) = std.atomic.Value(i64).init(0),
-        /// Scheduler start time for uptime calculation.
-        start_time: std.atomic.Value(i64) = std.atomic.Value(i64).init(0),
+        /// Last run time in milliseconds (uses AtomicSigned for 32-bit platform compatibility).
+        last_run_time: std.atomic.Value(Constants.AtomicSigned) = std.atomic.Value(Constants.AtomicSigned).init(0),
+        /// Scheduler start time for uptime calculation (uses AtomicSigned for 32-bit platform compatibility).
+        start_time: std.atomic.Value(Constants.AtomicSigned) = std.atomic.Value(Constants.AtomicSigned).init(0),
 
         /// Calculate task success rate (0.0 - 1.0).
         pub fn successRate(self: *const SchedulerStats) f64 {
@@ -374,7 +374,7 @@ pub const Scheduler = struct {
 
         /// Returns uptime in seconds since scheduler started.
         pub fn uptimeSeconds(self: *const SchedulerStats) i64 {
-            const start_ts = self.start_time.load(.monotonic);
+            const start_ts: i64 = self.start_time.load(.monotonic);
             if (start_ts == 0) return 0;
             return @divFloor(std.time.milliTimestamp() - start_ts, 1000);
         }
@@ -729,8 +729,8 @@ pub const Scheduler = struct {
     pub fn start(self: *Scheduler) !void {
         if (self.running.load(.acquire)) return;
 
-        // Record start time for uptime calculations
-        self.stats.start_time.store(std.time.milliTimestamp(), .monotonic);
+        // Record start time for uptime calculations (truncated on 32-bit platforms)
+        self.stats.start_time.store(@truncate(std.time.milliTimestamp()), .monotonic);
 
         self.running.store(true, .release);
         self.worker_thread = try std.Thread.spawn(.{}, schedulerLoop, .{self});
@@ -955,7 +955,7 @@ pub const Scheduler = struct {
         task.next_run = task.schedule.nextRunTime(now);
         task.run_count += 1;
         _ = self.stats.tasks_executed.fetchAdd(1, .monotonic);
-        self.stats.last_run_time.store(now, .monotonic);
+        self.stats.last_run_time.store(@truncate(now), .monotonic);
     }
 
     /// Core task execution logic (separated for telemetry tracking).
