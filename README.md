@@ -859,13 +859,13 @@ var config = logly.Config.default()
 | TRACE    | 5        | `logger.trace()`    | -              | Very detailed debugging |
 | DEBUG    | 10       | `logger.debug()`    | -              | Debugging information   |
 | INFO     | 20       | `logger.info()`     | -              | General information     |
-| NOTICE   | 22       | `logger.notice()`   | -              | Notice messages         |
+| NOTICE   | 22       | `logger.notice()`   | `note()`       | Notice messages         |
 | SUCCESS  | 25       | `logger.success()`  | -              | Successful operations   |
 | WARNING  | 30       | `logger.warning()`  | `warn()`       | Warning messages        |
 | ERROR    | 40       | `logger.err()`      | `error()`      | Error conditions        |
-| FAIL     | 45       | `logger.fail()`     | -              | Operation failures      |
+| FAIL     | 45       | `logger.fail()`     | `failure()`    | Operation failures      |
 | CRITICAL | 50       | `logger.critical()` | `crit()`       | Critical system errors  |
-| FATAL    | 55       | `logger.fatal()`    | -              | Fatal system errors     |
+| FATAL    | 55       | `logger.fatal()`    | `panic()`      | Fatal system errors     |
 
 ### Sink Management Aliases
 
