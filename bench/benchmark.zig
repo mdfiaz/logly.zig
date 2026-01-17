@@ -2,6 +2,8 @@ const std = @import("std");
 const logly = @import("logly");
 const Logger = logly.Logger;
 const Config = logly.Config;
+const ThreadPool = logly.ThreadPool;
+const Constants = logly.Constants;
 const builtin = @import("builtin");
 
 /// Benchmark results structure
@@ -153,10 +155,7 @@ const BenchContext = struct {
     logger: *Logger,
     allocator: std.mem.Allocator,
 };
-
-// ============================================
 // Basic Benchmark Functions
-// ============================================
 fn benchSimpleLog(ctx: *const BenchContext) !void {
     try ctx.logger.info("Simple log message", null);
 }
@@ -197,9 +196,9 @@ fn benchCustomLevel(ctx: *const BenchContext) !void {
     try ctx.logger.custom("AUDIT", "User action logged for audit", null);
 }
 
-// ============================================
+//
 // Filtering Benchmark Functions
-// ============================================
+//
 fn benchFilterAllowed(ctx: *const BenchContext) !void {
     try ctx.logger.info("This message passes the filter", null);
 }
@@ -212,16 +211,16 @@ fn benchFilterComplex(ctx: *const BenchContext) !void {
     try ctx.logger.info("Checking complex filter rules", null);
 }
 
-// ============================================
+//
 // Diagnostics Benchmark Functions
-// ============================================
+//
 fn benchDiagnostics(ctx: *const BenchContext) !void {
     try ctx.logger.logSystemDiagnostics(null);
 }
 
-// ============================================
+//
 // Multi-thread worker function
-// ============================================
+//
 fn multiThreadWorker(ctx: *const BenchContext) void {
     for (0..MT_BENCHMARK_ITERATIONS) |_| {
         ctx.logger.info("Multi-threaded log message", null) catch {};
@@ -310,9 +309,9 @@ pub fn main() !void {
     var results: std.ArrayList(BenchmarkResult) = .empty;
     defer results.deinit(allocator);
 
-    // ============================================
-    // CATEGORY: Basic Logging
-    // ============================================
+    //
+    // Basic Logging
+    //
     {
         std.debug.print("Running: Basic logging benchmarks...\n", .{});
         const logger = try Logger.init(allocator);
@@ -348,9 +347,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Formatted log (with color)", benchFormattedLog, &ctx, "Colored + formatting", "Basic Logging"));
     }
 
-    // ============================================
-    // CATEGORY: JSON Logging
-    // ============================================
+    //
+    // JSON Logging
+    //
     {
         std.debug.print("Running: JSON logging benchmarks...\n", .{});
         const logger = try Logger.init(allocator);
@@ -401,9 +400,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("JSON with color", benchSimpleLog, &ctx, "JSON with ANSI colors", "JSON Logging"));
     }
 
-    // ============================================
-    // CATEGORY: Log Levels
-    // ============================================
+    //
+    // Log Levels
+    //
     {
         std.debug.print("Running: Log levels benchmarks...\n", .{});
         const logger = try Logger.init(allocator);
@@ -428,9 +427,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("CRITICAL level", benchCriticalLog, &ctx, "Critical messages", "Log Levels"));
     }
 
-    // ============================================
-    // CATEGORY: Custom Features
-    // ============================================
+    //
+    // Custom Features
+    //
     {
         std.debug.print("Running: Custom features benchmarks...\n", .{});
         const logger = try Logger.init(allocator);
@@ -510,9 +509,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Unix timestamp (ms)", benchSimpleLog, &ctx, "Millisecond Unix timestamp", "Custom Features"));
     }
 
-    // ============================================
-    // CATEGORY: Configuration Presets
-    // ============================================
+    //
+    // Configuration Presets
+    //
     {
         std.debug.print("Running: Configuration presets benchmarks...\n", .{});
 
@@ -626,9 +625,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Multiple sinks (3)", benchSimpleLog, &ctx, "Text + JSON + Pretty", "Configuration Presets"));
     }
 
-    // ============================================
-    // CATEGORY: Allocator Comparison
-    // ============================================
+    //
+    // Allocator Comparison
+    //
     {
         std.debug.print("Running: Allocator comparison benchmarks...\n", .{});
 
@@ -680,9 +679,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Page allocator", benchSimpleLog, &ctxPage, "System page allocator", "Allocator Comparison"));
     }
 
-    // ============================================
-    // CATEGORY: Enterprise Features
-    // ============================================
+    //
+    // Enterprise Features
+    //
     {
         std.debug.print("Running: Enterprise features benchmarks...\n", .{});
 
@@ -756,9 +755,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Structured logging", benchSimpleLog, &ctx, "JSON structured output", "Enterprise Features"));
     }
 
-    // ============================================
-    // CATEGORY: Sampling & Rate Limiting
-    // ============================================
+    //
+    // Sampling & Rate Limiting
+    //
     {
         std.debug.print("Running: Sampling & rate limiting benchmarks...\n", .{});
 
@@ -857,9 +856,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("With redaction enabled", benchSimpleLog, &ctxRedact, "Sensitive data masking", "Sampling & Rate Limiting"));
     }
 
-    // ============================================
-    // CATEGORY: Filtering
-    // ============================================
+    //
+    // Filtering
+    //
     {
         std.debug.print("Running: Filtering benchmarks...\n", .{});
 
@@ -883,9 +882,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Filter (rejected)", benchFilterRejected, &ctxFilter, "Message blocked by filter", "Filtering"));
     }
 
-    // ============================================
-    // CATEGORY: Rules Engine
-    // ============================================
+    //
+    // Rules Engine
+    //
     {
         std.debug.print("Running: Rules Engine benchmarks...\n", .{});
 
@@ -933,9 +932,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Rules engine (disabled)", benchSimpleLog, &ctx, "No rule evaluation", "Rules Engine"));
     }
 
-    // ============================================
-    // CATEGORY: Redaction
-    // ============================================
+    //
+    // Redaction
+    //
     {
         std.debug.print("Running: Redaction benchmarks...\n", .{});
 
@@ -1008,9 +1007,9 @@ pub fn main() !void {
         }.bench, &fieldCtx, "Full field masking", "Redaction"));
     }
 
-    // ============================================
-    // CATEGORY: Metrics
-    // ============================================
+    //
+    // Metrics
+    //
     {
         std.debug.print("Running: Metrics benchmarks...\n", .{});
 
@@ -1083,9 +1082,9 @@ pub fn main() !void {
         }.bench, &configCtx, "All tracking enabled", "Metrics"));
     }
 
-    // ============================================
-    // CATEGORY: Rotation
-    // ============================================
+    //
+    // Rotation
+    //
     {
         std.debug.print("Running: Rotation benchmarks...\n", .{});
 
@@ -1108,9 +1107,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("Rotation (size check)", benchSimpleLog, &ctxRot, "Size-based check", "Rotation"));
     }
 
-    // ============================================
-    // CATEGORY: System Diagnostics
-    // ============================================
+    //
+    // System Diagnostics
+    //
     {
         std.debug.print("Running: System Diagnostics benchmarks...\n", .{});
 
@@ -1128,9 +1127,9 @@ pub fn main() !void {
         try results.append(allocator, runBenchmark("System Diagnostics (basic)", benchDiagnostics, &ctxDiag, "OS/CPU/Mem info", "System Diagnostics"));
     }
 
-    // ============================================
-    // CATEGORY: Multi-Threading
-    // ============================================
+    //
+    // Multi-Threading
+    //
     {
         std.debug.print("Running: Multi-threading benchmarks...\n", .{});
 
@@ -1333,9 +1332,9 @@ pub fn main() !void {
         ));
     }
 
-    // ============================================
-    // CATEGORY: Performance Comparison
-    // ============================================
+    //
+    // Performance Comparison
+    //
     {
         std.debug.print("Running: Performance comparison benchmarks...\n", .{});
 

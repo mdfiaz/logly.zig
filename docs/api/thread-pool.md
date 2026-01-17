@@ -121,7 +121,7 @@ pub const ThreadPoolConfig = struct {
 
 ### ThreadPoolPresets
 
-Helper functions to create common thread pool configurations.
+Helper functions to create common thread pool configurations. All presets use `Constants.ThreadDefaults` for consistent defaults.
 
 ```zig
 pub const ThreadPoolPresets = struct {
@@ -133,6 +133,14 @@ pub const ThreadPoolPresets = struct {
 
     /// Low-resource configuration: minimal threads, small queues.
     pub fn lowResource() ThreadPoolConfig { ... }
+
+    /// I/O-bound configuration: optimized for disk/network workloads.
+    /// Uses 2x CPU cores for better I/O parallelism.
+    pub fn ioBound() ThreadPoolConfig { ... }
+
+    /// CPU-bound configuration: optimized for compute-heavy tasks.
+    /// Uses exactly CPU core count with work stealing disabled.
+    pub fn cpuBound() ThreadPoolConfig { ... }
 };
 ```
 
@@ -533,43 +541,45 @@ pub fn singleThread() ThreadPoolConfig {
 
 ### cpuBound
 
-Optimized for CPU-intensive tasks.
+Optimized for CPU-intensive tasks. Uses `Constants.ThreadDefaults.cpuBoundThreadCount()`.
 
 ```zig
 pub fn cpuBound() ThreadPoolConfig {
-    const cpu_count = std.Thread.getCpuCount() catch 4;
     return .{
-        .thread_count = cpu_count,
-        .work_stealing = true,
+        .thread_count = Constants.ThreadDefaults.cpuBoundThreadCount(),
+        .queue_size = Constants.ThreadDefaults.queue_size,
+        .work_stealing = false,
+        .stack_size = Constants.ThreadDefaults.stack_size,
     };
 }
 ```
 
 ### ioBound
 
-Optimized for I/O-intensive tasks.
+Optimized for I/O-intensive tasks. Uses `Constants.ThreadDefaults.ioBoundThreadCount()`.
 
 ```zig
 pub fn ioBound() ThreadPoolConfig {
-    const cpu_count = std.Thread.getCpuCount() catch 4;
     return .{
-        .thread_count = cpu_count * 2,
-        .queue_size = 2048,
+        .thread_count = Constants.ThreadDefaults.ioBoundThreadCount(),
+        .queue_size = Constants.ThreadDefaults.queue_size * 2,
         .work_stealing = true,
+        .stack_size = Constants.ThreadDefaults.stack_size,
     };
 }
 ```
 
 ### highThroughput
 
-Maximum throughput configuration.
+Maximum throughput configuration. Uses `Constants.ThreadDefaults.max_tasks` for larger queue.
 
 ```zig
 pub fn highThroughput() ThreadPoolConfig {
     return .{
-        .thread_count = 0, // Auto
-        .queue_size = 4096,
+        .thread_count = 0, // Auto-detect
+        .queue_size = Constants.ThreadDefaults.max_tasks,
         .work_stealing = true,
+        .stack_size = 2 * Constants.ThreadDefaults.stack_size,
     };
 }
 ```

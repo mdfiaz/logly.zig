@@ -84,11 +84,16 @@ pub const ThreadPool = struct {
     pub const ThreadPoolConfig = Config.ThreadPoolConfig;
 
     /// Presets for common thread pool configurations.
+    /// Uses Constants.ThreadDefaults for consistent defaults.
     pub const ThreadPoolPresets = struct {
         /// Default configuration: auto-detect threads, standard queue size.
         /// Best for general-purpose workloads.
         pub fn default() ThreadPoolConfig {
-            return .{};
+            return .{
+                .thread_count = Constants.ThreadDefaults.thread_count,
+                .queue_size = Constants.ThreadDefaults.queue_size,
+                .stack_size = Constants.ThreadDefaults.stack_size,
+            };
         }
 
         /// High-throughput configuration: larger queues, work stealing enabled.
@@ -96,9 +101,9 @@ pub const ThreadPool = struct {
         pub fn highThroughput() ThreadPoolConfig {
             return .{
                 .thread_count = 0, // Auto-detect
-                .queue_size = 10000,
+                .queue_size = Constants.ThreadDefaults.max_tasks,
                 .work_stealing = true,
-                .stack_size = 2 * 1024 * 1024, // 2MB stack
+                .stack_size = 2 * Constants.ThreadDefaults.stack_size, // 2MB stack
             };
         }
 
@@ -109,7 +114,29 @@ pub const ThreadPool = struct {
                 .thread_count = 2,
                 .queue_size = 128,
                 .work_stealing = false,
-                .stack_size = 512 * 1024, // 512KB stack
+                .stack_size = Constants.ThreadDefaults.stack_size / 2, // 512KB stack
+            };
+        }
+
+        /// I/O-bound configuration: optimized for disk/network workloads.
+        /// Uses 2x CPU cores for better I/O parallelism.
+        pub fn ioBound() ThreadPoolConfig {
+            return .{
+                .thread_count = Constants.ThreadDefaults.ioBoundThreadCount(),
+                .queue_size = Constants.ThreadDefaults.queue_size * 2,
+                .work_stealing = true,
+                .stack_size = Constants.ThreadDefaults.stack_size,
+            };
+        }
+
+        /// CPU-bound configuration: optimized for compute-heavy tasks.
+        /// Uses exactly CPU core count.
+        pub fn cpuBound() ThreadPoolConfig {
+            return .{
+                .thread_count = Constants.ThreadDefaults.cpuBoundThreadCount(),
+                .queue_size = Constants.ThreadDefaults.queue_size,
+                .work_stealing = false, // Less stealing for CPU-bound
+                .stack_size = Constants.ThreadDefaults.stack_size,
             };
         }
     };
@@ -432,9 +459,9 @@ pub const ThreadPool = struct {
         const self = try allocator.create(ThreadPool);
         errdefer allocator.destroy(self);
 
-        // Determine thread count
+        // Determine thread count using Constants.ThreadDefaults
         const num_threads = if (config.thread_count == 0)
-            std.Thread.getCpuCount() catch 4
+            Constants.ThreadDefaults.recommendedThreadCount()
         else
             config.thread_count;
 
@@ -663,9 +690,9 @@ pub const ThreadPool = struct {
             // Try local queue first
             var item = worker.local_queue.pop();
 
-            // Try global queue
+            // Try global queue with timeout from Constants
             if (item == null) {
-                item = pool.work_queue.popWait(100 * std.time.ns_per_ms);
+                item = pool.work_queue.popWait(Constants.ThreadDefaults.wait_timeout_ns);
             }
 
             // Try work stealing

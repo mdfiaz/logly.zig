@@ -7,12 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > **Note:** Documentation for versions below 0.1.2 is not available. Please refer to commit history or pull requests for those versions.
 
----
-
 ## [0.1.5]
 
 ### Added
 
+- **ThreadPool Presets**: New preset configurations for optimized workloads.
+  - `ThreadPoolPresets.ioBound()` - Optimized for disk/network I/O workloads with 2x CPU cores.
+  - `ThreadPoolPresets.cpuBound()` - Optimized for compute-heavy tasks using exact CPU core count.
+  - All presets now use `Constants.ThreadDefaults` for consistent configuration values.
+- **ThreadPool Constants Integration**: Centralized configuration reuse from `Constants.ThreadDefaults`.
+  - `thread_count`, `queue_size`, `stack_size` from constants for maintainability.
+  - `wait_timeout_ns` for worker loop wait operations.
+  - `recommendedThreadCount()`, `ioBoundThreadCount()`, `cpuBoundThreadCount()` helper functions.
 - **Improved Regex Engine**: Replaced basic wildcard matching with a robust, backtracking regex-like engine in `Utils`.
   - Supports standard quantifiers: `*` (zero or more), `+` (one or more), `?` (optional).
   - Supports character classes: `\d` (digit), `\w` (alphanumeric), `\s` (whitespace) and their negated forms (`\D`, `\W`, `\S`).
@@ -135,13 +141,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Enhanced
 
+- **ThreadPool Optimization**: Improved thread pool efficiency with centralized constant reuse from `config.zig`, `constants.zig`, and `utils.zig`.
+  - Worker loop now uses `Constants.ThreadDefaults.wait_timeout_ns` for consistent wait operations.
+  - All presets use `Constants.ThreadDefaults` values for thread count, queue size, and stack size.
+  - Statistics methods use `Utils.atomicLoadU64()` and `Utils.calculateErrorRate()` for efficient calculations.
 - **LevelColorConfig**: Added `theme_preset`, `notice_color`, `fatal_color` fields and `getColorForLevel()` method.
 - **Formatter.Theme**: Added `notice` and `fatal` fields for complete level coverage.
 - **Telemetry Export**: Improved provider detection and format-specific export with proper JSON structures.
-- **Documentation**: Updated compression, telemetry, and scheduler guides with v0.1.5 features.
+- **Documentation**: Updated compression, telemetry, scheduler, and thread-pool guides with v0.1.5 features.
 - **Examples**: Updated `compression_demo.zig`, `scheduler_demo.zig`, and `telemetry.zig` with v0.1.5 features.
-
----
 
 ## [0.1.4]
 
