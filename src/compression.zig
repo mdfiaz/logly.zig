@@ -283,6 +283,9 @@ pub const Compression = struct {
     /// Alias for initWithConfig().
     pub const withConfig = initWithConfig;
 
+    /// Alias for init().
+    pub const create = init;
+
     /// Alias for enable().
     pub const on = enable;
 
@@ -574,6 +577,9 @@ pub const Compression = struct {
         _ = self;
         // Currently no owned resources to free
     }
+
+    /// Alias for deinit().
+    pub const destroy = deinit;
 
     /// Alias for setCompressionStartCallback().
     pub const onCompressionStart = setCompressionStartCallback;
