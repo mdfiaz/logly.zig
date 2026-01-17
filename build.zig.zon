@@ -5,7 +5,7 @@
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .zstd = .{
-            .url = "https://github.com/muhammad-fiaz/zstd.zig/archive/refs/tags/1.6.0.tar.gz",
+            .url = "git+https://github.com/muhammad-fiaz/zstd.zig.git#1.6.0",
             .hash = "zstd-1.6.0-biH4jEaKMgBhxd8T4gmKxBH3SqBqzAQJptWjywki6uU7",
         },
     },
