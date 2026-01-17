@@ -150,7 +150,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{
             .root_source_file = b.path("bench/benchmark.zig"),
             .target = target,
-            .optimize = .ReleaseFast,
+            .optimize = optimize,
             .link_libc = true,
         }),
     });
