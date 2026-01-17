@@ -595,7 +595,7 @@ pub const Formatter = struct {
     pub fn formatWithAllocator(self: *Formatter, record: *const Record, config: anytype, scratch_allocator: ?std.mem.Allocator) ![]u8 {
         const alloc = scratch_allocator orelse self.allocator;
         const start_time = Utils.currentNanos();
-        var bytes_formatted: u64 = 0;
+        var bytes_formatted: Constants.AtomicUnsigned = 0;
         defer {
             const current = Utils.currentNanos();
             const elapsed = @as(u64, @intCast(@max(0, current - start_time)));
