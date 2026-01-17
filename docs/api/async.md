@@ -20,6 +20,28 @@ The async module provides non-blocking asynchronous logging with configurable bu
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize async logger |
 | `deinit()` | `destroy()` | Deinitialize async logger |
+| `queue()` | `enqueue()`, `push()`, `logMsg()` | Queue log message |
+| `getStats()` | `statistics()` | Get statistics |
+| `resetStats()` | `clearStats()` | Reset statistics |
+| `queueDepth()` | `depth()`, `pending()` | Get queue depth |
+| `isQueueEmpty()` | `empty()` | Check if queue empty |
+| `setOverflowCallback()` | `onOverflow()` | Set overflow callback |
+| `setFlushCallback()` | `onFlush()` | Set flush callback |
+| `setWorkerStartCallback()` | `onWorkerStart()` | Set worker start callback |
+| `setWorkerStopCallback()` | `onWorkerStop()` | Set worker stop callback |
+| `setBatchProcessedCallback()` | `onBatchProcessed()` | Set batch processed callback |
+| `setLatencyThresholdExceededCallback()` | `onLatencyThresholdExceeded()` | Set latency threshold exceeded callback |
+| `setFullCallback()` | `onFull()` | Set full callback |
+| `setEmptyCallback()` | `onEmpty()` | Set empty callback |
+| `setErrorCallback()` | `onError()` | Set error callback |
+| `isFull()` | `full()` | Check if full |
+| `startWorker()` | `begin()` | Start worker |
+| `stop()` | `halt()`, `end()` | Stop async logger |
+| `write()` | `writeData()` | Write data (AsyncFileWriter) |
+| `writeLine()` | `writeLn()` | Write line (AsyncFileWriter) |
+| `flushSync()` | `flush()` | Flush synchronously (AsyncFileWriter) |
+| `startAutoFlush()` | `startFlush()` | Start auto flush (AsyncFileWriter) |
+| `bytesWritten()` | `written()` | Get bytes written (AsyncFileWriter) |
 
 ## Overview
 

@@ -20,6 +20,33 @@ The `Record` struct represents a single log event.
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize record |
 | `deinit()` | `destroy()` | Deinitialize record |
+| `addField()` | `setField()`, `put()` | Add context field |
+| `setTraceId()` | `trace()` | Set trace ID |
+| `setSpanId()` | `span()` | Set span ID |
+| `setCorrelationId()` | `correlate()` | Set correlation ID |
+| `setParentSpanId()` | `parentSpan()` | Set parent span ID |
+| `setRequestId()` | `request()` | Set request ID |
+| `setSessionId()` | `session()` | Set session ID |
+| `setUserId()` | `user()` | Set user ID |
+| `clone()` | `copy()`, `duplicate()` | Clone record |
+| `levelName()` | `getLevelName()` | Get level name |
+| `levelColor()` | `getLevelColor()` | Get level color |
+| `initCustom()` | `createCustom()`, `customInit()` | Initialize custom record |
+| `initWithSource()` | `createWithSource()`, `withSource()` | Initialize with source |
+| `setError()` | `setErrorInfo()` | Set error information |
+| `setDurationSince()` | `durationFrom()`, `setDurationFrom()` | Set duration from timestamp |
+| `generateTraceId()` | `newTraceId()`, `createTraceId()` | Generate trace ID |
+| `generateSpanId()` | `newSpanId()`, `createSpanId()` | Generate span ID |
+| `hasCustomLevel()` | `isCustomLevel()` | Check if custom level |
+| `hasContext()` | `hasFields()` | Check if has context |
+| `contextCount()` | `fieldCount()` | Get context field count |
+| `hasStackTrace()` | `hasTrace()` | Check if has stack trace |
+| `hasError()` | `hasErrorInfo()` | Check if has error |
+| `hasTracing()` | `hasTraceInfo()` | Check if has tracing |
+| `hasRequestId()` | `hasRequest()` | Check if has request ID |
+| `hasSessionId()` | `hasSession()` | Check if has session ID |
+| `hasUserId()` | `hasUser()` | Check if has user ID |
+| `hasParentSpan()` | `hasParent()` | Check if has parent span |
 
 ## Core Fields
 

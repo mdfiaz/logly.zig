@@ -19,7 +19,38 @@ The scheduler module provides automatic log maintenance with scheduled cleanup, 
 | Full Method | Alias(es) | Description |
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize scheduler |
+| `initFromConfig()` | `fromConfig()` | Initialize from config |
 | `deinit()` | `destroy()` | Deinitialize scheduler |
+| `setHealthCallback()` | `onHealth()` | Set health callback |
+| `setMetricsCallback()` | `onMetrics()` | Set metrics callback |
+| `getHealthStatus()` | `healthStatus()` | Get health status |
+| `getMetrics()` | `snapshot()` | Get metrics snapshot |
+| `addTask()` | `add()` | Add a task |
+| `setTaskPriority()` | `setPriority()` | Set task priority |
+| `setTaskRetryPolicy()` | `retry()` | Set task retry policy |
+| `setTaskDependency()` | `dependsOn()` | Set task dependency |
+| `addCleanupTask()` | `cleanup()` | Add cleanup task |
+| `addCompressionTask()` | `compress()` | Add compression task |
+| `addCustomTask()` | `custom()` | Add custom task |
+| `setTaskEnabled()` | `enable()` | Enable/disable task |
+| `removeTask()` | `remove()` | Remove task |
+| `setTaskStartedCallback()` | `onStarted()` | Set task started callback |
+| `setTaskCompletedCallback()` | `onCompleted()` | Set task completed callback |
+| `setTaskErrorCallback()` | `onError()` | Set task error callback |
+| `setScheduleTickCallback()` | `onTick()` | Set tick callback |
+| `setHealthCheckCallback()` | `onHealthCheck()` | Set health check callback |
+| `runNow()` | `run()` | Run task immediately |
+| `runPending()` | `pending()` | Run pending tasks |
+| `start()` | `begin()` | Start scheduler |
+| `stop()` | `end()`, `halt()` | Stop scheduler |
+| `getStats()` | `statistics()` | Get scheduler statistics |
+| `resetStats()` | `clearStats()` | Reset statistics |
+| `setTelemetry()` | `trace()` | Set telemetry |
+| `clearTelemetry()` | `noTelemetry()` | Clear telemetry |
+| `getTasks()` | `tasks_()` | Get tasks |
+| `taskCount()` | `count()` | Get task count |
+| `isRunning()` | `running_()` | Check if running |
+| `hasTasks()` | `has_()` | Check if has tasks |
 
 ## Overview
 

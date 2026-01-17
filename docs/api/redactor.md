@@ -20,6 +20,41 @@ The `Redactor` struct handles the masking of sensitive data in log messages and 
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize redactor |
 | `deinit()` | `destroy()` | Deinitialize redactor |
+| `initWithConfig()` | `createWithConfig()` | Initialize with config |
+| `addPattern()` | `addRule()` | Add redaction pattern |
+| `addField()` | `field()`, `sensitiveField()` | Add sensitive field |
+| `redact()` | `mask()`, `sanitize()`, `process()` | Redact text |
+| `redactField()` | `maskField()` | Redact field |
+| `redactWithAllocator()` | `maskWithAllocator()`, `sanitizeWithAllocator()` | Redact with allocator |
+| `getStats()` | `statistics()` | Get statistics |
+| `resetStats()` | `resetStatistics()` | Reset statistics |
+| `patternCount()` | `ruleCount()` | Get pattern count |
+| `fieldCount()` | `sensitiveFieldCount()` | Get field count |
+| `hasRules()` | `hasConfiguration()` | Check if has rules |
+| `clearPatterns()` | `clearRules()` | Clear patterns |
+| `clearFields()` | `clearSensitiveFields()` | Clear fields |
+| `clear()` | `clearAll()` | Clear all |
+| `setRedactionAppliedCallback()` | `onRedactionApplied()` | Set redaction applied callback |
+| `setPatternMatchedCallback()` | `onPatternMatched()` | Set pattern matched callback |
+| `setInitializedCallback()` | `onInitialized()` | Set initialized callback |
+| `setErrorCallback()` | `onError()` | Set error callback |
+| `getFieldRedaction()` | `getFieldRule()` | Get field redaction |
+| `apply()` | `redact()`, `mask()` | Apply pattern (RedactionPattern) |
+| `getTotalProcessed()` | `totalProcessed()`, `processedCount()` | Get total processed (RedactorStats) |
+| `getValuesRedacted()` | `valuesRedacted()`, `redactedCount()` | Get values redacted (RedactorStats) |
+| `getPatternsMatched()` | `patternsMatched()`, `matchedCount()` | Get patterns matched (RedactorStats) |
+| `getFieldsRedacted()` | `fieldsRedacted()`, `fieldRedactionCount()` | Get fields redacted (RedactorStats) |
+| `getRedactionErrors()` | `redactionErrors()`, `errorCount()` | Get redaction errors (RedactorStats) |
+| `hasProcessed()` | `processed()` | Check if processed (RedactorStats) |
+| `hasRedacted()` | `redacted()` | Check if redacted (RedactorStats) |
+| `hasMatchedPatterns()` | `matchedPatterns()` | Check if matched patterns (RedactorStats) |
+| `hasErrors()` | `hasRedactionErrors()` | Check if has errors (RedactorStats) |
+| `redactionRate()` | `redactionPercentage()` | Get redaction rate (RedactorStats) |
+| `errorRate()` | `errorPercentage()` | Get error rate (RedactorStats) |
+| `successRate()` | `successPercentage()` | Get success rate (RedactorStats) |
+| `patternMatchRate()` | `patternMatchPercentage()` | Get pattern match rate (RedactorStats) |
+| `avgRedactionsPerValue()` | `avgRedactions()` | Get avg redactions per value (RedactorStats) |
+| `reset()` | `clear()`, `zero()` | Reset stats (RedactorStats) |
 
 ## Overview
 

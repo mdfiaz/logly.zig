@@ -27,7 +27,7 @@ fn tcpServer() !void {
         };
         defer posix.close(socket);
 
-        var buf: [4096]u8 = undefined;
+        var buf: [logly.Constants.NetworkConstants.tcp_buffer_size]u8 = undefined;
         while (true) {
             const read = posix.recv(socket, &buf, 0) catch break;
             if (read == 0) break;
@@ -46,7 +46,7 @@ fn udpServer() !void {
 
     std.debug.print("[UDP Server] Listening on 127.0.0.1:9001\n", .{});
 
-    var buf: [4096]u8 = undefined;
+    var buf: [logly.Constants.NetworkConstants.udp_max_packet]u8 = undefined;
     while (true) {
         var client_address: net.Address = undefined;
         var client_address_len: posix.socklen_t = @sizeOf(net.Address);
@@ -121,14 +121,12 @@ pub fn main() !void {
     try logger.addCustomLevel("AUDIT", 35, "34"); // Blue
     try logger.addCustomLevel("SECURITY", 45, "31"); // Red
 
-    // Sink 3: TCP Sink with Custom Format and Filtering
-    // This sink connects to the same TCP server but uses a custom format
-    // and only logs Warnings and above.
-    var tcp_custom_sink = logly.SinkConfig.network("tcp://127.0.0.1:9000");
-    tcp_custom_sink.name = "tcp-custom";
-    tcp_custom_sink.log_format = "[{level}] {message} (Module: {module})";
-    tcp_custom_sink.level = .warning; // Only Warning, Error, Critical, etc.
-    _ = try logger.addSink(tcp_custom_sink);
+    // Sink 3: Syslog Sink (UDP port 514)
+    // This sink sends logs in Syslog format (RFC 5424) to a Syslog server.
+    // Syslog uses UDP port 514 by default.
+    var syslog_sink = try logly.Network.createSyslogSink("127.0.0.1");
+    syslog_sink.name = "syslog";
+    _ = try logger.addSink(syslog_sink);
 
     std.debug.print("\n--- Starting Network Logging Tests ---\n", .{});
 
@@ -172,6 +170,26 @@ pub fn main() !void {
 
     // Wait a bit for messages to be received/printed by servers
     std.Thread.sleep(2 * std.time.ns_per_s);
+
+    // Demonstrate Syslog formatting with constants
+    std.debug.print("\n--- Syslog Formatting Example ---\n", .{});
+
+    // Show Syslog severity and facility constants
+    std.debug.print("SyslogFacility.user = {}\n", .{@intFromEnum(logly.Constants.SyslogConstants.Facility.user)});
+    std.debug.print("SyslogSeverity.info = {}\n", .{@intFromEnum(logly.Constants.SyslogConstants.Severity.info)});
+
+    // Show how to convert log levels to Syslog severity
+    const severity_info = logly.Constants.SyslogConstants.Severity.fromLogLevel(.info);
+    const severity_error = logly.Constants.SyslogConstants.Severity.fromLogLevel(.err);
+    std.debug.print("Log level .info -> Syslog severity: {}\n", .{@intFromEnum(severity_info)});
+    std.debug.print("Log level .err -> Syslog severity: {}\n", .{@intFromEnum(severity_error)});
+
+    // Format a Syslog message manually
+    const syslog_msg = try logly.Network.formatSyslog(allocator, .user, // Facility
+        .info, // Severity
+        "localhost", "network-logging-example", "This is a test Syslog message");
+    defer allocator.free(syslog_msg);
+    std.debug.print("Formatted Syslog message: {s}\n", .{syslog_msg});
 
     std.debug.print("\n--- Test Complete ---\n", .{});
 }

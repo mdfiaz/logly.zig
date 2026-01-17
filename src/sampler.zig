@@ -200,20 +200,32 @@ pub const Sampler = struct {
         self.on_sample_accept = callback;
     }
 
+    /// Alias for setAcceptCallback
+    pub const onAccept = setAcceptCallback;
+
     /// Sets the callback for when a record is rejected.
     pub fn setRejectCallback(self: *Sampler, callback: *const fn (f64, SampleRejectReason) void) void {
         self.on_sample_reject = callback;
     }
+
+    /// Alias for setRejectCallback
+    pub const onReject = setRejectCallback;
 
     /// Sets the callback for rate limit exceeded events.
     pub fn setRateLimitCallback(self: *Sampler, callback: *const fn (u32, u32) void) void {
         self.on_rate_exceeded = callback;
     }
 
+    /// Alias for setRateLimitCallback
+    pub const onRateLimit = setRateLimitCallback;
+
     /// Sets the callback for rate adjustments (adaptive sampling).
     pub fn setAdjustmentCallback(self: *Sampler, callback: *const fn (f64, f64, []const u8) void) void {
         self.on_rate_adjustment = callback;
     }
+
+    /// Alias for setAdjustmentCallback
+    pub const onAdjustment = setAdjustmentCallback;
 
     /// Determines whether a record should be sampled (allowed through).
     ///
@@ -355,6 +367,9 @@ pub const Sampler = struct {
         self.state = SamplerState.init();
     }
 
+    /// Alias for reset
+    pub const clear = reset;
+
     /// Returns the current sampling rate (for adaptive sampling).
     pub fn getCurrentRate(self: *Sampler) f64 {
         self.mutex.lock();
@@ -385,10 +400,16 @@ pub const Sampler = struct {
         self.state.stats = .{};
     }
 
+    /// Alias for resetStats
+    pub const clearStats = resetStats;
+
     /// Returns true if sampling is enabled.
     pub fn isEnabled(self: *const Sampler) bool {
         return self.strategy != .none;
     }
+
+    /// Alias for isEnabled
+    pub const enabled = isEnabled;
 
     /// Returns the strategy name.
     pub fn strategyName(self: *const Sampler) []const u8 {
@@ -401,20 +422,32 @@ pub const Sampler = struct {
         };
     }
 
+    /// Alias for strategyName
+    pub const name = strategyName;
+
     /// Returns total records processed.
     pub fn totalProcessed(self: *const Sampler) u64 {
         return @as(u64, self.state.stats.total_records_sampled.load(.monotonic));
     }
+
+    /// Alias for totalProcessed
+    pub const total_ = totalProcessed;
 
     /// Returns total records accepted.
     pub fn totalAccepted(self: *const Sampler) u64 {
         return @as(u64, self.state.stats.records_accepted.load(.monotonic));
     }
 
+    /// Alias for totalAccepted
+    pub const accepted_ = totalAccepted;
+
     /// Returns total records rejected.
     pub fn totalRejected(self: *const Sampler) u64 {
         return @as(u64, self.state.stats.records_rejected.load(.monotonic));
     }
+
+    /// Alias for totalRejected
+    pub const rejected_ = totalRejected;
 
     /// Alias for shouldSample
     pub const sample = shouldSample;
@@ -552,9 +585,6 @@ test "sampler stats and callbacks" {
         .window_ms = 1000,
     } });
     defer sampler.deinit();
-
-    // We can't easily capture context in function pointers without global state or more complex setup.
-    // For this test, we'll just verify stats are updated.
 
     for (0..10) |_| {
         _ = sampler.shouldSample();

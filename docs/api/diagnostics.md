@@ -16,11 +16,14 @@ The `Diagnostics` module collects comprehensive host information including OS, C
 
 ## Quick Reference: Method Aliases
 
-For developers preferring a different naming convention, Logly.zig provides standard aliases:
-
-| Original Method | Alias    | Description                    |
-| :-------------- | :------- | :----------------------------- |
-| `deinit`        | `destroy`| Releases diagnostic resources. |
+| Full Method | Alias(es) | Description |
+|-------------|-----------|-------------|
+| `deinit()` | `destroy()` | Deinitialize diagnostics |
+| `collect()` | `gather()`, `snapshot()` | Collect system diagnostics |
+| `createDiagnosticsSink()` | `createSink()`, `diagnosticsSink()` | Create diagnostics sink |
+| `summary()` | `info()`, `systemInfo()` | Get diagnostics summary |
+| `minimal()` | `basic()`, `simple()` | Create minimal diagnostics |
+| `full()` | `complete()`, `comprehensive()` | Create full diagnostics |
 
 ## Overview
 

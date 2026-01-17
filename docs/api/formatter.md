@@ -18,8 +18,50 @@ The `Formatter` struct handles the conversion of log records into string output.
 
 | Full Method | Alias(es) | Description |
 |-------------|-----------|-------------|
+| `getTotalFormatted()` | `totalFormatted()`, `count()` | Get total formatted records |
+| `getJsonFormats()` | `jsonCount()`, `jsonFormats()` | Get JSON format count |
+| `getCustomFormats()` | `customCount()`, `customFormats()` | Get custom format count |
+| `getFormatErrors()` | `errors()`, `errorCount()` | Get format error count |
+| `getTotalBytesFormatted()` | `bytes()`, `totalBytes()` | Get total bytes formatted |
+| `getPlainFormats()` | `plainCount()`, `plainFormats()` | Get plain format count |
+| `hasFormatted()` | `hasRecords()`, `isActive()` | Check if records have been formatted |
+| `hasJsonFormats()` | `hasJson()`, `usesJson()` | Check if JSON formats used |
+| `hasCustomFormats()` | `hasCustom()`, `usesCustom()` | Check if custom formats used |
+| `hasErrors()` | `hasFailed()`, `hasFailures()` | Check if there are errors |
+| `jsonUsageRate()` | `jsonRate()`, `jsonUsage()` | Get JSON usage rate |
+| `customUsageRate()` | `customRate()`, `customUsage()` | Get custom usage rate |
+| `avgFormatSize()` | `avgSize()`, `averageSize()` | Get average format size |
+| `errorRate()` | `failureRate()` | Get error rate |
+| `successRate()` | `success()` | Get success rate |
+| `throughputBytesPerSecond()` | `throughput()`, `bytesPerSecond()` | Get throughput |
+| `reset()` | `clear()`, `zero()` | Reset statistics |
+| `getColor()` | `colorFor()`, `getLevelColor()` | Get color for level |
+| `bright()` | `brightTheme()`, `vivid()` | Create bright theme |
+| `dim()` | `dimTheme()`, `subtle()` | Create dim theme |
+| `minimal()` | `minimalTheme()`, `basic()` | Create minimal theme |
+| `neon()` | `neonTheme()`, `vibrant()` | Create neon theme |
+| `pastel()` | `pastelTheme()`, `soft()` | Create pastel theme |
+| `dark()` | `darkTheme()`, `night()` | Create dark theme |
+| `light()` | `lightTheme()`, `day()` | Create light theme |
+| `fromRgb()` | `custom()`, `rgb()` | Create custom theme |
 | `init()` | `create()` | Initialize formatter |
 | `deinit()` | `destroy()` | Deinitialize formatter |
+| `format()` | `render()`, `output()` | Format record to string |
+| `formatToWriter()` | `renderToWriter()`, `writeFormatted()` | Format record to writer |
+| `formatJson()` | `json()`, `toJson()` | Format record to JSON |
+| `formatJsonToWriter()` | `jsonToWriter()`, `writeJson()` | Format record to JSON writer |
+| `getStats()` | `statistics()` | Get formatter statistics |
+| `setFormatCompleteCallback()` | `onFormatComplete()`, `setOnFormatComplete()` | Set format complete callback |
+| `setJsonFormatCallback()` | `onJsonFormat()`, `setOnJsonFormat()` | Set JSON format callback |
+| `setCustomFormatCallback()` | `onCustomFormat()`, `setOnCustomFormat()` | Set custom format callback |
+| `setErrorCallback()` | `onError()`, `setOnError()` | Set error callback |
+| `formatWithAllocator()` | `renderWithAllocator()`, `outputWithAllocator()` | Format with custom allocator |
+| `formatJsonWithAllocator()` | `jsonWithAllocator()`, `toJsonWithAllocator()` | Format JSON with custom allocator |
+| `hasTheme()` | `hasColorTheme()`, `isThemed()` | Check if theme is set |
+| `resetStats()` | `clearStats()`, `resetStatistics()` | Reset statistics |
+| `plain()` | `noColor()`, `monochrome()`, `colorless()` | Create plain formatter |
+| `dark()` | `darkMode()`, `nightMode()` | Create dark formatter |
+| `light()` | `lightMode()`, `dayMode()` | Create light formatter |
 
 ## Formatter
 

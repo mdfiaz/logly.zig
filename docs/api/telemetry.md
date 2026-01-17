@@ -19,6 +19,25 @@ Logly provides comprehensive OpenTelemetry (OTEL) support for distributed tracin
 - **Thread Safety**: Mutex-protected concurrent access to spans and metrics
 - **Utils Integration**: Leverages utils.zig for ID generation, time calculations, and JSON escaping
 
+## Quick Reference: Method Aliases
+
+| Full Method | Alias(es) | Description |
+|-------------|-----------|-------------|
+| `init()` | `create()` | Initialize telemetry |
+| `deinit()` | `destroy()` | Deinitialize telemetry |
+| `startSpan()` | `beginSpan()`, `start_span()` | Start a new span |
+| `endSpan()` | `finishSpan()`, `closeSpan()` | End a span |
+| `recordMetric()` | `record_metric()` | Record a metric |
+| `recordCounter()` | `counter()` | Record a counter metric |
+| `recordGauge()` | `gauge()` | Record a gauge metric |
+| `recordHistogram()` | `histogram()` | Record a histogram metric |
+| `exportSpans()` | `export_()` | Export spans |
+| `flush()` | `sync()` | Flush telemetry data |
+| `getStats()` | `statistics()`, `stats_()` | Get telemetry statistics |
+| `setEnabled()` | `enable()` | Enable telemetry |
+| `isEnabled()` | `is_enabled()` | Check if telemetry is enabled |
+| `resetStats()` | `clearStats()` | Reset telemetry statistics |
+
 ## Core Types
 
 ### Telemetry

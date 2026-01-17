@@ -305,6 +305,30 @@ Returns the current number of sinks.
 
 - **Aliases**: `count()`, `sinkCount()`
 
+### `enableAsync() void`
+
+Enables async logging if an async logger is configured. This allows log records to be processed asynchronously in the background.
+
+### `disableAsync() void`
+
+Disables async logging if an async logger is configured. Forces synchronous processing of log records.
+
+### `isAsyncEnabled() bool`
+
+Returns `true` if async logging is enabled and running, `false` otherwise.
+
+### `enableAutoFlush() void`
+
+Enables automatic flushing of all sinks after every log operation. Ensures immediate output visibility but may impact performance.
+
+### `disableAutoFlush() void`
+
+Disables automatic flushing. Sinks will only flush when their buffers are full or when manually flushed.
+
+### `isAutoFlushEnabled() bool`
+
+Returns `true` if auto-flush is enabled, `false` otherwise.
+
 ## Context Management
 
 ### `bind(key: []const u8, value: std.json.Value) !void`

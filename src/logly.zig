@@ -156,32 +156,55 @@ pub const ConfigPresets = struct {
         return Config.production();
     }
 
+    /// Alias for production
+    pub const prod = production;
+
     pub fn development() Config {
         return Config.development();
     }
+
+    /// Alias for development
+    pub const dev = development;
 
     pub fn highThroughput() Config {
         return Config.highThroughput();
     }
 
+    /// Alias for highThroughput
+    pub const fast = highThroughput;
+    pub const throughput = highThroughput;
+
     pub fn secure() Config {
         return Config.secure();
     }
+
+    /// Alias for secure
+    pub const security = secure;
 
     /// Log-only mode (no console display, only file storage)
     pub fn logOnly() Config {
         return Config.logOnly();
     }
 
+    /// Alias for logOnly
+    pub const filesOnly = logOnly;
+
     /// Display-only mode (console display, no file storage)
     pub fn displayOnly() Config {
         return Config.displayOnly();
     }
 
+    /// Alias for displayOnly
+    pub const consoleOnly = displayOnly;
+
     /// Custom display and storage settings
     pub fn withDisplayStorage(console: bool, file: bool, auto_sink: bool) Config {
         return Config.withDisplayStorage(console, file, auto_sink);
     }
+
+    /// Alias for withDisplayStorage
+    pub const custom = withDisplayStorage;
+    pub const withStorage = withDisplayStorage;
 };
 
 // Sink configuration helpers
@@ -190,25 +213,48 @@ pub const SinkPresets = struct {
         return SinkConfig.console();
     }
 
+    /// Alias for console
+    pub const stdout = console;
+    pub const terminal = console;
+
     pub fn file(path: []const u8) SinkConfig {
         return SinkConfig.file(path);
     }
+
+    /// Alias for file
+    pub const toFile = file;
 
     pub fn jsonFile(path: []const u8) SinkConfig {
         return SinkConfig.jsonFile(path);
     }
 
+    /// Alias for jsonFile
+    pub const json = jsonFile;
+    pub const toJsonFile = jsonFile;
+
     pub fn rotating(path: []const u8, interval: []const u8, retention: usize) SinkConfig {
         return SinkConfig.rotating(path, interval, retention);
     }
+
+    /// Alias for rotating
+    pub const rotate = rotating;
+    pub const rotatingFile = rotating;
 
     pub fn errorOnly(path: []const u8) SinkConfig {
         return SinkConfig.errorOnly(path);
     }
 
+    /// Alias for errorOnly
+    pub const errors = errorOnly;
+    pub const errorFile = errorOnly;
+
     pub fn network(uri: []const u8) SinkConfig {
         return SinkConfig.network(uri);
     }
+
+    /// Alias for network
+    pub const remote = network;
+    pub const net = network;
 };
 
 /// Platform utilities for terminal and console support.
@@ -237,6 +283,10 @@ pub const Terminal = struct {
         // Unix-like systems (Linux, macOS, BSD, etc.) support ANSI natively
         return true;
     }
+
+    /// Alias for enableAnsiColors
+    pub const enableColors = enableAnsiColors;
+    pub const ansi = enableAnsiColors;
 
     /// Check if the terminal likely supports ANSI color codes.
     pub fn supportsAnsiColors() bool {
@@ -273,6 +323,10 @@ pub const Terminal = struct {
         return true; // Default to enabled on Unix-like systems
     }
 
+    /// Alias for supportsAnsiColors
+    pub const supportsColors = supportsAnsiColors;
+    pub const hasAnsi = supportsAnsiColors;
+
     /// Explicitly enable or disable colors (useful for bare metal or testing).
     var color_enabled: bool = true;
 
@@ -280,9 +334,17 @@ pub const Terminal = struct {
         color_enabled = enabled;
     }
 
+    /// Alias for setColorEnabled
+    pub const setColors = setColorEnabled;
+    pub const enable = setColorEnabled;
+
     pub fn isColorEnabled() bool {
         return color_enabled and supportsAnsiColors();
     }
+
+    /// Alias for isColorEnabled
+    pub const colorsEnabled = isColorEnabled;
+    pub const isEnabled = isColorEnabled;
 
     fn enableWindowsAnsi() bool {
         const builtin = @import("builtin");

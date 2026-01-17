@@ -23,6 +23,7 @@ const http = std.http;
 const SinkConfig = @import("sink.zig").SinkConfig;
 const Constants = @import("constants.zig");
 const Utils = @import("utils.zig");
+const Config = @import("config.zig");
 
 pub const NetworkError = error{
     InvalidUri,
@@ -52,30 +53,59 @@ pub const NetworkStats = struct {
         self.errors.store(0, .monotonic);
     }
 
+    /// Alias for reset
+    pub const clear = reset;
+    pub const zero = reset;
+
     pub fn totalBytesSent(self: *const NetworkStats) u64 {
         return Utils.atomicLoadU64(&self.bytes_sent);
     }
+
+    /// Alias for totalBytesSent
+    pub const bytesSent = totalBytesSent;
+    pub const sentBytes = totalBytesSent;
 
     pub fn totalBytesReceived(self: *const NetworkStats) u64 {
         return Utils.atomicLoadU64(&self.bytes_received);
     }
 
+    /// Alias for totalBytesReceived
+    pub const bytesReceived = totalBytesReceived;
+    pub const receivedBytes = totalBytesReceived;
+
     pub fn totalMessagesCount(self: *const NetworkStats) u64 {
         return Utils.atomicLoadU64(&self.messages_sent);
     }
+
+    /// Alias for totalMessagesCount
+    pub const messagesCount = totalMessagesCount;
+    pub const messageCount = totalMessagesCount;
+    pub const totalMessages = totalMessagesCount;
 
     pub fn totalConnectionsMade(self: *const NetworkStats) u64 {
         return Utils.atomicLoadU64(&self.connections_made);
     }
 
+    /// Alias for totalConnectionsMade
+    pub const connectionsMade = totalConnectionsMade;
+    pub const connectionCount = totalConnectionsMade;
+    pub const totalConnections = totalConnectionsMade;
+
     pub fn totalErrors(self: *const NetworkStats) u64 {
         return Utils.atomicLoadU64(&self.errors);
     }
+
+    /// Alias for totalErrors
+    pub const errorCount = totalErrors;
 
     /// Checks if any network errors occurred.
     pub fn hasErrors(self: *const NetworkStats) bool {
         return self.errors.load(.monotonic) > 0;
     }
+
+    /// Alias for hasErrors
+    pub const hasFailures = hasErrors;
+    pub const isError = hasErrors;
 
     /// Calculate error rate (0.0 - 1.0) based on messages sent.
     pub fn errorRate(self: *const NetworkStats) f64 {
@@ -84,6 +114,9 @@ pub const NetworkStats = struct {
         return Utils.calculateErrorRate(errs, sent);
     }
 
+    /// Alias for errorRate
+    pub const failureRate = errorRate;
+
     /// Calculate average bytes per message.
     pub fn avgBytesPerMessage(self: *const NetworkStats) f64 {
         const bytes = Utils.atomicLoadU64(&self.bytes_sent);
@@ -91,64 +124,28 @@ pub const NetworkStats = struct {
         return Utils.calculateAverage(bytes, messages);
     }
 
+    /// Alias for avgBytesPerMessage
+    pub const avgBytes = avgBytesPerMessage;
+    pub const bytesPerMessage = avgBytesPerMessage;
+
     /// Returns total bytes transferred (sent + received).
     pub fn totalBytesTransferred(self: *const NetworkStats) u64 {
         return Utils.atomicLoadU64(&self.bytes_sent) + Utils.atomicLoadU64(&self.bytes_received);
     }
+
+    /// Alias for totalBytesTransferred
+    pub const bytesTransferred = totalBytesTransferred;
+    pub const totalTransferred = totalBytesTransferred;
 };
 
 /// Global network stats
 pub var stats: NetworkStats = .{};
 
 /// Syslog severity levels (RFC 5424)
-pub const SyslogSeverity = enum(u3) {
-    emergency = 0,
-    alert = 1,
-    critical = 2,
-    err = 3,
-    warning = 4,
-    notice = 5,
-    info = 6,
-    debug = 7,
-
-    pub fn fromLogLevel(level: @import("level.zig").Level) SyslogSeverity {
-        return switch (level) {
-            .trace, .debug => .debug,
-            .info => .info,
-            .notice => .notice,
-            .success => .info,
-            .warning => .warning,
-            .err => .err,
-            .fail => .err,
-            .critical => .critical,
-            .fatal => .emergency,
-        };
-    }
-};
+pub const SyslogSeverity = Constants.SyslogConstants.Severity;
 
 /// Syslog facilities (RFC 5424)
-pub const SyslogFacility = enum(u5) {
-    kern = 0,
-    user = 1,
-    mail = 2,
-    daemon = 3,
-    auth = 4,
-    syslog = 5,
-    lpr = 6,
-    news = 7,
-    uucp = 8,
-    cron = 9,
-    authpriv = 10,
-    ftp = 11,
-    local0 = 16,
-    local1 = 17,
-    local2 = 18,
-    local3 = 19,
-    local4 = 20,
-    local5 = 21,
-    local6 = 22,
-    local7 = 23,
-};
+pub const SyslogFacility = Constants.SyslogConstants.Facility;
 
 pub fn formatSyslog(
     allocator: std.mem.Allocator,
@@ -179,6 +176,10 @@ pub fn formatSyslog(
 
     return res.toOwnedSlice(allocator);
 }
+
+/// Alias for formatSyslog
+pub const syslogFormat = formatSyslog;
+pub const formatAsSyslog = formatSyslog;
 
 /// Connects to a TCP host specified by a URI string (e.g., "tcp://127.0.0.1:8080").
 /// Returns a std.net.Stream.
@@ -239,6 +240,10 @@ pub fn sendUdp(socket: std.posix.socket_t, address: std.net.Address, data: []con
     _ = stats.messages_sent.fetchAdd(1, .monotonic);
 }
 
+/// Alias for sendUdp
+pub const udpSend = sendUdp;
+pub const sendToUdp = sendUdp;
+
 /// Fetches a JSON response from a URL.
 /// Returns the parsed JSON value (caller must deinit).
 pub fn fetchJson(allocator: std.mem.Allocator, url: []const u8, headers: []const http.Header) !std.json.Parsed(std.json.Value) {
@@ -253,7 +258,7 @@ pub fn fetchJson(allocator: std.mem.Allocator, url: []const u8, headers: []const
 
     try req.sendBodiless();
 
-    const redirect_buffer = try allocator.alloc(u8, 8 * 1024);
+    const redirect_buffer = try allocator.alloc(u8, Constants.NetworkConstants.tcp_buffer_size);
     defer allocator.free(redirect_buffer);
 
     var response = try req.receiveHead(redirect_buffer);
@@ -271,11 +276,11 @@ pub fn fetchJson(allocator: std.mem.Allocator, url: []const u8, headers: []const
     var decompress: http.Decompress = undefined;
     var reader = response.readerDecompressing(&transfer_buffer, &decompress, decompress_buffer);
 
-    var body = std.ArrayList(u8).initCapacity(allocator, 4096) catch return NetworkError.ReadError;
+    var body = std.ArrayList(u8).initCapacity(allocator, Constants.BufferSizes.message) catch return NetworkError.ReadError;
     defer body.deinit(allocator);
 
     const writer = body.writer(allocator);
-    var buf: [4096]u8 = undefined;
+    var buf: [Constants.BufferSizes.message]u8 = undefined;
     while (true) {
         const n = reader.readSliceShort(&buf) catch return NetworkError.ReadError;
         if (n == 0) break;
@@ -331,22 +336,31 @@ pub const LogServer = struct {
         return self.running.load(.monotonic);
     }
 
+    /// Alias for isRunning
+    pub const isActive = isRunning;
+
     pub fn messageCount(self: *const LogServer) u64 {
         return @as(u64, self.messages_received.load(.monotonic));
     }
+
+    /// Alias for messageCount
+    pub const messagesReceived = messageCount;
+    pub const receivedCount = messageCount;
 
     pub fn startTcp(self: *LogServer, port: u16, callback: *const fn ([]const u8) void) !void {
         self.running.store(true, .monotonic);
         self.tcp_thread = try std.Thread.spawn(.{}, tcpWorker, .{ self, port, callback });
     }
 
+    /// Alias for startTcp
+    pub const listenTcp = startTcp;
+
     pub fn startUdp(self: *LogServer, port: u16, callback: *const fn ([]const u8) void) !void {
         self.running.store(true, .monotonic);
         self.udp_thread = try std.Thread.spawn(.{}, udpWorker, .{ self, port, callback });
     }
 
-    /// Aliases
-    pub const listenTcp = startTcp;
+    /// Alias for startUdp
     pub const listenUdp = startUdp;
 
     fn tcpWorker(self: *LogServer, port: u16, callback: *const fn ([]const u8) void) void {
@@ -377,7 +391,7 @@ pub const LogServer = struct {
 
     fn tcpClientHandler(self: *LogServer, socket: std.posix.socket_t, callback: *const fn ([]const u8) void) void {
         defer std.posix.close(socket);
-        var buf: [4096]u8 = undefined;
+        var buf: [Constants.NetworkConstants.tcp_buffer_size]u8 = undefined;
         while (self.running.load(.monotonic)) {
             const read = std.posix.recv(socket, &buf, 0) catch break;
             if (read == 0) break;
@@ -394,7 +408,7 @@ pub const LogServer = struct {
         std.posix.setsockopt(socket, std.posix.SOL.SOCKET, std.posix.SO.REUSEADDR, &std.mem.toBytes(@as(c_int, 1))) catch {};
         std.posix.bind(socket, &address.any, address.getOsSockLen()) catch return;
 
-        var buf: [4096]u8 = undefined;
+        var buf: [Constants.NetworkConstants.udp_max_packet]u8 = undefined;
         while (self.running.load(.monotonic)) {
             var client_address: std.net.Address = undefined;
             var client_address_len: std.posix.socklen_t = @sizeOf(std.net.Address);
@@ -446,6 +460,12 @@ pub fn getStats() NetworkStats {
 pub fn resetStats() void {
     stats.reset();
 }
+
+/// Aliases for global network statistics functions
+pub const networkStats = getStats;
+pub const getNetworkStats = getStats;
+pub const clearStats = resetStats;
+pub const resetNetworkStats = resetStats;
 
 test "syslog severity mapping" {
     try std.testing.expectEqual(SyslogSeverity.debug, SyslogSeverity.fromLogLevel(.debug));

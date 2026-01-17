@@ -761,9 +761,45 @@ pub const AsyncLogger = struct {
     /// Alias for getStats
     pub const statistics = getStats;
 
+    /// Alias for resetStats
+    pub const clearStats = resetStats;
+
     /// Alias for queueDepth
     pub const depth = queueDepth;
     pub const pending = queueDepth;
+
+    /// Alias for isQueueEmpty
+    pub const empty = isQueueEmpty;
+
+    /// Alias for setOverflowCallback
+    pub const onOverflow = setOverflowCallback;
+
+    /// Alias for setFlushCallback
+    pub const onFlush = setFlushCallback;
+
+    /// Alias for setWorkerStartCallback
+    pub const onWorkerStart = setWorkerStartCallback;
+
+    /// Alias for setWorkerStopCallback
+    pub const onWorkerStop = setWorkerStopCallback;
+
+    /// Alias for setBatchProcessedCallback
+    pub const onBatchProcessed = setBatchProcessedCallback;
+
+    /// Alias for setLatencyThresholdExceededCallback
+    pub const onLatencyThresholdExceeded = setLatencyThresholdExceededCallback;
+
+    /// Alias for setFullCallback
+    pub const onFull = setFullCallback;
+
+    /// Alias for setEmptyCallback
+    pub const onEmpty = setEmptyCallback;
+
+    /// Alias for setErrorCallback
+    pub const onError = setErrorCallback;
+
+    /// Alias for isFull
+    pub const full = isFull;
 
     /// Alias for startWorker
     pub const begin = startWorker;
@@ -841,6 +877,8 @@ pub const AsyncFileWriter = struct {
         }
     }
 
+    pub const writeData = write;
+
     pub fn writeLine(self: *AsyncFileWriter, data: []const u8) !void {
         self.mutex.lock();
         defer self.mutex.unlock();
@@ -852,6 +890,8 @@ pub const AsyncFileWriter = struct {
             try self.flushInternal();
         }
     }
+
+    pub const writeLn = writeLine;
 
     fn flushInternal(self: *AsyncFileWriter) !void {
         if (self.buffer.items.len == 0) return;
@@ -873,11 +913,15 @@ pub const AsyncFileWriter = struct {
         self.flushInternal() catch {};
     }
 
+    pub const flush = flushSync;
+
     pub fn startAutoFlush(self: *AsyncFileWriter) !void {
         if (self.running.load(.acquire)) return;
         self.running.store(true, .release);
         self.flush_thread = try std.Thread.spawn(.{}, autoFlushLoop, .{self});
     }
+
+    pub const startFlush = startAutoFlush;
 
     pub fn stop(self: *AsyncFileWriter) void {
         if (!self.running.load(.acquire)) return;
@@ -887,6 +931,8 @@ pub const AsyncFileWriter = struct {
             self.flush_thread = null;
         }
     }
+
+    pub const halt = stop;
 
     fn autoFlushLoop(self: *AsyncFileWriter) void {
         while (self.running.load(.acquire)) {
@@ -898,6 +944,8 @@ pub const AsyncFileWriter = struct {
     pub fn bytesWritten(self: *const AsyncFileWriter) u64 {
         return @as(u64, self.bytes_written.load(.monotonic));
     }
+
+    pub const written = bytesWritten;
 };
 
 /// Preset configurations for async logging.

@@ -1167,6 +1167,41 @@ pub const Telemetry = struct {
 
         return self.startSpan(name, new_opts);
     }
+
+    /// Alias for init
+    pub const create = init;
+    /// Alias for deinit
+    pub const destroy = deinit;
+    /// Alias for startSpan
+    pub const beginSpan = startSpan;
+    /// Alias for startSpan
+    pub const start_span = startSpan;
+    /// Alias for endSpan
+    pub const finishSpan = endSpan;
+    /// Alias for endSpan
+    pub const closeSpan = endSpan;
+    /// Alias for recordMetric
+    pub const record_metric = recordMetric;
+    /// Alias for recordCounter
+    pub const counter = recordCounter;
+    /// Alias for recordGauge
+    pub const gauge = recordGauge;
+    /// Alias for recordHistogram
+    pub const histogram = recordHistogram;
+    /// Alias for exportSpans
+    pub const export_ = exportSpans;
+    /// Alias for flush
+    pub const sync = flush;
+    /// Alias for getStats
+    pub const statistics = getStats;
+    /// Alias for getStats
+    pub const stats_ = getStats;
+    /// Alias for setEnabled
+    pub const enable = setEnabled;
+    /// Alias for isEnabled
+    pub const is_enabled = isEnabled;
+    /// Alias for resetStats
+    pub const clearStats = resetStats;
 };
 
 /// Trace context for W3C propagation

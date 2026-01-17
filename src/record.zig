@@ -534,4 +534,66 @@ pub const Record = struct {
     /// Alias for clone
     pub const copy = clone;
     pub const duplicate = clone;
+
+    /// Alias for levelName
+    pub const getLevelName = levelName;
+
+    /// Alias for levelColor
+    pub const getLevelColor = levelColor;
+
+    /// Alias for initCustom
+    pub const createCustom = initCustom;
+    pub const customInit = initCustom;
+
+    /// Alias for initWithSource
+    pub const createWithSource = initWithSource;
+    pub const withSource = initWithSource;
+
+    /// Alias for setError
+    pub const setErrorInfo = setError;
+
+    /// Alias for setDuration
+    // pub const duration = setDuration; // conflicts with local var
+
+    /// Alias for setDurationSince
+    pub const durationFrom = setDurationSince;
+    pub const setDurationFrom = setDurationSince;
+
+    /// Alias for generateTraceId
+    pub const newTraceId = generateTraceId;
+    pub const createTraceId = generateTraceId;
+
+    /// Alias for generateSpanId
+    pub const newSpanId = generateSpanId;
+    pub const createSpanId = generateSpanId;
+
+    /// Alias for hasCustomLevel
+    pub const isCustomLevel = hasCustomLevel;
+
+    /// Alias for hasContext
+    pub const hasFields = hasContext;
+
+    /// Alias for contextCount
+    pub const fieldCount = contextCount;
+
+    /// Alias for hasStackTrace
+    pub const hasTrace = hasStackTrace;
+
+    /// Alias for hasError
+    pub const hasErrorInfo = hasError;
+
+    /// Alias for hasTracing
+    pub const hasTraceInfo = hasTracing;
+
+    /// Alias for hasRequestId
+    pub const hasRequest = hasRequestId;
+
+    /// Alias for hasSessionId
+    pub const hasSession = hasSessionId;
+
+    /// Alias for hasUserId
+    pub const hasUser = hasUserId;
+
+    /// Alias for hasParentSpan
+    pub const hasParent = hasParentSpan;
 };

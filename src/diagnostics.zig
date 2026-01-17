@@ -441,6 +441,14 @@ pub fn createDiagnosticsSink(file_path: []const u8) SinkConfig {
 pub const gather = collect;
 pub const snapshot = collect;
 
+/// Alias for createDiagnosticsSink
+pub const createSink = createDiagnosticsSink;
+pub const diagnosticsSink = createDiagnosticsSink;
+
+/// Alias for summary
+pub const info = summary;
+pub const systemInfo = summary;
+
 /// Returns a quick system summary string.
 ///
 /// Formats key system stats into a human-readable string.
@@ -484,10 +492,18 @@ pub const DiagnosticsPresets = struct {
         return collect(allocator, false);
     }
 
+    /// Alias for minimal
+    pub const basic = minimal;
+    pub const simple = minimal;
+
     /// Full diagnostics (includes drive info).
     ///
     /// Complexity: O(D) where D is number of drives.
     pub fn full(allocator: std.mem.Allocator) !Diagnostics {
         return collect(allocator, true);
     }
+
+    /// Alias for full
+    pub const complete = full;
+    pub const comprehensive = full;
 };

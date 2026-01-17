@@ -33,6 +33,42 @@ pub const Level = enum(u8) {
 };
 ```
 
+## Quick Reference: Method Aliases
+
+| Full Method | Alias(es) | Description |
+|-------------|-----------|-------------|
+| `priority()` | `value()`, `severity()` | Get priority value |
+| `asString()` | `toString()`, `str()` | Convert to string |
+| `fromString()` | `parse()` | Parse from string |
+| `fromPriority()` | `fromValue()`, `fromSeverity()` | Create from priority |
+| `defaultColor()` | `color()` | Get default color |
+| `brightColor()` | `bright()`, `vivid()` | Get bright color |
+| `dimColor()` | `dim()`, `subtle()` | Get dim color |
+| `underlineColor()` | `underline()`, `underlined()` | Get underline color |
+| `color256()` | `color256bit()`, `ansi256()` | Get 256-color code |
+| `isAtLeast()` | `atLeast()`, `gte()` | Check if at least level |
+| `isMoreSevereThan()` | `moreSevereThan()`, `gt()` | Check if more severe than |
+| `isError()` | `isErr()`, `isFailure()` | Check if error level |
+| `isWarning()` | `isWarn()` | Check if warning level |
+| `isDebug()` | `isTraceOrDebug()`, `isVerbose()` | Check if debug/trace level |
+| `init()` | `create()`, `new()` | Initialize custom level (CustomLevel) |
+| `initFull()` | `createFull()`, `newFull()` | Initialize full custom level (CustomLevel) |
+| `initRgb()` | `createRgb()`, `newRgb()` | Initialize RGB custom level (CustomLevel) |
+| `init256()` | `create256()`, `new256()` | Initialize 256-color custom level (CustomLevel) |
+| `initStyled()` | `createStyled()`, `newStyled()` | Initialize styled custom level (CustomLevel) |
+| `initWithBackground()` | `createWithBackground()`, `newWithBackground()` | Initialize with background (CustomLevel) |
+| `effectiveColor()` | `effective()`, `getColor()` | Get effective color (CustomLevel) |
+| `getBrightColor()` | `brightColor()`, `getBright()` | Get bright color (CustomLevel) |
+| `getDimColor()` | `dimColor()`, `getDim()` | Get dim color (CustomLevel) |
+| `get256Color()` | `color256()`, `get256()` | Get 256-color (CustomLevel) |
+| `isAtLeast()` | `atLeast()`, `gte()` | Check if at least level (CustomLevel) |
+| `isError()` | `isErr()`, `isFailure()` | Check if error level (CustomLevel) |
+| `asString()` | `toString()`, `str()` | Convert to string (CustomLevel) |
+| `hasRgbColor()` | `hasRgb()` | Check if has RGB color (CustomLevel) |
+| `has256Color()` | `has256()` | Check if has 256-color (CustomLevel) |
+| `hasBackground()` | `hasBg()`, `hasBackgroundColor()` | Check if has background (CustomLevel) |
+| `hasStyle()` | `hasTextStyle()` | Check if has text style (CustomLevel) |
+
 ## Level Table
 
 | Level    | Priority | Color        | ANSI Code | Description              |

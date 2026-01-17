@@ -31,6 +31,7 @@ const Sampler = @import("sampler.zig").Sampler;
 const Redactor = @import("redactor.zig").Redactor;
 const Metrics = @import("metrics.zig").Metrics;
 const ThreadPool = @import("thread_pool.zig").ThreadPool;
+const AsyncLogger = @import("async.zig").AsyncLogger;
 const UpdateChecker = @import("update_checker.zig");
 const Diagnostics = @import("diagnostics.zig");
 const Constants = @import("constants.zig");
@@ -191,6 +192,8 @@ pub const Logger = struct {
     metrics: ?*Metrics = null,
     /// Thread pool for parallel processing.
     thread_pool: ?*ThreadPool = null,
+    /// Async logger for high-performance buffered logging.
+    async_logger: ?*AsyncLogger = null,
     /// Background thread for update checking.
     update_thread: ?std.Thread = null,
     /// Rules engine for diagnostic messages.
@@ -303,6 +306,11 @@ pub const Logger = struct {
             logger.parent_allocator = allocator;
         }
 
+        if (config.async_config.enabled) {
+            const al = try AsyncLogger.initWithConfig(allocator, config.async_config);
+            logger.async_logger = al;
+        }
+
         if (config.auto_sink and config.global_console_display) {
             _ = try logger.addSink(SinkConfig.console());
         }
@@ -338,6 +346,10 @@ pub const Logger = struct {
 
         if (self.thread_pool) |tp| {
             tp.deinit();
+        }
+
+        if (self.async_logger) |al| {
+            al.deinit();
         }
 
         for (self.sinks.items) |sink| {
@@ -585,8 +597,16 @@ pub const Logger = struct {
 
         const sink = try Sink.init(self.allocator, modified_config);
         errdefer sink.deinit();
-        try self.sinks.append(self.allocator, sink);
-        return self.sinks.items.len - 1;
+
+        if (self.async_logger) |al| {
+            try al.addSink(sink);
+            // When using async logger, we don't track sinks in the main logger
+            // Return a dummy index since sink management isn't supported
+            return 0;
+        } else {
+            try self.sinks.append(self.allocator, sink);
+            return self.sinks.items.len - 1;
+        }
     }
 
     /// Alias for addSink() - shorter form.
@@ -598,6 +618,11 @@ pub const Logger = struct {
     pub fn removeSink(self: *Logger, id: usize) void {
         self.mutex.lock();
         defer self.mutex.unlock();
+
+        if (self.async_logger != null) {
+            // Async logger doesn't support removing sinks dynamically
+            return;
+        }
 
         if (id < self.sinks.items.len) {
             const sink = self.sinks.orderedRemove(id);
@@ -616,6 +641,11 @@ pub const Logger = struct {
     pub fn removeAllSinks(self: *Logger) usize {
         self.mutex.lock();
         defer self.mutex.unlock();
+
+        if (self.async_logger != null) {
+            // Async logger doesn't support removing sinks dynamically
+            return 0;
+        }
 
         const removed_count = self.sinks.items.len;
         for (self.sinks.items) |sink| {
@@ -657,6 +687,64 @@ pub const Logger = struct {
         self.mutex.lockShared();
         defer self.mutex.unlockShared();
         return self.sinks.items.len;
+    }
+
+    /// Enables async logging if an async logger is configured.
+    /// Thread-safe: Uses mutex for concurrent access protection.
+    pub fn enableAsync(self: *Logger) void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+
+        if (self.async_logger) |al| {
+            al.running.store(true, .monotonic);
+        }
+    }
+
+    /// Disables async logging if an async logger is configured.
+    /// Thread-safe: Uses mutex for concurrent access protection.
+    pub fn disableAsync(self: *Logger) void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+
+        if (self.async_logger) |al| {
+            al.running.store(false, .monotonic);
+        }
+    }
+
+    /// Checks if async logging is enabled and running.
+    /// Thread-safe: Uses mutex for concurrent access protection.
+    pub fn isAsyncEnabled(self: *Logger) bool {
+        self.mutex.lockShared();
+        defer self.mutex.unlockShared();
+
+        if (self.async_logger) |al| {
+            return al.running.load(.monotonic);
+        }
+        return false;
+    }
+
+    /// Enables auto-flush for all logging operations.
+    /// Thread-safe: Uses mutex for concurrent access protection.
+    pub fn enableAutoFlush(self: *Logger) void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+        self.config.auto_flush = true;
+    }
+
+    /// Disables auto-flush for all logging operations.
+    /// Thread-safe: Uses mutex for concurrent access protection.
+    pub fn disableAutoFlush(self: *Logger) void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+        self.config.auto_flush = false;
+    }
+
+    /// Checks if auto-flush is enabled.
+    /// Thread-safe: Uses mutex for concurrent access protection.
+    pub fn isAutoFlushEnabled(self: *Logger) bool {
+        self.mutex.lockShared();
+        defer self.mutex.unlockShared();
+        return self.config.auto_flush;
     }
 
     /// Alias for getSinkCount() - shorter form.
@@ -898,6 +986,9 @@ pub const Logger = struct {
     }
 
     fn flushInternal(self: *Logger) !void {
+        if (self.async_logger) |al| {
+            al.flushSync();
+        }
         for (self.sinks.items) |sink| {
             try sink.flush();
         }
@@ -1133,6 +1224,31 @@ pub const Logger = struct {
             try self.log_callback.?(&record);
         }
 
+        // Dispatch the record
+        try self.dispatchRecord(&record);
+    }
+
+    /// Dispatches a record to the appropriate logging backend (async logger, thread pool, or direct sinks).
+    /// This method handles the priority order: async_logger > thread_pool > direct sinks.
+    fn dispatchRecord(self: *Logger, record: *const Record) !void {
+        // Dispatch to async logger if available (highest priority)
+        if (self.async_logger) |al| {
+            // Format the record using the logger's formatter
+            var formatter = Formatter.init(self.allocator);
+            defer formatter.deinit();
+
+            const formatted = try formatter.format(record, self.config);
+            defer self.allocator.free(formatted);
+
+            _ = al.queue(formatted, record.level.priority());
+
+            // Auto-flush if enabled
+            if (self.config.auto_flush) {
+                al.flush();
+            }
+            return;
+        }
+
         // Dispatch to thread pool if available - this is where async parallelism happens
         if (self.thread_pool) |tp| {
             // Clone record for async processing
@@ -1147,6 +1263,10 @@ pub const Logger = struct {
             };
 
             if (tp.submitCallback(processLogTask, task_ctx)) {
+                // Auto-flush if enabled (consistent with sync path)
+                if (self.config.auto_flush) {
+                    self.flushInternal() catch {};
+                }
                 return;
             }
 
@@ -1157,9 +1277,9 @@ pub const Logger = struct {
 
         // Write to all sinks (synchronous path when no thread pool)
         // Note: Each sink has its own mutex for thread-safety
-        const scratch_alloc = if (self.config.use_arena_allocator) scratch else null;
+        const scratch_alloc = if (self.config.use_arena_allocator) self.scratchAllocator() else null;
         for (self.sinks.items) |sink| {
-            sink.writeWithAllocator(&record, self.config, scratch_alloc) catch |write_err| {
+            sink.writeWithAllocator(record, self.config, scratch_alloc) catch |write_err| {
                 if (self.metrics) |m| {
                     m.recordError();
                 }
@@ -1174,7 +1294,6 @@ pub const Logger = struct {
             };
         }
 
-        // Auto-flush if enabled
         // Auto-flush if enabled
         if (self.config.auto_flush) {
             self.flushInternal() catch {};
@@ -1210,15 +1329,8 @@ pub const Logger = struct {
             m.recordError();
         }
 
-        const scratch_alloc = if (self.config.use_arena_allocator) self.scratchAllocator() else null;
-        for (self.sinks.items) |sink| {
-            try sink.writeWithAllocator(&record, self.config, scratch_alloc);
-        }
-
-        // Auto-flush if enabled
-        if (self.config.auto_flush) {
-            self.flushInternal() catch {};
-        }
+        // Dispatch the record
+        try self.dispatchRecord(&record);
     }
 
     /// Logs a timed operation. Returns the duration in nanoseconds.
@@ -1251,15 +1363,8 @@ pub const Logger = struct {
             m.recordLog(level, message.len);
         }
 
-        const scratch_alloc = if (self.config.use_arena_allocator) self.scratchAllocator() else null;
-        for (self.sinks.items) |sink| {
-            try sink.writeWithAllocator(&record, self.config, scratch_alloc);
-        }
-
-        // Auto-flush if enabled
-        if (self.config.auto_flush) {
-            self.flushInternal() catch {};
-        }
+        // Dispatch the record
+        try self.dispatchRecord(&record);
 
         return duration;
     }
@@ -1340,21 +1445,13 @@ pub const Logger = struct {
         // Note: diagnostics_output_path can be used by adding a separate sink for diagnostics
         // The diagnostics context fields (diag.os, diag.cpu, etc) are available for custom formats
 
-        // Write to all sinks
-        const scratch_alloc = if (self.config.use_arena_allocator) self.scratchAllocator() else null;
-        for (self.sinks.items) |sink| {
-            sink.writeWithAllocator(&record, self.config, scratch_alloc) catch |write_err| {
-                if (self.metrics) |m| m.recordError();
-                if (self.config.debug_mode) {
-                    std.debug.print("Diagnostics write error: {}\n", .{write_err});
-                }
-            };
-        }
-
-        // Auto-flush if enabled
-        if (self.config.auto_flush) {
-            self.flushInternal() catch {};
-        }
+        // Dispatch the record
+        self.dispatchRecord(&record) catch |dispatch_err| {
+            if (self.metrics) |m| m.recordError();
+            if (self.config.debug_mode) {
+                std.debug.print("Diagnostics dispatch error: {}\n", .{dispatch_err});
+            }
+        };
     }
 
     // Logging methods with simple, Python-like API

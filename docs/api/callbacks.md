@@ -2,6 +2,28 @@
 
 The Callback API allows you to hook into the logging lifecycle for monitoring, tracing, and custom extensions.
 
+## Quick Reference: Method Aliases
+
+| Full Method | Alias(es) | Description |
+|-------------|-----------|-------------|
+| `setLogCallback()` | - | Set log callback |
+| `setColorCallback()` | - | Set color callback |
+| `setLoggedCallback()` | - | Set logged callback |
+| `setFilteredCallback()` | - | Set filtered callback |
+| `setSinkErrorCallback()` | - | Set sink error callback |
+| `setInitializedCallback()` | - | Set initialized callback |
+| `setDestroyedCallback()` | - | Set destroyed callback |
+| `setWriteCallback()` | `onWrite()` | Set write callback (Sink) |
+| `setFlushCallback()` | `onFlush()` | Set flush callback (Sink) |
+| `setErrorCallback()` | `onError()` | Set error callback (Sink) |
+| `setRotationCallback()` | `onRotation()` | Set rotation callback (Sink) |
+| `setStateChangeCallback()` | `onStateChange()` | Set state change callback (Sink) |
+| `setCompressionStartCallback()` | `onCompressionStart()` | Set compression start callback (Compression) |
+| `setCompressionCompleteCallback()` | `onCompressionComplete()` | Set compression complete callback (Compression) |
+| `setCompressionErrorCallback()` | `onCompressionError()` | Set compression error callback (Compression) |
+| `setDecompressionCompleteCallback()` | `onDecompressionComplete()` | Set decompression complete callback (Compression) |
+| `setArchiveDeletedCallback()` | `onArchiveDeleted()` | Set archive deleted callback (Compression) |
+
 ## Core Callbacks
 
 ### Log Callback

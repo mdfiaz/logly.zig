@@ -19,8 +19,20 @@ The `Sink` struct represents a destination for log messages. Sinks can write to 
 | Full Method | Alias(es) | Description |
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize sink |
-| `deinit()` | `destroy()` | Deinitialize sink |
-| `log()` | `record()` | Log a record |
+| `deinit()` | `destroy()`, `close()` | Deinitialize sink |
+| `writeWithAllocator()` | `writeWithAlloc()` | Write with custom allocator |
+| `setWriteCallback()` | `onWrite()` | Set write callback |
+| `setFlushCallback()` | `onFlush()` | Set flush callback |
+| `setErrorCallback()` | `onError()` | Set error callback |
+| `setRotationCallback()` | `onRotation()` | Set rotation callback |
+| `setStateChangeCallback()` | `onStateChange()` | Set state change callback |
+| `getStats()` | `statistics()`, `stats_()` | Get sink statistics |
+| `clearBuffer()` | `clear()` | Clear write buffer |
+| `flush()` | `sync()` | Flush buffered data |
+| `isEnabled()` | `is_enabled()` | Check if sink is enabled |
+| `isAsyncEnabled()` | `asyncEnabled()` | Check if async writing is enabled |
+| `flushNow()` | `flushImmediate()` | Force immediate flush |
+| `getName()` | `name()` | Get sink name |
 
 ## SinkConfig
 
@@ -190,6 +202,22 @@ try sink.writeWithAllocator(record, config, logger.scratchAllocator());
 ### `flush() !void`
 
 Flushes the sink buffer to ensure all data is written.
+
+### `isAsyncEnabled() bool`
+
+Returns `true` if async writing is enabled for this sink, `false` otherwise.
+
+### `enableAsync() void`
+
+Enables async writing for this sink, allowing buffered writes with periodic flushing.
+
+### `disableAsync() void`
+
+Disables async writing for this sink, forcing immediate synchronous writes and flushing any pending buffer.
+
+### `flushNow() !void`
+
+Manually flushes the sink buffer immediately, regardless of async settings.
 
 ## Examples
 

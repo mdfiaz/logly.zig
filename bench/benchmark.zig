@@ -155,6 +155,19 @@ const BenchContext = struct {
     logger: *Logger,
     allocator: std.mem.Allocator,
 };
+
+/// Returns a silent config for benchmarking (no console output).
+/// Use with Logger.initWithConfig() to prevent log pollution.
+fn benchmarkConfig() Config {
+    var config = Config.default();
+    config.auto_sink = false;
+    config.auto_flush = false;
+    config.global_console_display = false;
+    config.global_file_storage = false;
+    config.check_for_updates = false;
+    return config;
+}
+
 // Basic Benchmark Functions
 fn benchSimpleLog(ctx: *const BenchContext) !void {
     try ctx.logger.info("Simple log message", null);
@@ -314,14 +327,10 @@ pub fn main() !void {
     //
     {
         std.debug.print("Running: Basic logging benchmarks...\n", .{});
-        const logger = try Logger.init(allocator);
-        defer logger.deinit();
-
-        var config = Config.default();
+        var config = benchmarkConfig();
         config.color = false;
-        config.global_color_display = false;
-        config.auto_sink = false;
-        logger.configure(config);
+        const logger = try Logger.initWithConfig(allocator, config);
+        defer logger.deinit();
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
 
@@ -331,14 +340,10 @@ pub fn main() !void {
     }
 
     {
-        const logger = try Logger.init(allocator);
-        defer logger.deinit();
-
-        var config = Config.default();
+        var config = benchmarkConfig();
         config.color = true;
-        config.global_color_display = true;
-        config.auto_sink = false;
-        logger.configure(config);
+        const logger = try Logger.initWithConfig(allocator, config);
+        defer logger.deinit();
 
         _ = try logger.addSink(.{ .path = NULL_PATH, .color = true });
 
@@ -359,6 +364,7 @@ pub fn main() !void {
         config.json = true;
         config.color = false;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH, .json = true, .color = false });
@@ -376,6 +382,7 @@ pub fn main() !void {
         config.json = true;
         config.pretty_json = true;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH, .json = true, .pretty_json = true });
@@ -392,6 +399,7 @@ pub fn main() !void {
         config.json = true;
         config.color = true;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH, .json = true, .color = true });
@@ -412,6 +420,7 @@ pub fn main() !void {
         config.level = .trace;
         config.color = false;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -439,6 +448,7 @@ pub fn main() !void {
         config.level = .trace;
         config.color = false;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         try logger.addCustomLevel("AUDIT", 35, "96");
@@ -456,6 +466,7 @@ pub fn main() !void {
         var config = Config.default();
         config.log_format = "{time} | {level} | {message}";
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -471,6 +482,7 @@ pub fn main() !void {
         var config = Config.default();
         config.time_format = "DD/MM/YYYY HH:mm:ss";
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -486,6 +498,7 @@ pub fn main() !void {
         var config = Config.default();
         config.time_format = "ISO8601";
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -501,6 +514,7 @@ pub fn main() !void {
         var config = Config.default();
         config.time_format = "unix_ms";
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -527,6 +541,7 @@ pub fn main() !void {
         config.show_lineno = true;
         config.color = false;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -544,6 +559,7 @@ pub fn main() !void {
         config.show_module = false;
         config.color = false;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -558,6 +574,7 @@ pub fn main() !void {
 
         var config = Config.production();
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH, .json = true });
@@ -572,6 +589,7 @@ pub fn main() !void {
 
         var config = Config.development();
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -586,6 +604,7 @@ pub fn main() !void {
 
         var config = Config.highThroughput();
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -600,6 +619,7 @@ pub fn main() !void {
 
         var config = Config.secure();
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -615,6 +635,7 @@ pub fn main() !void {
         var config = Config.default();
         config.color = false;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -638,6 +659,7 @@ pub fn main() !void {
         var configStd = Config.default();
         configStd.use_arena_allocator = false;
         configStd.auto_sink = false;
+        configStd.auto_flush = false;
         loggerStd.configure(configStd);
 
         _ = try loggerStd.addSink(.{ .path = NULL_PATH });
@@ -654,6 +676,7 @@ pub fn main() !void {
 
         var configArena = loggerArena.config;
         configArena.auto_sink = false;
+        configArena.auto_flush = false;
         loggerArena.configure(configArena);
 
         _ = try loggerArena.addSink(.{ .path = NULL_PATH });
@@ -671,6 +694,7 @@ pub fn main() !void {
 
         var configPage = Config.default();
         configPage.auto_sink = false;
+        configPage.auto_flush = false;
         loggerPage.configure(configPage);
 
         _ = try loggerPage.addSink(.{ .path = NULL_PATH });
@@ -691,6 +715,7 @@ pub fn main() !void {
 
         var config = Config.default();
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -711,6 +736,7 @@ pub fn main() !void {
         var config = Config.default();
         config.enable_tracing = true;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -730,6 +756,7 @@ pub fn main() !void {
         var config = Config.default();
         config.enable_metrics = true;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH });
@@ -747,6 +774,7 @@ pub fn main() !void {
         config.structured = true;
         config.json = true;
         config.auto_sink = false;
+        config.auto_flush = false;
         logger.configure(config);
 
         _ = try logger.addSink(.{ .path = NULL_PATH, .json = true });
@@ -768,6 +796,7 @@ pub fn main() !void {
         var configProb = Config.default();
         configProb.sampling = .{ .enabled = true, .strategy = .{ .probability = 0.5 } };
         configProb.auto_sink = false;
+        configProb.auto_flush = false;
         loggerProb.configure(configProb);
 
         _ = try loggerProb.addSink(.{ .path = NULL_PATH });
@@ -784,6 +813,7 @@ pub fn main() !void {
         var configRate = Config.default();
         configRate.sampling = .{ .enabled = true, .strategy = .{ .rate_limit = .{ .max_records = 100, .window_ms = 1000 } } };
         configRate.auto_sink = false;
+        configRate.auto_flush = false;
         loggerRate.configure(configRate);
 
         _ = try loggerRate.addSink(.{ .path = NULL_PATH });
@@ -800,6 +830,7 @@ pub fn main() !void {
         var configAdapt = Config.default();
         configAdapt.sampling = .{ .enabled = true, .strategy = .{ .adaptive = .{ .target_rate = 1000 } } };
         configAdapt.auto_sink = false;
+        configAdapt.auto_flush = false;
         loggerAdapt.configure(configAdapt);
 
         _ = try loggerAdapt.addSink(.{ .path = NULL_PATH });
@@ -816,6 +847,7 @@ pub fn main() !void {
         var configN = Config.default();
         configN.sampling = .{ .enabled = true, .strategy = .{ .every_n = 100 } };
         configN.auto_sink = false;
+        configN.auto_flush = false;
         loggerN.configure(configN);
 
         _ = try loggerN.addSink(.{ .path = NULL_PATH });
@@ -832,6 +864,7 @@ pub fn main() !void {
         var configRL = Config.default();
         configRL.rate_limit = .{ .enabled = true, .max_per_second = 10000, .burst_size = 100 };
         configRL.auto_sink = false;
+        configRL.auto_flush = false;
         loggerRL.configure(configRL);
 
         _ = try loggerRL.addSink(.{ .path = NULL_PATH });
@@ -848,6 +881,7 @@ pub fn main() !void {
         var configRedact = Config.default();
         configRedact.redaction = .{ .enabled = true, .replacement = "[REDACTED]" };
         configRedact.auto_sink = false;
+        configRedact.auto_flush = false;
         loggerRedact.configure(configRedact);
 
         _ = try loggerRedact.addSink(.{ .path = NULL_PATH });
@@ -867,6 +901,7 @@ pub fn main() !void {
 
         var configFilter = Config.default();
         configFilter.auto_sink = false;
+        configFilter.auto_flush = false;
         loggerFilter.configure(configFilter);
 
         // Setup filter
@@ -901,6 +936,7 @@ pub fn main() !void {
 
         var configRules = Config.default();
         configRules.auto_sink = false;
+        configRules.auto_flush = false;
         configRules.rules = .{
             .enabled = true,
         };
@@ -923,6 +959,7 @@ pub fn main() !void {
 
         var configNoRules = Config.default();
         configNoRules.auto_sink = false;
+        configNoRules.auto_flush = false;
         configNoRules.rules = .{ .enabled = false };
         loggerNoRules.configure(configNoRules);
 
@@ -1093,6 +1130,7 @@ pub fn main() !void {
 
         var configRot = Config.default();
         configRot.auto_sink = false;
+        configRot.auto_flush = false;
         loggerRotation.configure(configRot);
 
         // Add a sink with rotation
@@ -1118,6 +1156,7 @@ pub fn main() !void {
 
         var configDiag = Config.default();
         configDiag.auto_sink = false;
+        configDiag.auto_flush = false;
         configDiag.include_drive_diagnostics = false; // Keep it faster
         loggerDiag.configure(configDiag);
 
@@ -1139,6 +1178,7 @@ pub fn main() !void {
 
         var config1 = Config.default();
         config1.auto_sink = false;
+        config1.auto_flush = false;
         logger1.configure(config1);
 
         _ = try logger1.addSink(.{ .path = NULL_PATH });
@@ -1161,6 +1201,7 @@ pub fn main() !void {
 
         var config2 = Config.default();
         config2.auto_sink = false;
+        config2.auto_flush = false;
         logger2.configure(config2);
 
         _ = try logger2.addSink(.{ .path = NULL_PATH });
@@ -1183,6 +1224,7 @@ pub fn main() !void {
 
         var config4 = Config.default();
         config4.auto_sink = false;
+        config4.auto_flush = false;
         logger4.configure(config4);
 
         _ = try logger4.addSink(.{ .path = NULL_PATH });
@@ -1205,6 +1247,7 @@ pub fn main() !void {
 
         var config8 = Config.default();
         config8.auto_sink = false;
+        config8.auto_flush = false;
         logger8.configure(config8);
 
         _ = try logger8.addSink(.{ .path = NULL_PATH });
@@ -1227,6 +1270,7 @@ pub fn main() !void {
 
         var config16 = Config.default();
         config16.auto_sink = false;
+        config16.auto_flush = false;
         logger16.configure(config16);
 
         _ = try logger16.addSink(.{ .path = NULL_PATH });
@@ -1250,6 +1294,7 @@ pub fn main() !void {
         var configJson = Config.default();
         configJson.json = true;
         configJson.auto_sink = false;
+        configJson.auto_flush = false;
         loggerJson.configure(configJson);
 
         _ = try loggerJson.addSink(.{ .path = NULL_PATH, .json = true });
@@ -1273,6 +1318,7 @@ pub fn main() !void {
         var configColor = Config.default();
         configColor.color = true;
         configColor.auto_sink = false;
+        configColor.auto_flush = false;
         loggerColor.configure(configColor);
 
         _ = try loggerColor.addSink(.{ .path = NULL_PATH, .color = true });
@@ -1295,6 +1341,7 @@ pub fn main() !void {
 
         var configFmt = Config.default();
         configFmt.auto_sink = false;
+        configFmt.auto_flush = false;
         loggerFmt.configure(configFmt);
 
         _ = try loggerFmt.addSink(.{ .path = NULL_PATH });
@@ -1317,6 +1364,7 @@ pub fn main() !void {
 
         var configArena = loggerArena.config;
         configArena.auto_sink = false;
+        configArena.auto_flush = false;
         loggerArena.configure(configArena);
 
         _ = try loggerArena.addSink(.{ .path = NULL_PATH });
@@ -1345,6 +1393,7 @@ pub fn main() !void {
         var configFile = Config.default();
         configFile.color = false;
         configFile.auto_sink = false;
+        configFile.auto_flush = false;
         loggerFile.configure(configFile);
 
         _ = try loggerFile.addSink(.{ .path = NULL_PATH });
@@ -1362,6 +1411,7 @@ pub fn main() !void {
         var configNoSample = Config.default();
         configNoSample.sampling = .{ .enabled = false };
         configNoSample.auto_sink = false;
+        configNoSample.auto_flush = false;
         loggerNoSample.configure(configNoSample);
 
         _ = try loggerNoSample.addSink(.{ .path = NULL_PATH });
@@ -1378,6 +1428,7 @@ pub fn main() !void {
         var configComp = Config.default();
         configComp.compression = .{ .enabled = true, .algorithm = .deflate, .level = .fast };
         configComp.auto_sink = false;
+        configComp.auto_flush = false;
         loggerComp.configure(configComp);
 
         _ = try loggerComp.addSink(.{ .path = NULL_PATH });

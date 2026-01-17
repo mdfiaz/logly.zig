@@ -823,7 +823,21 @@ pub const RotationConfig = struct {
 
 #### `async_config: AsyncConfig`
 
-Centralized async logging configuration.
+Centralized async logging configuration. When `async_config.enabled` is `true`, the logger uses the AsyncLogger internally for high-performance buffered logging.
+
+**Priority Order:**
+1. **AsyncLogger** (when `async_config.enabled = true`) - Highest performance, buffered I/O
+2. **Thread Pool** (when `thread_pool.enabled = true`) - Parallel processing for sync sinks  
+3. **Direct Sinks** - Synchronous logging to all sinks
+
+**Auto-flush Behavior:**
+- When using AsyncLogger, `auto_flush` controls whether to flush after each log operation
+- When using thread pools, flushing happens in the worker threads
+- When using direct sinks, `auto_flush` triggers immediate sink flushing
+
+**Auto-sink Integration:**
+- `auto_sink` works with all logging backends
+- Sinks are automatically added to the appropriate backend (AsyncLogger, thread pool, or direct)
 
 ```zig
 pub const AsyncConfig = struct {

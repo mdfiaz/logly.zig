@@ -208,6 +208,19 @@ fn checkWorker(allocator: std.mem.Allocator, global_console_display: bool) void 
     }
 }
 
+/// Alias for setEnabled
+pub const enable = setEnabled;
+/// Alias for isEnabled
+pub const is_enabled = isEnabled;
+/// Alias for resetState
+pub const reset_ = resetState;
+/// Alias for resetState
+pub const clear_state = resetState;
+/// Alias for checkForUpdates
+pub const check = checkForUpdates;
+/// Alias for checkForUpdates
+pub const update = checkForUpdates;
+
 // Tests
 test "setEnabled and isEnabled" {
     // Initial state should be enabled

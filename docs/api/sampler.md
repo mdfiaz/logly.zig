@@ -20,6 +20,20 @@ The `Sampler` struct controls log throughput by selectively processing records.
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize sampler |
 | `deinit()` | `destroy()` | Deinitialize sampler |
+| `setAcceptCallback()` | `onAccept()` | Set accept callback |
+| `setRejectCallback()` | `onReject()` | Set reject callback |
+| `setRateLimitCallback()` | `onRateLimit()` | Set rate limit callback |
+| `setAdjustmentCallback()` | `onAdjustment()` | Set adjustment callback |
+| `reset()` | `clear()` | Reset sampler state |
+| `resetStats()` | `clearStats()` | Reset statistics |
+| `isEnabled()` | `enabled()` | Check if sampler is enabled |
+| `strategyName()` | `name()` | Get strategy name |
+| `totalProcessed()` | `total_()` | Get total processed count |
+| `totalAccepted()` | `accepted_()` | Get total accepted count |
+| `totalRejected()` | `rejected_()` | Get total rejected count |
+| `shouldSample()` | `sample()`, `check()`, `allow()` | Check if record should be sampled |
+| `getCurrentRate()` | `rate()` | Get current sampling rate |
+| `getStats()` | `statistics()`, `stats_()` | Get sampler statistics |
 
 ## Overview
 

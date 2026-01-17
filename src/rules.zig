@@ -131,6 +131,50 @@ pub const Rules = struct {
             self.messages_emitted.store(0, .monotonic);
             self.evaluations_skipped.store(0, .monotonic);
         }
+
+        /// Alias for getRulesEvaluated
+        pub const rulesEvaluated = getRulesEvaluated;
+        pub const evaluatedCount = getRulesEvaluated;
+
+        /// Alias for getRulesMatched
+        pub const rulesMatched = getRulesMatched;
+        pub const matchedCount = getRulesMatched;
+
+        /// Alias for getMessagesEmitted
+        pub const messagesEmitted = getMessagesEmitted;
+        pub const emittedCount = getMessagesEmitted;
+
+        /// Alias for getEvaluationsSkipped
+        pub const evaluationsSkipped = getEvaluationsSkipped;
+        pub const skippedCount = getEvaluationsSkipped;
+
+        /// Alias for hasEvaluated
+        pub const hasEvaluatedRules = hasEvaluated;
+
+        /// Alias for hasMatched
+        pub const matched = hasMatched;
+
+        /// Alias for hasEmitted
+        pub const emitted = hasEmitted;
+
+        /// Alias for hasSkipped
+        pub const hasSkippedEvaluations = hasSkipped;
+
+        /// Alias for matchRate
+        pub const matchPercentage = matchRate;
+
+        /// Alias for skipRate
+        pub const skipPercentage = skipRate;
+
+        /// Alias for avgMessagesPerMatch
+        pub const avgMessages = avgMessagesPerMatch;
+
+        /// Alias for efficiencyRate
+        pub const efficiencyPercentage = efficiencyRate;
+
+        /// Alias for reset
+        pub const clear = reset;
+        pub const zero = reset;
     };
 
     /// Message category with professional styling for different diagnostic types.
@@ -239,6 +283,18 @@ pub const Rules = struct {
         pub const perf = MessageCategory.performance_tip;
         pub const performance = MessageCategory.performance_tip;
         pub const security = MessageCategory.security_notice;
+
+        /// Alias for displayName
+        pub const name = displayName;
+
+        /// Alias for prefix
+        pub const unicodePrefix = prefix;
+
+        /// Alias for prefixAscii
+        pub const asciiPrefix = prefixAscii;
+
+        /// Alias for defaultColor
+        pub const color = defaultColor;
     };
 
     /// A single diagnostic message attached to a rule.
@@ -360,6 +416,21 @@ pub const Rules = struct {
             m.title = title;
             return m;
         }
+
+        /// Alias for getColor
+        pub const getMessageColor = getColor;
+
+        /// Alias for getPrefix
+        pub const prefix = getPrefix;
+
+        /// Alias for withColor
+        pub const setColor = withColor;
+
+        /// Alias for withUrl
+        pub const setUrl = withUrl;
+
+        /// Alias for withTitle
+        pub const setTitle = withTitle;
     };
 
     /// Level matching specification for rules.
@@ -386,6 +457,18 @@ pub const Rules = struct {
         pub fn all() LevelMatch {
             return .{ .any = {} };
         }
+
+        /// Alias for level
+        pub const exactLevel = level;
+
+        /// Alias for errors
+        pub const errorLevel = errors;
+
+        /// Alias for warnings
+        pub const warningLevel = warnings;
+
+        /// Alias for all
+        pub const anyLevel = all;
     };
 
     /// A complete rule definition.
@@ -457,6 +540,15 @@ pub const Rules = struct {
         pub fn resetFired(self: *Rule) void {
             self.fired.store(false, .monotonic);
         }
+
+        /// Alias for matches
+        pub const check = matches;
+
+        /// Alias for markFired
+        pub const fire = markFired;
+
+        /// Alias for resetFired
+        pub const resetFire = resetFired;
     };
 
     /// Rules configuration - re-exported from global config for consistency.
@@ -996,6 +1088,84 @@ pub const Rules = struct {
     pub const delete = remove;
     pub const activateRule = enableRule;
     pub const deactivateRule = disableRule;
+
+    /// Alias for initFromGlobalConfig
+    pub const createFromGlobalConfig = initFromGlobalConfig;
+
+    /// Alias for syncWithGlobalConfig
+    pub const syncWithGlobal = syncWithGlobalConfig;
+
+    /// Alias for initWithConfig
+    pub const createWithConfig = initWithConfig;
+
+    /// Alias for isEnabled
+    pub const active = isEnabled;
+
+    /// Alias for configure
+    pub const setConfiguration = configure;
+
+    /// Alias for setUnicode
+    pub const unicode = setUnicode;
+
+    /// Alias for setColors
+    pub const colors = setColors;
+
+    /// Alias for setConfig
+    pub const configuration = setConfig;
+
+    /// Alias for getConfig
+    pub const getConfiguration = getConfig;
+
+    /// Alias for setRuleMatchedCallback
+    pub const onRuleMatched = setRuleMatchedCallback;
+
+    /// Alias for setRuleEvaluatedCallback
+    pub const onRuleEvaluated = setRuleEvaluatedCallback;
+
+    /// Alias for setMessagesAttachedCallback
+    pub const onMessagesAttached = setMessagesAttachedCallback;
+
+    /// Alias for setEvaluationErrorCallback
+    pub const onEvaluationError = setEvaluationErrorCallback;
+
+    /// Alias for setBeforeEvaluateCallback
+    pub const onBeforeEvaluate = setBeforeEvaluateCallback;
+
+    /// Alias for setAfterEvaluateCallback
+    pub const onAfterEvaluate = setAfterEvaluateCallback;
+
+    /// Alias for addOrUpdate
+    pub const upsert = addOrUpdate;
+
+    /// Alias for hasRule
+    pub const containsRule = hasRule;
+
+    /// Alias for getById
+    pub const getRule = getById;
+
+    /// Alias for clear
+    pub const clearAll = clear;
+
+    /// Alias for count
+    pub const ruleCount = count;
+
+    /// Alias for resetOnceFired
+    pub const resetOnce = resetOnceFired;
+
+    /// Alias for evaluateWithAllocator
+    pub const evaluateWithAlloc = evaluateWithAllocator;
+
+    /// Alias for formatMessages
+    pub const format = formatMessages;
+
+    /// Alias for formatMessagesJson
+    pub const formatJson = formatMessagesJson;
+
+    /// Alias for getStats
+    pub const statistics = getStats;
+
+    /// Alias for resetStats
+    pub const resetStatistics = resetStats;
 
     pub const Error = error{
         TooManyRules,

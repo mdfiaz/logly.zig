@@ -133,6 +133,57 @@ pub const Redactor = struct {
             self.fields_redacted.store(0, .monotonic);
             self.redaction_errors.store(0, .monotonic);
         }
+
+        /// Alias for getTotalProcessed
+        pub const totalProcessed = getTotalProcessed;
+        pub const processedCount = getTotalProcessed;
+
+        /// Alias for getValuesRedacted
+        pub const valuesRedacted = getValuesRedacted;
+        pub const redactedCount = getValuesRedacted;
+
+        /// Alias for getPatternsMatched
+        pub const patternsMatched = getPatternsMatched;
+        pub const matchedCount = getPatternsMatched;
+
+        /// Alias for getFieldsRedacted
+        pub const fieldsRedacted = getFieldsRedacted;
+        pub const fieldRedactionCount = getFieldsRedacted;
+
+        /// Alias for getRedactionErrors
+        pub const redactionErrors = getRedactionErrors;
+        pub const errorCount = getRedactionErrors;
+
+        /// Alias for hasProcessed
+        pub const processed = hasProcessed;
+
+        /// Alias for hasRedacted
+        pub const redacted = hasRedacted;
+
+        /// Alias for hasMatchedPatterns
+        pub const matchedPatterns = hasMatchedPatterns;
+
+        /// Alias for hasErrors
+        pub const hasRedactionErrors = hasErrors;
+
+        /// Alias for redactionRate
+        pub const redactionPercentage = redactionRate;
+
+        /// Alias for errorRate
+        pub const errorPercentage = errorRate;
+
+        /// Alias for successRate
+        pub const successPercentage = successRate;
+
+        /// Alias for patternMatchRate
+        pub const patternMatchPercentage = patternMatchRate;
+
+        /// Alias for avgRedactionsPerValue
+        pub const avgRedactions = avgRedactionsPerValue;
+
+        /// Alias for reset
+        pub const clear = reset;
+        pub const zero = reset;
     };
 
     /// Re-export RedactionConfig from global config.
@@ -236,6 +287,10 @@ pub const Redactor = struct {
                 },
             };
         }
+
+        /// Alias for apply
+        pub const redact = apply;
+        pub const mask = apply;
     };
 
     /// Initializes a new Redactor instance with default configuration.
@@ -661,20 +716,66 @@ pub const Redactor = struct {
     /// Alias for getStats
     pub const statistics = getStats;
 
-    /// Get current configuration.
-    pub fn getConfig(self: *const Redactor) RedactionConfig {
-        return self.config;
-    }
+    /// Alias for initWithConfig
+    pub const createWithConfig = initWithConfig;
 
-    /// Check if redaction is enabled.
-    pub fn isEnabled(self: *const Redactor) bool {
-        return self.config.enabled;
-    }
+    /// Alias for setCallback
+    // pub const callback = setCallback; // shadows parameters
 
-    /// Get the default replacement text.
-    pub fn getDefaultReplacement(self: *const Redactor) []const u8 {
-        return self.config.replacement;
-    }
+    /// Alias for setRedactionAppliedCallback
+    pub const onRedactionApplied = setRedactionAppliedCallback;
+
+    /// Alias for setPatternMatchedCallback
+    pub const onPatternMatched = setPatternMatchedCallback;
+
+    /// Alias for setInitializedCallback
+    pub const onInitialized = setInitializedCallback;
+
+    /// Alias for setErrorCallback
+    pub const onError = setErrorCallback;
+
+    /// Alias for addPattern
+    // pub const addRule = addPattern; // already exists
+
+    /// Alias for addField
+    // pub const field = addField; // already exists
+    // pub const sensitiveField = addField; // already exists
+
+    /// Alias for redact
+    // pub const mask = redact; // already exists
+    // pub const sanitize = redact; // already exists
+    // pub const process = redact; // already exists
+
+    /// Alias for redactWithAllocator
+    pub const maskWithAllocator = redactWithAllocator;
+    pub const sanitizeWithAllocator = redactWithAllocator;
+
+    /// Alias for redactField
+    // pub const maskField = redactField; // already exists
+
+    /// Alias for getFieldRedaction
+    pub const getFieldRule = getFieldRedaction;
+
+    /// Alias for patternCount
+    pub const ruleCount = patternCount;
+
+    /// Alias for fieldCount
+    pub const sensitiveFieldCount = fieldCount;
+
+    /// Alias for hasRules
+    pub const hasConfiguration = hasRules;
+
+    /// Alias for clearPatterns
+    pub const clearRules = clearPatterns;
+
+    /// Alias for clearFields
+    pub const clearSensitiveFields = clearFields;
+
+    /// Alias for clear
+    pub const clearAll = clear;
+
+    /// Alias for resetStats
+    pub const resetStatistics = resetStats;
 };
 
 /// Simple regex-like pattern matching.

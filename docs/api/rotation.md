@@ -8,6 +8,37 @@ The `Rotation` module provides enterprise-grade log rotation capabilities, inclu
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize rotation |
 | `deinit()` | `destroy()` | Deinitialize rotation |
+| `withCompression()` | `setCompression()` | Set compression config |
+| `withNaming()` | `setNaming()` | Set naming strategy |
+| `withNamingFormat()` | `namingFormat()`, `setNamingFormat()` | Set naming format |
+| `withMaxAge()` | `maxAge()`, `setMaxAge()` | Set max age |
+| `withArchiveDir()` | `archiveDir()`, `setArchiveDir()` | Set archive directory |
+| `setCleanEmptyDirs()` | `cleanEmptyDirs()` | Set clean empty dirs |
+| `withKeepOriginal()` | `keepOriginal()`, `setKeepOriginal()` | Set keep original |
+| `withCompressOnRetention()` | `compressOnRetention()`, `setCompressOnRetention()` | Set compress on retention |
+| `withDeleteAfterRetentionCompress()` | `deleteAfterRetentionCompress()`, `setDeleteAfterRetentionCompress()` | Set delete after retention compress |
+| `applyConfig()` | `configure()`, `applyConfiguration()` | Apply configuration |
+| `isEnabled()` | `enabled()` | Check if enabled |
+| `intervalName()` | `getIntervalName()` | Get interval name |
+| `checkAndRotate()` | `rotateIfNeeded()`, `maybeRotate()` | Check and rotate if needed |
+| `createRotatingSink()` | `rotatingSink()` | Create rotating sink |
+| `createSizeRotatingSink()` | `sizeSink()` | Create size rotating sink |
+| `seconds()` | `duration()`, `intervalSeconds()` | Get seconds (RotationInterval) |
+| `fromString()` | `parse()`, `fromStr()` | Parse from string (RotationInterval) |
+| `name()` | `displayName()`, `string()` | Get name (RotationInterval) |
+| `reset()` | `clear()`, `zero()` | Reset stats (RotationStats) |
+| `rotationCount()` | `rotations()`, `totalRotations()` | Get rotation count (RotationStats) |
+| `errorCount()` | `totalErrors()` | Get error count (RotationStats) |
+| `getFilesArchived()` | `filesArchived()`, `archivedCount()` | Get files archived (RotationStats) |
+| `getFilesDeleted()` | `filesDeleted()`, `deletedCount()` | Get files deleted (RotationStats) |
+| `getCompressionErrors()` | `compressionErrors()`, `compressErrors()` | Get compression errors (RotationStats) |
+| `hasErrors()` | `hasRotationErrors()` | Check if has errors (RotationStats) |
+| `successRate()` | `successPercentage()` | Get success rate (RotationStats) |
+| `totalErrorRate()` | `errorPercentage()`, `totalErrorPercentage()` | Get total error rate (RotationStats) |
+| `weekly4Weeks()` | `weekly()` | Weekly preset (RotationPresets) |
+| `monthly12Months()` | `monthly()` | Monthly preset (RotationPresets) |
+| `hourly24Hours()` | `hourly()` | Hourly preset (RotationPresets) |
+| `daily7Days()` | `daily()` | Daily preset (RotationPresets) |
 
 ## Rotation Struct
 

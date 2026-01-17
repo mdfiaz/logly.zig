@@ -197,6 +197,45 @@ pub const Level = enum(u8) {
     /// Alias for fromString
     pub const parse = fromString;
 
+    /// Alias for fromPriority
+    pub const fromValue = fromPriority;
+    pub const fromSeverity = fromPriority;
+
+    /// Alias for brightColor
+    pub const bright = brightColor;
+    pub const vivid = brightColor;
+
+    /// Alias for dimColor
+    pub const dim = dimColor;
+    pub const subtle = dimColor;
+
+    /// Alias for underlineColor
+    pub const underline = underlineColor;
+    pub const underlined = underlineColor;
+
+    /// Alias for color256
+    pub const color256bit = color256;
+    pub const ansi256 = color256;
+
+    /// Alias for isAtLeast
+    pub const atLeast = isAtLeast;
+    pub const gte = isAtLeast;
+
+    /// Alias for isMoreSevereThan
+    pub const moreSevereThan = isMoreSevereThan;
+    pub const gt = isMoreSevereThan;
+
+    /// Alias for isError
+    pub const isErr = isError;
+    pub const isFailure = isError;
+
+    /// Alias for isWarning
+    pub const isWarn = isWarning;
+
+    /// Alias for isDebug
+    pub const isTraceOrDebug = isDebug;
+    pub const isVerbose = isDebug;
+
     /// Returns true if this level is at least as severe as the given level.
     pub fn isAtLeast(self: Level, other: Level) bool {
         return self.priority() >= other.priority();
@@ -378,6 +417,71 @@ pub const CustomLevel = struct {
     pub fn hasStyle(self: CustomLevel) bool {
         return self.style != null;
     }
+
+    /// Alias for init
+    pub const create = init;
+    pub const new = init;
+
+    /// Alias for initFull
+    pub const createFull = initFull;
+    pub const newFull = initFull;
+
+    /// Alias for initRgb
+    pub const createRgb = initRgb;
+    pub const newRgb = initRgb;
+
+    /// Alias for init256
+    pub const create256 = init256;
+    pub const new256 = init256;
+
+    /// Alias for initStyled
+    pub const createStyled = initStyled;
+    pub const newStyled = initStyled;
+
+    /// Alias for initWithBackground
+    pub const createWithBackground = initWithBackground;
+    pub const newWithBackground = initWithBackground;
+
+    /// Alias for effectiveColor
+    pub const effective = effectiveColor;
+    pub const getColor = effectiveColor;
+
+    /// Alias for getBrightColor
+    pub const brightColor = getBrightColor;
+    pub const getBright = getBrightColor;
+
+    /// Alias for getDimColor
+    pub const dimColor = getDimColor;
+    pub const getDim = getDimColor;
+
+    /// Alias for get256Color
+    pub const color256 = get256Color;
+    pub const get256 = get256Color;
+
+    /// Alias for isAtLeast
+    pub const atLeast = isAtLeast;
+    pub const gte = isAtLeast;
+
+    /// Alias for isError
+    pub const isErr = isError;
+    pub const isFailure = isError;
+
+    /// Alias for asString
+    pub const toString = asString;
+    pub const str = asString;
+
+    /// Alias for hasRgbColor
+    pub const hasRgb = hasRgbColor;
+
+    /// Alias for has256Color
+    pub const has256 = has256Color;
+
+    /// Alias for hasBackground
+    pub const hasBg = hasBackground;
+    pub const hasBackgroundColor = hasBackground;
+
+    /// Alias for hasStyle
+    pub const hasTextStyle = hasStyle;
 };
 
 test "level priority" {

@@ -35,6 +35,13 @@ var buf: [32]u8 = undefined;
 const date = try Utils.formatIsoDate(&buf, tc);
 ```
 
+## Quick Reference: Method Aliases
+
+| Full Method | Alias(es) | Description |
+|-------------|-----------|-------------|
+| `formatDatePattern()` | `format()` | Format date with pattern |
+| `formatDateToBuf()` | `formatToBuf()` | Format date to buffer |
+
 ## Size Parsing
 
 ### parseSize

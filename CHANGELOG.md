@@ -33,7 +33,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ensures immediate output visibility for both standard logs and custom levels.
   - Prevents log output reordering issues relative to `std.debug.print`.
   - Applies to all logging methods including `log`, `logCustomLevel`, `logError`, `logTimed`, and `logSystemDiagnostics`.
-- **Zstd Compression Support**: High-performance Zstandard compression algorithm for log files.
+- **Dynamic Async Control**: Runtime enable/disable of async logging and per-sink async writing.
+  - `Logger.enableAsync()`, `Logger.disableAsync()`, `Logger.isAsyncEnabled()` for global async control.
+  - `Sink.enableAsync()`, `Sink.disableAsync()`, `Sink.isAsyncEnabled()` for per-sink async control.
+  - `Sink.flushNow()` for manual immediate flushing of individual sinks.
+- **Dynamic Flush Control**: Runtime control of auto-flush behavior.
+  - `Logger.enableAutoFlush()`, `Logger.disableAutoFlush()`, `Logger.isAutoFlushEnabled()` for global auto-flush control.
+  - Consistent auto-flush behavior across all dispatch paths (async logger, thread pool, direct sinks).
+-  **Zstandard (Zstd) Compression Support**: Added Zstd compression algorithm for log file archiving.
   - New algorithm: `CompressionAlgorithm.zstd` with excellent compression ratios and very fast decompression.
   - Compression presets: `zstd()`, `zstdFast()`, `zstdBest()`, `zstdProduction()`.
   - Config builder methods: `withZstdCompression()`, `withZstdFastCompression()`, `withZstdBestCompression()`, `withZstdProductionCompression()`.

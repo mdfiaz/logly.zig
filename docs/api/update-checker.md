@@ -18,6 +18,15 @@ The `UpdateChecker` module provides functionality to check for new releases of t
 
 This module runs a background check against the GitHub API to see if a newer version of Logly is available. It is enabled by default in `Config` but can be disabled.
 
+## Quick Reference: Method Aliases
+
+| Full Method | Alias(es) | Description |
+|-------------|-----------|-------------|
+| `setEnabled()` | `enable()` | Enable update checking |
+| `isEnabled()` | `is_enabled()` | Check if update checking is enabled |
+| `resetState()` | `reset()`, `clear_state()` | Reset update checker state |
+| `checkForUpdates()` | `check()`, `update()` | Check for available updates |
+
 ## Types
 
 ### Version

@@ -152,6 +152,49 @@ pub const Metrics = struct {
             self.write_errors.store(0, .monotonic);
             self.flush_count.store(0, .monotonic);
         }
+
+        /// Alias for getRecordsWritten
+        pub const records = getRecordsWritten;
+        pub const written = getRecordsWritten;
+
+        /// Alias for getBytesWritten
+        pub const bytes = getBytesWritten;
+        pub const bytesWritten = getBytesWritten;
+
+        /// Alias for getWriteErrors
+        pub const writeErrors = getWriteErrors;
+        pub const errors = getWriteErrors;
+
+        /// Alias for getFlushCount
+        pub const flushes = getFlushCount;
+        pub const flushCount = getFlushCount;
+
+        /// Alias for hasWritten
+        pub const hasData = hasWritten;
+        pub const isActive = hasWritten;
+
+        /// Alias for hasErrors
+        // Removed to avoid ambiguity with Metrics.hasErrors
+
+        /// Alias for getErrorRate
+        pub const errorRate = getErrorRate;
+        pub const failureRate = getErrorRate;
+
+        /// Alias for getSuccessRate
+        pub const successRate = getSuccessRate;
+        pub const success = getSuccessRate;
+
+        /// Alias for avgBytesPerRecord
+        pub const avgBytes = avgBytesPerRecord;
+        pub const bytesPerRecord = avgBytesPerRecord;
+
+        /// Alias for avgRecordsPerFlush
+        pub const avgRecords = avgRecordsPerFlush;
+        pub const recordsPerFlush = avgRecordsPerFlush;
+
+        /// Alias for throughputBytesPerSecond
+        pub const throughput = throughputBytesPerSecond;
+        pub const bytesPerSecond = throughputBytesPerSecond;
     };
 
     /// Snapshot of current metrics for reporting.
@@ -178,6 +221,10 @@ pub const Metrics = struct {
             if (self.total_records == 0) return 0;
             return @as(f64, @floatFromInt(self.dropped_records)) / @as(f64, @floatFromInt(self.total_records));
         }
+
+        /// Alias for getDropRate
+        pub const dropRate = getDropRate;
+        pub const dropPercentage = getDropRate;
     };
 
     /// Level index mapping for metrics array.
@@ -950,6 +997,156 @@ pub const Metrics = struct {
 
     /// Alias for bytesPerSecond
     pub const throughput = bytesPerSecond;
+
+    /// Alias for initWithConfig
+    pub const createWithConfig = initWithConfig;
+    pub const newWithConfig = initWithConfig;
+
+    /// Alias for setRecordLoggedCallback
+    pub const onRecordLogged = setRecordLoggedCallback;
+    pub const setOnRecordLogged = setRecordLoggedCallback;
+
+    /// Alias for setSnapshotCallback
+    pub const onSnapshot = setSnapshotCallback;
+    pub const setOnSnapshot = setSnapshotCallback;
+
+    /// Alias for setThresholdCallback
+    pub const onThreshold = setThresholdCallback;
+    pub const setOnThreshold = setThresholdCallback;
+
+    /// Alias for setErrorCallback
+    pub const onError = setErrorCallback;
+    pub const setOnError = setErrorCallback;
+
+    /// Alias for getConfig
+    pub const getConfiguration = getConfig;
+    pub const configuration = getConfig;
+
+    /// Alias for isEnabled
+    pub const enabled = isEnabled;
+    pub const isActive = isEnabled;
+
+    /// Alias for recordLogWithLatency
+    pub const recordWithLatency = recordLogWithLatency;
+    pub const logWithLatency = recordLogWithLatency;
+
+    /// Alias for recordSinkWrite
+    pub const sinkWrite = recordSinkWrite;
+    pub const recordSinkWriteOp = recordSinkWrite;
+
+    /// Alias for recordSinkError
+    pub const sinkError = recordSinkError;
+    pub const recordSinkErrorOp = recordSinkError;
+
+    /// Alias for takeSnapshot
+    pub const captureSnapshot = takeSnapshot;
+    pub const takeSnapshotNow = takeSnapshot;
+
+    /// Alias for getHistory
+    pub const getSnapshots = getHistory;
+    pub const snapshots = getHistory;
+
+    /// Alias for exportMetrics
+    pub const exportData = exportMetrics;
+    pub const toString = exportMetrics;
+
+    /// Alias for exportJson
+    pub const json = exportJson;
+    pub const toJson = exportJson;
+
+    /// Alias for exportPrometheus
+    pub const prometheus = exportPrometheus;
+    pub const toPrometheus = exportPrometheus;
+
+    /// Alias for exportStatsd
+    pub const statsd = exportStatsd;
+    pub const toStatsd = exportStatsd;
+
+    /// Alias for avgLatencyNs
+    pub const avgLatency = avgLatencyNs;
+    pub const averageLatency = avgLatencyNs;
+
+    /// Alias for minLatencyNs
+    pub const minLatency = minLatencyNs;
+
+    /// Alias for maxLatencyNs
+    pub const maxLatency = maxLatencyNs;
+
+    /// Alias for getHistogram
+    pub const latencyHistogram = getHistogram;
+    pub const getLatencyHistogram = getHistogram;
+
+    /// Alias for format
+    pub const formatMetrics = format;
+    pub const stringify = format;
+
+    /// Alias for recordCustomLog
+    pub const recordCustom = recordCustomLog;
+    pub const customLog = recordCustomLog;
+
+    /// Alias for hasRecords
+    pub const hasData = hasRecords;
+    pub const isEmpty = hasRecords;
+
+    /// Alias for totalRecordCount
+    pub const recordCount = totalRecordCount;
+    pub const totalRecords = totalRecordCount;
+
+    /// Alias for totalBytesLogged
+    pub const bytesLogged = totalBytesLogged;
+    pub const totalBytes = totalBytesLogged;
+
+    /// Alias for rate
+    pub const recordsPerSecond = rate;
+    pub const recordsPerSec = rate;
+
+    /// Alias for errorCount
+    pub const errorTotal = errorCount;
+    pub const totalErrors = errorCount;
+
+    /// Alias for droppedCount
+    pub const dropTotal = droppedCount;
+    pub const totalDropped = droppedCount;
+
+    /// Alias for errorRate
+    pub const failureRate = errorRate;
+
+    /// Alias for dropRate
+    pub const dropPercentage = dropRate;
+
+    /// Alias for hasHighErrorRate
+    pub const highErrorRate = hasHighErrorRate;
+    pub const errorRateHigh = hasHighErrorRate;
+
+    /// Alias for hasHighDropRate
+    pub const highDropRate = hasHighDropRate;
+    pub const dropRateHigh = hasHighDropRate;
+
+    /// Alias for levelCount
+    pub const countForLevel = levelCount;
+    pub const levelRecords = levelCount;
+
+    /// Alias for sinkCount
+    pub const sinks = sinkCount;
+    pub const sinkTotal = sinkCount;
+
+    /// Alias for recordSinkFlush
+    pub const sinkFlush = recordSinkFlush;
+    pub const recordSinkFlushOp = recordSinkFlush;
+
+    /// Alias for getSinkMetrics
+    pub const sinkMetrics = getSinkMetrics;
+    pub const getSinkStats = getSinkMetrics;
+
+    /// Alias for getSinkMetricsByName
+    pub const sinkMetricsByName = getSinkMetricsByName;
+    pub const getSinkStatsByName = getSinkMetricsByName;
+
+    /// Alias for hasErrors
+    pub const hasFailures = hasErrors;
+
+    /// Alias for hasDropped
+    pub const hasDrops = hasDropped;
 };
 
 /// Pre-built metrics configurations.
@@ -959,6 +1156,10 @@ pub const MetricsPresets = struct {
         return Metrics.init(allocator);
     }
 
+    /// Alias for basic
+    pub const simple = basic;
+    pub const minimal = basic;
+
     /// Creates a metrics sink configuration.
     pub fn createMetricsSink(file_path: []const u8) @import("sink.zig").SinkConfig {
         return .{
@@ -967,6 +1168,10 @@ pub const MetricsPresets = struct {
             .color = false,
         };
     }
+
+    /// Alias for createMetricsSink
+    pub const metricsSink = createMetricsSink;
+    pub const sink = createMetricsSink;
 };
 
 test "metrics basic" {

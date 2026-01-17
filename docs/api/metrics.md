@@ -20,6 +20,66 @@ The `Metrics` struct provides comprehensive observability into the logging syste
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize metrics |
 | `deinit()` | `destroy()` | Deinitialize metrics |
+| `initWithConfig()` | `createWithConfig()`, `newWithConfig()` | Initialize with config |
+| `recordLog()` | `record()`, `log()` | Record log event |
+| `recordDrop()` | `drop()`, `dropped()` | Record dropped event |
+| `recordError()` | `recordErr()` | Record error event |
+| `getSnapshot()` | `metricsSnapshot()` | Get metrics snapshot |
+| `formatLevelBreakdown()` | `levels()`, `breakdown()` | Format level breakdown |
+| `reset()` | `clear()` | Reset metrics |
+| `uptimeSeconds()` | `uptimeSec()` | Get uptime in seconds |
+| `bytesPerSecond()` | `throughput()` | Get bytes per second |
+| `setRecordLoggedCallback()` | `onRecordLogged()`, `setOnRecordLogged()` | Set record logged callback |
+| `setSnapshotCallback()` | `onSnapshot()`, `setOnSnapshot()` | Set snapshot callback |
+| `setThresholdCallback()` | `onThreshold()`, `setOnThreshold()` | Set threshold callback |
+| `setErrorCallback()` | `onError()`, `setOnError()` | Set error callback |
+| `getConfig()` | `getConfiguration()`, `configuration()` | Get configuration |
+| `isEnabled()` | `enabled()`, `isActive()` | Check if enabled |
+| `recordLogWithLatency()` | `recordWithLatency()`, `logWithLatency()` | Record log with latency |
+| `recordSinkWrite()` | `sinkWrite()`, `recordSinkWriteOp()` | Record sink write |
+| `recordSinkError()` | `sinkError()`, `recordSinkErrorOp()` | Record sink error |
+| `takeSnapshot()` | `captureSnapshot()`, `takeSnapshotNow()` | Take snapshot |
+| `getHistory()` | `getSnapshots()`, `snapshots()` | Get snapshots history |
+| `exportMetrics()` | `exportData()`, `toString()` | Export metrics |
+| `exportJson()` | `json()`, `toJson()` | Export as JSON |
+| `exportPrometheus()` | `prometheus()`, `toPrometheus()` | Export as Prometheus |
+| `exportStatsd()` | `statsd()`, `toStatsd()` | Export as StatsD |
+| `avgLatencyNs()` | `avgLatency()`, `averageLatency()` | Get average latency |
+| `minLatencyNs()` | `minLatency()` | Get minimum latency |
+| `maxLatencyNs()` | `maxLatency()` | Get maximum latency |
+| `getHistogram()` | `latencyHistogram()`, `getLatencyHistogram()` | Get latency histogram |
+| `format()` | `formatMetrics()`, `stringify()` | Format metrics |
+| `recordCustomLog()` | `recordCustom()`, `customLog()` | Record custom log |
+| `hasRecords()` | `hasData()` | Check if has records |
+| `totalRecordCount()` | `recordCount()`, `totalRecords()` | Get total record count |
+| `totalBytesLogged()` | `bytesLogged()`, `totalBytes()` | Get total bytes logged |
+| `rate()` | `recordsPerSecond()`, `recordsPerSec()` | Get records per second |
+| `errorCount()` | `errorTotal()`, `totalErrors()` | Get error count |
+| `droppedCount()` | `dropTotal()`, `totalDropped()` | Get dropped count |
+| `errorRate()` | `failureRate()` | Get error rate |
+| `dropRate()` | `dropPercentage()` | Get drop rate |
+| `hasHighErrorRate()` | `highErrorRate()`, `errorRateHigh()` | Check if high error rate |
+| `hasHighDropRate()` | `highDropRate()`, `dropRateHigh()` | Check if high drop rate |
+| `levelCount()` | `countForLevel()`, `levelRecords()` | Get level count |
+| `sinkCount()` | `sinks()`, `sinkTotal()` | Get sink count |
+| `recordSinkFlush()` | `sinkFlush()`, `recordSinkFlushOp()` | Record sink flush |
+| `getSinkMetrics()` | `sinkMetrics()`, `getSinkStats()` | Get sink metrics |
+| `getSinkMetricsByName()` | `sinkMetricsByName()`, `getSinkStatsByName()` | Get sink metrics by name |
+| `hasErrors()` | `hasFailures()` | Check if has errors |
+| `hasDropped()` | `hasDrops()` | Check if has dropped |
+| `getRecordsWritten()` | `records()`, `written()` | Get records written (SinkMetrics) |
+| `getBytesWritten()` | `bytes()`, `bytesWritten()` | Get bytes written (SinkMetrics) |
+| `getWriteErrors()` | `writeErrors()`, `errors()` | Get write errors (SinkMetrics) |
+| `getFlushCount()` | `flushes()`, `flushCount()` | Get flush count (SinkMetrics) |
+| `hasWritten()` | `hasData()`, `isActive()` | Check if has written (SinkMetrics) |
+| `getErrorRate()` | `errorRate()`, `failureRate()` | Get error rate (SinkMetrics) |
+| `getSuccessRate()` | `successRate()`, `success()` | Get success rate (SinkMetrics) |
+| `avgBytesPerRecord()` | `avgBytes()`, `bytesPerRecord()` | Get avg bytes per record (SinkMetrics) |
+| `avgRecordsPerFlush()` | `avgRecords()`, `recordsPerFlush()` | Get avg records per flush (SinkMetrics) |
+| `throughputBytesPerSecond()` | `throughput()`, `bytesPerSecond()` | Get throughput (SinkMetrics) |
+| `getDropRate()` | `dropRate()`, `dropPercentage()` | Get drop rate (Snapshot) |
+| `basic()` | `simple()`, `minimal()` | Basic preset (MetricsPresets) |
+| `createMetricsSink()` | `metricsSink()`, `sink()` | Create metrics sink (MetricsPresets) |
 
 ## Overview
 

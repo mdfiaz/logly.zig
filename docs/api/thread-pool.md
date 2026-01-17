@@ -25,7 +25,12 @@ The thread pool module provides parallel log processing capabilities with work s
 | `deinit()` | `destroy()` | Deinitialize thread pool |
 | `start()` | `begin()` | Start worker threads |
 | `shutdown()` | `stop()`, `halt()` | Stop worker threads |
-| `submit()` | `add()` | Submit task to pool |
+| `submit()` | `push()`, `enqueue()`, `add()` | Submit task to pool |
+| `submitFn()` | `run()` | Submit function task |
+| `waitAll()` | `await()`, `join()` | Wait for all tasks |
+| `pendingTasks()` | `queueDepth()`, `size()` | Get pending task count |
+| `activeThreads()` | `workerCount()` | Get active thread count |
+| `clear()` | `discard()`, `flush()` | Clear pending tasks |
 | `getStats()` | `statistics()` | Get pool statistics |
 
 ## Overview

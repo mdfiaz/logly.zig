@@ -777,12 +777,18 @@ pub const Sink = struct {
         self.on_write = callback;
     }
 
+    /// Alias for setWriteCallback
+    pub const onWrite = setWriteCallback;
+
     /// Sets the callback for flush events.
     pub fn setFlushCallback(self: *Sink, callback: *const fn (u64, u64) void) void {
         self.mutex.lock();
         defer self.mutex.unlock();
         self.on_flush = callback;
     }
+
+    /// Alias for setFlushCallback
+    pub const onFlush = setFlushCallback;
 
     /// Sets the callback for error events.
     pub fn setErrorCallback(self: *Sink, callback: *const fn ([]const u8, u64) void) void {
@@ -791,6 +797,9 @@ pub const Sink = struct {
         self.on_error = callback;
     }
 
+    /// Alias for setErrorCallback
+    pub const onError = setErrorCallback;
+
     /// Sets the callback for rotation events.
     pub fn setRotationCallback(self: *Sink, callback: *const fn ([]const u8, []const u8) void) void {
         self.mutex.lock();
@@ -798,12 +807,18 @@ pub const Sink = struct {
         self.on_rotation = callback;
     }
 
+    /// Alias for setRotationCallback
+    pub const onRotation = setRotationCallback;
+
     /// Sets the callback for state changes.
     pub fn setStateChangeCallback(self: *Sink, callback: *const fn (bool) void) void {
         self.mutex.lock();
         defer self.mutex.unlock();
         self.on_state_change = callback;
     }
+
+    /// Alias for setStateChangeCallback
+    pub const onStateChange = setStateChangeCallback;
 
     /// Returns sink statistics.
     pub fn getStats(self: *Sink) SinkStats {
@@ -840,6 +855,9 @@ pub const Sink = struct {
         return self.enabled;
     }
 
+    /// Alias for isEnabled
+    pub const is_enabled = isEnabled;
+
     /// Enables the sink.
     pub fn enable(self: *Sink) void {
         self.mutex.lock();
@@ -855,6 +873,43 @@ pub const Sink = struct {
         self.enabled = false;
         if (self.on_state_change) |cb| cb(false);
     }
+
+    /// Returns true if async writing is enabled for this sink.
+    pub fn isAsyncEnabled(self: *Sink) bool {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+        return self.config.async_write;
+    }
+
+    /// Alias for isAsyncEnabled
+    pub const asyncEnabled = isAsyncEnabled;
+
+    /// Enables async writing for this sink.
+    pub fn enableAsync(self: *Sink) void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+        self.config.async_write = true;
+    }
+
+    /// Disables async writing for this sink (forces immediate flush).
+    pub fn disableAsync(self: *Sink) void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+        self.config.async_write = false;
+        // Flush any pending data when disabling async
+        self.flush() catch {};
+    }
+
+    /// Manually flushes the sink buffer.
+    /// Thread-safe: Uses mutex for concurrent access protection.
+    pub fn flushNow(self: *Sink) !void {
+        self.mutex.lock();
+        defer self.mutex.unlock();
+        try self.flush();
+    }
+
+    /// Alias for flushNow
+    pub const flushImmediate = flushNow;
 
     /// Returns the sink's name, if set.
     pub fn getName(self: *Sink) ?[]const u8 {
@@ -1009,6 +1064,9 @@ pub const Sink = struct {
             }
         }
     }
+
+    /// Alias for writeWithAllocator
+    pub const writeWithAlloc = writeWithAllocator;
 
     /// Writes raw data directly to the sink bypassing formatting.
     ///

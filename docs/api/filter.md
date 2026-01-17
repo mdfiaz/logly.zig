@@ -20,6 +20,16 @@ The `Filter` struct provides fine-grained control over which log records are pro
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize filter |
 | `deinit()` | `destroy()` | Deinitialize filter |
+| `addRule()` | `add()` | Add filter rule |
+| `shouldLog()` | `check()`, `test_()`, `evaluate()` | Check if record should be logged |
+| `clear()` | `reset()`, `removeAll()` | Clear all rules |
+| `addMinLevel()` | `minLevel()`, `min()` | Add minimum level filter |
+| `addMaxLevel()` | `maxLevel()`, `max()` | Add maximum level filter |
+| `addModulePrefix()` | `moduleFilter()`, `addPrefix()` | Add module prefix filter |
+| `addMessageFilter()` | `messageFilter()` | Add message filter |
+| `allowModule()` | `allow()`, `keep()`, `include()` | Allow module |
+| `denyModule()` | `deny()`, `drop()`, `exclude()` | Deny module |
+| `count()` | `ruleCount()`, `length()` | Get rule count |
 
 ## Overview
 

@@ -20,6 +20,79 @@ The Rules module provides a powerful compiler-style diagnostic system for log me
 |-------------|-----------|-------------|
 | `init()` | `create()` | Initialize rules engine |
 | `deinit()` | `destroy()` | Deinitialize rules engine |
+| `initWithConfig()` | `createWithConfig()` | Initialize with config |
+| `initFromGlobalConfig()` | `createFromGlobalConfig()` | Initialize from global config |
+| `syncWithGlobalConfig()` | `syncWithGlobal()` | Sync with global config |
+| `enable()` | `on()`, `activate()`, `start()` | Enable rules |
+| `disable()` | `off()`, `deactivate()`, `stop()` | Disable rules |
+| `isEnabled()` | `active()` | Check if enabled |
+| `add()` | `addRule()` | Add rule |
+| `remove()` | `removeRule()`, `deleteRule()`, `delete()` | Remove rule |
+| `enableRule()` | `activateRule()` | Enable specific rule |
+| `disableRule()` | `deactivateRule()` | Disable specific rule |
+| `configure()` | `setConfiguration()` | Configure rules |
+| `setUnicode()` | `unicode()` | Set unicode mode |
+| `setColors()` | `colors()` | Set colors |
+| `setConfig()` | `configuration()` | Set config |
+| `getConfig()` | `getConfiguration()` | Get config |
+| `setRuleMatchedCallback()` | `onRuleMatched()` | Set rule matched callback |
+| `setRuleEvaluatedCallback()` | `onRuleEvaluated()` | Set rule evaluated callback |
+| `setMessagesAttachedCallback()` | `onMessagesAttached()` | Set messages attached callback |
+| `setEvaluationErrorCallback()` | `onEvaluationError()` | Set evaluation error callback |
+| `setBeforeEvaluateCallback()` | `onBeforeEvaluate()` | Set before evaluate callback |
+| `setAfterEvaluateCallback()` | `onAfterEvaluate()` | Set after evaluate callback |
+| `addOrUpdate()` | `upsert()` | Add or update rule |
+| `hasRule()` | `containsRule()` | Check if has rule |
+| `getById()` | `getRule()` | Get rule by ID |
+| `clear()` | `clearAll()` | Clear all rules |
+| `count()` | `ruleCount()` | Get rule count |
+| `resetOnceFired()` | `resetOnce()` | Reset once fired |
+| `evaluateWithAllocator()` | `evaluateWithAlloc()` | Evaluate with allocator |
+| `formatMessages()` | `format()` | Format messages |
+| `formatMessagesJson()` | `formatJson()` | Format messages as JSON |
+| `getStats()` | `statistics()` | Get statistics |
+| `resetStats()` | `resetStatistics()` | Reset statistics |
+| `matches()` | `check()` | Check if rule matches (Rule) |
+| `markFired()` | `fire()` | Mark rule as fired (Rule) |
+| `resetFired()` | `resetFire()` | Reset fired state (Rule) |
+| `getColor()` | `getMessageColor()` | Get message color (RuleMessage) |
+| `getPrefix()` | `prefix()` | Get prefix (RuleMessage) |
+| `withColor()` | `setColor()` | Set color (RuleMessage) |
+| `withUrl()` | `setUrl()` | Set URL (RuleMessage) |
+| `withTitle()` | `setTitle()` | Set title (RuleMessage) |
+| `level()` | `exactLevel()` | Exact level match (LevelMatch) |
+| `errors()` | `errorLevel()` | Error level match (LevelMatch) |
+| `warnings()` | `warningLevel()` | Warning level match (LevelMatch) |
+| `all()` | `anyLevel()` | Any level match (LevelMatch) |
+| `exact()` | `err()`, `info()` | Exact level (LevelMatchBuilder) |
+| `warnings()` | `warn()` | Warnings level (LevelMatchBuilder) |
+| `getRulesEvaluated()` | `rulesEvaluated()`, `evaluatedCount()` | Get rules evaluated (RulesStats) |
+| `getRulesMatched()` | `rulesMatched()`, `matchedCount()` | Get rules matched (RulesStats) |
+| `getMessagesEmitted()` | `messagesEmitted()`, `emittedCount()` | Get messages emitted (RulesStats) |
+| `getEvaluationsSkipped()` | `evaluationsSkipped()`, `skippedCount()` | Get evaluations skipped (RulesStats) |
+| `hasEvaluated()` | `hasEvaluatedRules()` | Check if has evaluated (RulesStats) |
+| `hasMatched()` | `matched()` | Check if matched (RulesStats) |
+| `hasEmitted()` | `emitted()` | Check if emitted (RulesStats) |
+| `hasSkipped()` | `hasSkippedEvaluations()` | Check if skipped (RulesStats) |
+| `matchRate()` | `matchPercentage()` | Get match rate (RulesStats) |
+| `skipRate()` | `skipPercentage()` | Get skip rate (RulesStats) |
+| `avgMessagesPerMatch()` | `avgMessages()` | Get avg messages per match (RulesStats) |
+| `efficiencyRate()` | `efficiencyPercentage()` | Get efficiency rate (RulesStats) |
+| `reset()` | `clear()`, `zero()` | Reset stats (RulesStats) |
+| `MessageCategory.error_analysis` | `cause()`, `diagnostic()`, `analysis()` | Error analysis category |
+| `MessageCategory.solution_suggestion` | `fix()`, `solution()`, `help()` | Solution suggestion category |
+| `MessageCategory.best_practice` | `suggest()`, `hint()`, `tip()` | Best practice category |
+| `MessageCategory.action_required` | `action()`, `todo()` | Action required category |
+| `MessageCategory.documentation_link` | `docs()`, `reference()`, `link()` | Documentation link category |
+| `MessageCategory.bug_report` | `report()`, `issue()` | Bug report category |
+| `MessageCategory.general_information` | `note()`, `info()` | General information category |
+| `MessageCategory.warning_explanation` | `caution()`, `warning()`, `warn()` | Warning explanation category |
+| `MessageCategory.performance_tip` | `perf()`, `performance()` | Performance tip category |
+| `MessageCategory.security_notice` | `security()` | Security notice category |
+| `displayName()` | `name()` | Get display name (MessageCategory) |
+| `prefix()` | `unicodePrefix()` | Get unicode prefix (MessageCategory) |
+| `prefixAscii()` | `asciiPrefix()` | Get ASCII prefix (MessageCategory) |
+| `defaultColor()` | `color()` | Get default color (MessageCategory) |
 
 ## Overview
 

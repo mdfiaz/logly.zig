@@ -85,6 +85,18 @@ pub const Rotation = struct {
                 .yearly => "Yearly",
             };
         }
+
+        /// Alias for seconds
+        pub const duration = seconds;
+        pub const intervalSeconds = seconds;
+
+        /// Alias for fromString
+        pub const parse = fromString;
+        pub const fromStr = fromString;
+
+        /// Alias for name
+        pub const displayName = name;
+        pub const string = name;
     };
 
     /// Naming strategy for rotated files.
@@ -165,6 +177,40 @@ pub const Rotation = struct {
             const comp_errors = Utils.atomicLoadU64(&self.compression_errors);
             return Utils.calculateErrorRate(rot_errors + comp_errors, total);
         }
+
+        /// Alias for reset
+        pub const clear = reset;
+        pub const zero = reset;
+
+        /// Alias for rotationCount
+        pub const rotations = rotationCount;
+        pub const totalRotations = rotationCount;
+
+        /// Alias for errorCount
+        // pub const errors = errorCount; // shadows local var
+        pub const totalErrors = errorCount;
+
+        /// Alias for getFilesArchived
+        pub const filesArchived = getFilesArchived;
+        pub const archivedCount = getFilesArchived;
+
+        /// Alias for getFilesDeleted
+        pub const filesDeleted = getFilesDeleted;
+        pub const deletedCount = getFilesDeleted;
+
+        /// Alias for getCompressionErrors
+        pub const compressionErrors = getCompressionErrors;
+        pub const compressErrors = getCompressionErrors;
+
+        /// Alias for hasErrors
+        pub const hasRotationErrors = hasErrors;
+
+        /// Alias for successRate
+        pub const successPercentage = successRate;
+
+        /// Alias for totalErrorRate
+        pub const errorPercentage = totalErrorRate;
+        pub const totalErrorPercentage = totalErrorRate;
     };
 
     /// Memory allocator for file operations.
@@ -377,6 +423,62 @@ pub const Rotation = struct {
             };
         }
     }
+
+    /// Alias for withCompression
+    // pub const compression = withCompression; // conflicts with field
+    pub const setCompression = withCompression;
+
+    /// Alias for withNaming
+    // pub const naming = withNaming; // conflicts with field
+    pub const setNaming = withNaming;
+
+    /// Alias for withNamingFormat
+    pub const namingFormat = withNamingFormat;
+    pub const setNamingFormat = withNamingFormat;
+
+    /// Alias for withMaxAge
+    pub const maxAge = withMaxAge;
+    pub const setMaxAge = withMaxAge;
+
+    /// Alias for withArchiveDir
+    pub const archiveDir = withArchiveDir;
+    pub const setArchiveDir = withArchiveDir;
+
+    /// Alias for setCleanEmptyDirs
+    pub const cleanEmptyDirs = setCleanEmptyDirs;
+
+    /// Alias for withKeepOriginal
+    pub const keepOriginal = withKeepOriginal;
+    pub const setKeepOriginal = withKeepOriginal;
+
+    /// Alias for withCompressOnRetention
+    pub const compressOnRetention = withCompressOnRetention;
+    pub const setCompressOnRetention = withCompressOnRetention;
+
+    /// Alias for withDeleteAfterRetentionCompress
+    pub const deleteAfterRetentionCompress = withDeleteAfterRetentionCompress;
+    pub const setDeleteAfterRetentionCompress = withDeleteAfterRetentionCompress;
+
+    /// Alias for applyConfig
+    pub const configure = applyConfig;
+    pub const applyConfiguration = applyConfig;
+
+    /// Alias for deinit
+    // pub const destroy = deinit; // already exists
+
+    /// Alias for getStats
+    // pub const statistics = getStats; // already exists
+    // pub const stats = getStats; // conflicts with field
+
+    /// Alias for isEnabled
+    pub const enabled = isEnabled;
+
+    /// Alias for intervalName
+    pub const getIntervalName = intervalName;
+
+    /// Alias for checkAndRotate
+    pub const rotateIfNeeded = checkAndRotate;
+    pub const maybeRotate = checkAndRotate;
 
     fn performRotation(self: *Rotation, file_ptr: *std.fs.File) !void {
         const start_time = Utils.currentMillis();

@@ -550,6 +550,69 @@ pub const RulesConstants = struct {
     };
 };
 
+/// Syslog constants for RFC 5424 compliance.
+///
+/// Usage:
+///   Standard syslog severity levels and facility codes for network logging.
+///
+/// Complexity: O(1)
+pub const SyslogConstants = struct {
+    /// Syslog severity levels (RFC 5424)
+    pub const Severity = enum(u3) {
+        emergency = 0,
+        alert = 1,
+        critical = 2,
+        err = 3,
+        warning = 4,
+        notice = 5,
+        info = 6,
+        debug = 7,
+
+        /// Convert from log level to syslog severity
+        pub fn fromLogLevel(level: @import("level.zig").Level) Severity {
+            return switch (level) {
+                .trace, .debug => .debug,
+                .info => .info,
+                .notice => .notice,
+                .success => .info,
+                .warning => .warning,
+                .err => .err,
+                .fail => .err,
+                .critical => .critical,
+                .fatal => .emergency,
+            };
+        }
+
+        /// Alias for fromLogLevel
+        pub const fromLevel = fromLogLevel;
+        pub const convertFromLevel = fromLogLevel;
+    };
+
+    /// Syslog facilities (RFC 5424)
+    pub const Facility = enum(u5) {
+        kern = 0,
+        user = 1,
+        mail = 2,
+        daemon = 3,
+        auth = 4,
+        syslog = 5,
+        lpr = 6,
+        news = 7,
+        uucp = 8,
+        cron = 9,
+        authpriv = 10,
+        ftp = 11,
+        local0 = 16,
+        local1 = 17,
+        local2 = 18,
+        local3 = 19,
+        local4 = 20,
+        local5 = 21,
+        local6 = 22,
+        local7 = 23,
+    };
+};
+
 test "atomic types exist" {
     // Verify atomic types are defined for cross-platform compatibility
     try std.testing.expect(@sizeOf(AtomicUnsigned) > 0);
@@ -628,6 +691,23 @@ test "rules constants exist" {
     try std.testing.expect(RulesConstants.Colors.cause.len > 0);
     try std.testing.expect(RulesConstants.Colors.fix.len > 0);
     try std.testing.expect(RulesConstants.Colors.security.len > 0);
+}
+
+test "syslog constants exist" {
+    // Test severity enum values
+    try std.testing.expectEqual(@as(u3, 0), @intFromEnum(SyslogConstants.Severity.emergency));
+    try std.testing.expectEqual(@as(u3, 6), @intFromEnum(SyslogConstants.Severity.info));
+    try std.testing.expectEqual(@as(u3, 7), @intFromEnum(SyslogConstants.Severity.debug));
+
+    // Test facility enum values
+    try std.testing.expectEqual(@as(u5, 0), @intFromEnum(SyslogConstants.Facility.kern));
+    try std.testing.expectEqual(@as(u5, 1), @intFromEnum(SyslogConstants.Facility.user));
+    try std.testing.expectEqual(@as(u5, 16), @intFromEnum(SyslogConstants.Facility.local0));
+
+    // Test severity conversion
+    try std.testing.expectEqual(SyslogConstants.Severity.debug, SyslogConstants.Severity.fromLogLevel(.debug));
+    try std.testing.expectEqual(SyslogConstants.Severity.info, SyslogConstants.Severity.fromLogLevel(.info));
+    try std.testing.expectEqual(SyslogConstants.Severity.err, SyslogConstants.Severity.fromLogLevel(.err));
 }
 
 test "color constants foreground" {

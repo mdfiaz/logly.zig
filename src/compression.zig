@@ -280,8 +280,20 @@ pub const Compression = struct {
         return initWithConfig(allocator, .{});
     }
 
-    /// Alias for init().
-    pub const create = init;
+    /// Alias for initWithConfig().
+    pub const withConfig = initWithConfig;
+
+    /// Alias for enable().
+    pub const on = enable;
+
+    /// Alias for basic().
+    pub const simple = basic;
+
+    /// Alias for implicit().
+    pub const auto = implicit;
+
+    /// Alias for explicit().
+    pub const manual = explicit;
 
     /// Initializes a Compression instance with custom configuration.
     ///
@@ -563,8 +575,20 @@ pub const Compression = struct {
         // Currently no owned resources to free
     }
 
-    /// Alias for deinit().
-    pub const destroy = deinit;
+    /// Alias for setCompressionStartCallback().
+    pub const onCompressionStart = setCompressionStartCallback;
+
+    /// Alias for setCompressionCompleteCallback().
+    pub const onCompressionComplete = setCompressionCompleteCallback;
+
+    /// Alias for setCompressionErrorCallback().
+    pub const onCompressionError = setCompressionErrorCallback;
+
+    /// Alias for setDecompressionCompleteCallback().
+    pub const onDecompressionComplete = setDecompressionCompleteCallback;
+
+    /// Alias for setArchiveDeletedCallback().
+    pub const onArchiveDeleted = setArchiveDeletedCallback;
 
     /// Sets the callback for compression start events.
     ///
@@ -1480,9 +1504,18 @@ pub const Compression = struct {
     pub const encode = compress;
     pub const deflate = compress;
 
+    /// Alias for compressWithAllocator
+    pub const compressUsing = compressWithAllocator;
+
+    /// Alias for compressStream
+    pub const compressFromStream = compressStream;
+
     /// Alias for decompress
     pub const decode = decompress;
     pub const inflate = decompress;
+
+    /// Alias for decompressStream
+    pub const decompressToStream = decompressStream;
 
     /// Alias for compressFile
     pub const packFile = compressFile;
@@ -1496,12 +1529,35 @@ pub const Compression = struct {
     /// Alias for shouldCompress
     pub const needsCompression = shouldCompress;
 
-    /// Alias for compressDirectory
-    pub const packDirectory = compressDirectory;
-    pub const archiveFolder = compressDirectory;
+    /// Alias for compressBatch
+    pub const batchCompress = compressBatch;
+
+    /// Alias for compressPattern
+    pub const compressMatching = compressPattern;
+
+    /// Alias for compressOldest
+    pub const compressOld = compressOldest;
+
+    /// Alias for compressLargerThan
+    pub const compressBigFiles = compressLargerThan;
+
+    /// Alias for estimateCompressedSize
+    pub const estimateSize = estimateCompressedSize;
+
+    /// Alias for getExtension
+    pub const extension = getExtension;
+
+    /// Alias for isEnabled
+    pub const enabled = isEnabled;
+
+    /// Alias for isZstd
+    pub const usingZstd = isZstd;
 
     /// Alias for resetStats
     pub const clearStats = resetStats;
+
+    /// Alias for compressDirectory
+    pub const packDirectory = compressDirectory;
 
     /// Alias for configure
     pub const setConfig = configure;

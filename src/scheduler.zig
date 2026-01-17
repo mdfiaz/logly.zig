@@ -464,6 +464,9 @@ pub const Scheduler = struct {
         return self;
     }
 
+    /// Alias for initFromConfig
+    pub const fromConfig = initFromConfig;
+
     /// Releases all resources.
     pub fn deinit(self: *Scheduler) void {
         self.stop();
@@ -491,10 +494,16 @@ pub const Scheduler = struct {
         self.health_callback = callback;
     }
 
+    /// Alias for setHealthCallback
+    pub const onHealth = setHealthCallback;
+
     /// Sets metrics callback.
     pub fn setMetricsCallback(self: *Scheduler, callback: *const fn () MetricsSnapshot) void {
         self.metrics_callback = callback;
     }
+
+    /// Alias for setMetricsCallback
+    pub const onMetrics = setMetricsCallback;
 
     /// Gets current health status.
     pub fn getHealthStatus(self: *Scheduler) HealthStatus {
@@ -504,6 +513,9 @@ pub const Scheduler = struct {
         // Default health check - check disk space on current directory
         return self.performBasicHealthCheck();
     }
+
+    /// Alias for getHealthStatus
+    pub const healthStatus = getHealthStatus;
 
     /// Gets current metrics snapshot.
     pub fn getMetrics(self: *Scheduler) MetricsSnapshot {
@@ -516,6 +528,9 @@ pub const Scheduler = struct {
             .error_count = self.stats.getFailed(),
         };
     }
+
+    /// Alias for getMetrics
+    pub const snapshot = getMetrics;
 
     fn performBasicHealthCheck(_: *Scheduler) HealthStatus {
         var status = HealthStatus{};
@@ -580,6 +595,9 @@ pub const Scheduler = struct {
         return self.tasks.items.len - 1;
     }
 
+    /// Alias for addTask
+    pub const add = addTask;
+
     /// Configures priority for a specific task.
     pub fn setTaskPriority(self: *Scheduler, index: usize, priority: ScheduledTask.Priority) void {
         self.mutex.lock();
@@ -588,6 +606,9 @@ pub const Scheduler = struct {
             self.tasks.items[index].priority = priority;
         }
     }
+
+    /// Alias for setTaskPriority
+    pub const setPriority = setTaskPriority;
 
     /// Configures retry policy for a specific task.
     pub fn setTaskRetryPolicy(self: *Scheduler, index: usize, policy: ScheduledTask.RetryPolicy) void {
@@ -599,6 +620,9 @@ pub const Scheduler = struct {
         }
     }
 
+    /// Alias for setTaskRetryPolicy
+    pub const retry = setTaskRetryPolicy;
+
     /// Sets a dependency for a task.
     pub fn setTaskDependency(self: *Scheduler, index: usize, dependency_name: []const u8) !void {
         self.mutex.lock();
@@ -608,6 +632,9 @@ pub const Scheduler = struct {
             self.tasks.items[index].depends_on = try self.allocator.dupe(u8, dependency_name);
         }
     }
+
+    /// Alias for setTaskDependency
+    pub const dependsOn = setTaskDependency;
 
     /// Adds a cleanup task for old log files.
     ///
@@ -630,6 +657,9 @@ pub const Scheduler = struct {
         });
     }
 
+    /// Alias for addCleanupTask
+    pub const cleanup = addCleanupTask;
+
     /// Adds a compression task for log files.
     pub fn addCompressionTask(
         self: *Scheduler,
@@ -642,6 +672,9 @@ pub const Scheduler = struct {
             .file_pattern = "*.log",
         });
     }
+
+    /// Alias for addCompressionTask
+    pub const compress = addCompressionTask;
 
     /// Adds a custom callback task.
     pub fn addCustomTask(
@@ -668,6 +701,9 @@ pub const Scheduler = struct {
         return self.tasks.items.len - 1;
     }
 
+    /// Alias for addCustomTask
+    pub const custom = addCustomTask;
+
     /// Enables or disables a task.
     pub fn setTaskEnabled(self: *Scheduler, index: usize, enabled: bool) void {
         self.mutex.lock();
@@ -676,6 +712,9 @@ pub const Scheduler = struct {
             self.tasks.items[index].enabled = enabled;
         }
     }
+
+    /// Alias for setTaskEnabled
+    pub const enable = setTaskEnabled;
 
     /// Removes a task by index.
     pub fn removeTask(self: *Scheduler, index: usize) void {
@@ -690,12 +729,18 @@ pub const Scheduler = struct {
         }
     }
 
+    /// Alias for removeTask
+    pub const remove = removeTask;
+
     /// Sets the callback for task started events.
     pub fn setTaskStartedCallback(self: *Scheduler, callback: *const fn ([]const u8, u64) void) void {
         self.mutex.lock();
         defer self.mutex.unlock();
         self.on_task_started = callback;
     }
+
+    /// Alias for setTaskStartedCallback
+    pub const onStarted = setTaskStartedCallback;
 
     /// Sets the callback for task completed events.
     pub fn setTaskCompletedCallback(self: *Scheduler, callback: *const fn ([]const u8, u64) void) void {
@@ -704,12 +749,18 @@ pub const Scheduler = struct {
         self.on_task_completed = callback;
     }
 
+    /// Alias for setTaskCompletedCallback
+    pub const onCompleted = setTaskCompletedCallback;
+
     /// Sets the callback for task error events.
     pub fn setTaskErrorCallback(self: *Scheduler, callback: *const fn ([]const u8, []const u8) void) void {
         self.mutex.lock();
         defer self.mutex.unlock();
         self.on_task_error = callback;
     }
+
+    /// Alias for setTaskErrorCallback
+    pub const onError = setTaskErrorCallback;
 
     /// Sets the callback for schedule tick events.
     pub fn setScheduleTickCallback(self: *Scheduler, callback: *const fn (u32, u32) void) void {
@@ -718,12 +769,18 @@ pub const Scheduler = struct {
         self.on_schedule_tick = callback;
     }
 
+    /// Alias for setScheduleTickCallback
+    pub const onTick = setScheduleTickCallback;
+
     /// Sets the callback for health check events.
     pub fn setHealthCheckCallback(self: *Scheduler, callback: *const fn (*const HealthStatus) void) void {
         self.mutex.lock();
         defer self.mutex.unlock();
         self.on_health_check = callback;
     }
+
+    /// Alias for setHealthCheckCallback
+    pub const onHealthCheck = setHealthCheckCallback;
 
     /// Starts the scheduler.
     pub fn start(self: *Scheduler) !void {
@@ -776,6 +833,9 @@ pub const Scheduler = struct {
         if (index >= self.tasks.items.len) return;
         try self.executeTask(&self.tasks.items[index]);
     }
+
+    /// Alias for runNow
+    pub const run = runNow;
 
     /// Runs all pending tasks.
     pub fn runPending(self: *Scheduler) void {
@@ -852,6 +912,9 @@ pub const Scheduler = struct {
             }
         }
     }
+
+    /// Alias for runPending
+    pub const pending = runPending;
 
     fn handleTaskError(self: *Scheduler, index: usize, err: anyerror) void {
         self.mutex.lock();
@@ -1280,36 +1343,57 @@ pub const Scheduler = struct {
         self.stats = .{};
     }
 
+    /// Alias for resetStats
+    pub const clearStats = resetStats;
+
     /// Sets the telemetry instance for distributed tracing.
     /// When set, task executions will create spans for observability.
     pub fn setTelemetry(self: *Scheduler, telemetry: *Telemetry) void {
         self.telemetry = telemetry;
     }
 
+    /// Alias for setTelemetry
+    pub const trace = setTelemetry;
+
     /// Clears the telemetry instance.
     pub fn clearTelemetry(self: *Scheduler) void {
         self.telemetry = null;
     }
+
+    /// Alias for clearTelemetry
+    pub const noTelemetry = clearTelemetry;
 
     /// Gets list of all tasks.
     pub fn getTasks(self: *const Scheduler) []const ScheduledTask {
         return self.tasks.items;
     }
 
+    /// Alias for getTasks
+    pub const tasks_ = getTasks;
+
     /// Returns the number of tasks.
     pub fn taskCount(self: *const Scheduler) usize {
         return self.tasks.items.len;
     }
+
+    /// Alias for taskCount
+    pub const count = taskCount;
 
     /// Returns true if the scheduler is running.
     pub fn isRunning(self: *const Scheduler) bool {
         return self.running.load(.acquire);
     }
 
+    /// Alias for isRunning
+    pub const running_ = isRunning;
+
     /// Returns true if any tasks are scheduled.
     pub fn hasTasks(self: *const Scheduler) bool {
         return self.tasks.items.len > 0;
     }
+
+    /// Alias for hasTasks
+    pub const has_ = hasTasks;
 
     /// Alias for start
     pub const begin = start;

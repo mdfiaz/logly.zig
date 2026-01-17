@@ -147,6 +147,72 @@ pub const Formatter = struct {
             self.format_errors.store(0, .monotonic);
             self.total_bytes_formatted.store(0, .monotonic);
         }
+
+        /// Alias for getTotalFormatted
+        pub const totalFormatted = getTotalFormatted;
+        pub const count = getTotalFormatted;
+
+        /// Alias for getJsonFormats
+        pub const jsonCount = getJsonFormats;
+        pub const jsonFormats = getJsonFormats;
+
+        /// Alias for getCustomFormats
+        pub const customCount = getCustomFormats;
+        pub const customFormats = getCustomFormats;
+
+        /// Alias for getFormatErrors
+        pub const errors = getFormatErrors;
+        pub const errorCount = getFormatErrors;
+
+        /// Alias for getTotalBytesFormatted
+        pub const bytes = getTotalBytesFormatted;
+        pub const totalBytes = getTotalBytesFormatted;
+
+        /// Alias for getPlainFormats
+        pub const plainCount = getPlainFormats;
+        pub const plainFormats = getPlainFormats;
+
+        /// Alias for hasFormatted
+        pub const hasRecords = hasFormatted;
+        pub const isActive = hasFormatted;
+
+        /// Alias for hasJsonFormats
+        pub const hasJson = hasJsonFormats;
+        pub const usesJson = hasJsonFormats;
+
+        /// Alias for hasCustomFormats
+        pub const hasCustom = hasCustomFormats;
+        pub const usesCustom = hasCustomFormats;
+
+        /// Alias for hasErrors
+        pub const hasFailed = hasErrors;
+        pub const hasFailures = hasErrors;
+
+        /// Alias for jsonUsageRate
+        pub const jsonRate = jsonUsageRate;
+        pub const jsonUsage = jsonUsageRate;
+
+        /// Alias for customUsageRate
+        pub const customRate = customUsageRate;
+        pub const customUsage = customUsageRate;
+
+        /// Alias for avgFormatSize
+        pub const avgSize = avgFormatSize;
+        pub const averageSize = avgFormatSize;
+
+        /// Alias for errorRate
+        pub const failureRate = errorRate;
+
+        /// Alias for successRate
+        pub const success = successRate;
+
+        /// Alias for throughputBytesPerSecond
+        pub const throughput = throughputBytesPerSecond;
+        pub const bytesPerSecond = throughputBytesPerSecond;
+
+        /// Alias for reset
+        pub const clear = reset;
+        pub const zero = reset;
     };
 
     /// Memory allocator for formatting operations.
@@ -366,6 +432,42 @@ pub const Formatter = struct {
             _ = err_rgb;
             return .{};
         }
+
+        /// Alias for getColor
+        pub const colorFor = getColor;
+        pub const getLevelColor = getColor;
+
+        /// Alias for bright
+        pub const brightTheme = bright;
+        pub const vivid = bright;
+
+        /// Alias for dim
+        pub const dimTheme = dim;
+        pub const subtle = dim;
+
+        /// Alias for minimal
+        pub const minimalTheme = minimal;
+        pub const basic = minimal;
+
+        /// Alias for neon
+        pub const neonTheme = neon;
+        pub const vibrant = neon;
+
+        /// Alias for pastel
+        pub const pastelTheme = pastel;
+        pub const soft = pastel;
+
+        /// Alias for dark
+        pub const darkTheme = dark;
+        pub const night = dark;
+
+        /// Alias for light
+        pub const lightTheme = light;
+        pub const day = light;
+
+        /// Alias for fromRgb
+        pub const custom = fromRgb;
+        pub const rgb = fromRgb;
     };
 
     /// Initializes a new Formatter and pre-fetches system metadata.
@@ -1197,8 +1299,37 @@ pub const Formatter = struct {
     /// Alias for getStats
     pub const statistics = getStats;
 
-    /// Alias for setTheme
-    pub const colors = setTheme;
+    /// Alias for setFormatCompleteCallback
+    pub const onFormatComplete = setFormatCompleteCallback;
+    pub const setOnFormatComplete = setFormatCompleteCallback;
+
+    /// Alias for setJsonFormatCallback
+    pub const onJsonFormat = setJsonFormatCallback;
+    pub const setOnJsonFormat = setJsonFormatCallback;
+
+    /// Alias for setCustomFormatCallback
+    pub const onCustomFormat = setCustomFormatCallback;
+    pub const setOnCustomFormat = setCustomFormatCallback;
+
+    /// Alias for setErrorCallback
+    pub const onError = setErrorCallback;
+    pub const setOnError = setErrorCallback;
+
+    /// Alias for formatWithAllocator
+    pub const renderWithAllocator = formatWithAllocator;
+    pub const outputWithAllocator = formatWithAllocator;
+
+    /// Alias for formatJsonWithAllocator
+    pub const jsonWithAllocator = formatJsonWithAllocator;
+    pub const toJsonWithAllocator = formatJsonWithAllocator;
+
+    /// Alias for hasTheme
+    pub const hasColorTheme = hasTheme;
+    pub const isThemed = hasTheme;
+
+    /// Alias for resetStats
+    pub const clearStats = resetStats;
+    pub const resetStatistics = resetStats;
 };
 
 fn fetchHostname(allocator: std.mem.Allocator) ![]const u8 {
@@ -1250,6 +1381,11 @@ pub const FormatterPresets = struct {
         return f;
     }
 
+    /// Alias for plain
+    pub const noColor = plain;
+    pub const monochrome = plain;
+    pub const colorless = plain;
+
     /// Creates a formatter with dark theme.
     pub fn dark(allocator: std.mem.Allocator) Formatter {
         var f = Formatter.init(allocator);
@@ -1257,12 +1393,20 @@ pub const FormatterPresets = struct {
         return f;
     }
 
+    /// Alias for dark
+    pub const darkMode = dark;
+    pub const nightMode = dark;
+
     /// Creates a formatter with light theme.
     pub fn light(allocator: std.mem.Allocator) Formatter {
         var f = Formatter.init(allocator);
         f.theme = Formatter.Theme.light();
         return f;
     }
+
+    /// Alias for light
+    pub const lightMode = light;
+    pub const dayMode = light;
 };
 
 test "formatter plain text" {
